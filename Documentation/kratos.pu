@@ -1,0 +1,98 @@
+@startuml "Api Server Request"
+
+title Request to API-server
+
+actor Browser
+participant Kratos
+participant "K8s Auth Proxy" as k8auth
+participant "K8s API Server" as k8api
+
+
+Browser -> k8auth: GET: https://k8s.dolittle.cloud/api/pods\nHeader: { Cookie: <cookie-data> }
+k8auth -> Kratos: GET: https://kratos.system-auth.svc.local/session/whoami\nCookie: <cookie-data>
+
+alt If signed in
+    Kratos -> k8auth: Status: 200\nHeader: { X-Kratos-Authenticated-Identity-Id: <user ID> }
+    k8auth -> k8api: GET: https://k8s.dolittle.cloud/api/pods\nHeader: { Impersonate: <user ID> }
+    k8api -> k8auth: Status 200
+    k8auth -> Browser: Status 200
+else If not signed in
+    Kratos -> k8auth: Status: 401
+    k8auth -> Browser: Status: 401
+end
+
+@enduml
+
+@startuml "Browse to Dolittle Studio"
+
+title Browse to Dolittle Studio
+
+actor Browser
+participant Ingress
+participant "Studio Auth Proxy" as Proxy
+participant Studio
+participant Kratos
+participant "Studio Login UI" as UI
+
+
+Browser -> Ingress: GET https://dolittle.studio\nHeader: { Cookie: <cookie-data> }
+Ingress -> Proxy: GET http://authentication.application-xxx.svc.cluster.local/\nHeader: { Cookie: <cookie-data> }
+Proxy -> Kratos: GET: https://kratos.system-auth.svc.cluster.local/session/whoami\nCookie: <cookie-data>
+
+alt If authenticated
+    Kratos -> Proxy: Status: 200\nHeader: { X-Kratos-Authenticated-Identity-Id: <user ID> }
+    Proxy -> Studio: GET http://microservices.application-xxx.svc.cluster.local/\nHeader: { User: <user ID> }
+    Studio -> Ingress: Status 200 (returns frontend)
+    Proxy -> Ingress: Status 200 (returns frontend)
+    Ingress -> Browser: Status 200 (returns frontend)
+
+else If not authenticated
+    Kratos -> Proxy: Status: 401
+    Proxy -> Ingress: Status 302: https://dolittle.studio/.ory/kratos/self-service/login/browser
+    Ingress -> Browser: Status 302: https://dolittle.studio/.ory/kratos/self-service/login/browser
+    Browser -> Ingress: GET https://dolittle.studio/.ory/kratos/self-service/login/browser
+    Ingress -> Kratos: GET http://kratos.system-auth.svc.cluster.local/.ory/kratos/self-service/login/browser
+    Kratos -> Ingress: Status 302: http://dolittle.studio/login?session=<session-id>
+    Ingress -> Browser: Status 302: http://dolittle.studio/login?session=<session-id>
+    Browser -> Ingress: GET http://dolittle.studio/login?session=<session-id>
+    Ingress -> UI: GET http://dolittle.studio/login?session=<session-id>
+    UI -> Ingress: Status 200 (returns login frontend)
+    Ingress -> Browser: Status 200 (returns login frontend)
+
+    ... User clicks and clacks login with Microsoft\nand performs OpenID flow ...
+    
+    note over Browser, UI
+        restart whole request with the correct cookie data
+    end note
+end
+
+@enduml
+
+@startuml "Kubectl Request"
+
+title Kubectl Request
+
+actor kubectl
+participant "K8s Auth Proxy" as k8auth
+participant "K8s API Server" as k8api
+
+note over kubectl
+Set the correct cluster with
+server pointing to the k8auth
+in the kubectl config
+end note
+kubectl -> k8auth: GET: https://k8s.dolittle.cloud/api/pods\nHeader: { Authentication: Bearer <token> }
+k8auth -> Hydra: GET: http://hydra.system-auth.svc.cluster.local/userinfo
+
+alt If good token
+    Hydra -> k8auth: Status 200 { claims... }
+    k8auth -> k8api: Impersonate: Hydra-User-Info\nGET: https://<local-cluster-url>/api/pods 
+    k8api -> k8auth: Status 200 (results)
+    k8auth -> kubectl: Status 200 (results)
+
+else If bad/no token
+    Hydra -> k8auth: Status 401
+    k8auth -> kubectl: Status 401
+end
+
+@enduml
