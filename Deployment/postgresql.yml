@@ -1,0 +1,96 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  namespace: system-auth
+  name: postgresql-config
+data:
+  POSTGRES_PASSWORD: cGFzc3dvcmQ=
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pgadmin-config
+data:
+  PGADMIN_DEFAULT_EMAIL: postgres@dolittle.com
+  PGADMIN_DEFAULT_PASSWORD: password
+  servers.json: |
+    {
+      "Servers": {
+        "localhost": {
+            "Name": "Localhost",
+            "Group": "Server Group",
+            "Port": 5432,
+            "Username": "postgres",
+            "Host": "localhost",
+            "SSLMode": "prefer",
+            "MaintenanceDB": "postgres"
+        }
+      }
+    }
+
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  namespace: system-auth
+  name: postgresql
+  labels:
+    system: auth
+
+spec:
+  selector:
+    matchLabels:
+      system: auth
+      component: postgres
+
+  serviceName: postgresql
+  replicas: 1
+
+  template:
+    metadata:
+      labels:
+        system: auth
+        component: postgres
+    spec:
+      containers:
+      - name: postgresql
+        image: postgres:9.6.19
+        envFrom:
+          - secretRef:
+              name: postgresql-config
+        ports:
+        - name: postgresql
+          containerPort: 5432
+        volumeMounts:
+        - name: postgresql-storage
+          mountPath: /var/lib/postgresql/data
+      - name: pgadmin
+        image: dpage/pgadmin4:4.27
+        envFrom:
+          - configMapRef:
+              
+              name: pgadmin-config
+        volumeMounts:
+          - mountPath: /pgadmin4/servers.json
+            subPath: servers.json
+            name: pgadmin-config
+        ports:
+          - name: admin
+            containerPort: 80
+      volumes:
+        - name: pgadmin-config
+          configMap:
+            name: pgadmin-config
+
+  volumeClaimTemplates:
+    - metadata:
+        name: postgresql-storage
+      spec:
+        accessModes:
+         - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+        storageClassName: standard
