@@ -5,6 +5,8 @@ metadata:
   name: postgresql-config
 data:
   POSTGRES_PASSWORD: cGFzc3dvcmQ=
+  SECRETS_SYSTEM: RGdDUHRyM0lsRzBLRk1CcUhBN0xRNGl4TVNScU5IckE=
+
 ---
 
 apiVersion: v1
@@ -29,6 +31,23 @@ data:
         }
       }
     }
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: system-auth
+  name:  postgres
+spec:
+  selector:
+    system: auth
+    component: postgres
+  clusterIP: None
+  ports:
+  - name:  postgresql
+    port:  5432
+    targetPort:  5432
 
 ---
 

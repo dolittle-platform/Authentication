@@ -1,0 +1,63 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: system-auth
+  name: hydra-config
+  labels:
+    component: hydra
+data:
+  # $(export LC_CTYPE=C; cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
+  SECRETS_SYSTEM: DgCPtr3IlG0KFMBqHA7LQ4ixMSRqNHrA
+  DSN: postgres://postgres:password@postgres.system-auth.svc.cluster.local:5432/postgres?sslmode=disable
+  URLS_SELF_ISSUER: "https://localhost:9000"
+  URLS_CONSENT: "https://localhost:9020/consent"
+  URLS_LOGIN: "https://localhost:9020/login"
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: system-auth
+  name: hydra
+  labels:
+    system: auth
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      system: auth
+      component: hydra
+      
+  template:
+    metadata:
+      labels:
+        system: auth
+        component: hydra
+    spec:
+      initContainers:
+      - name: hydra-init
+        image: oryd/hydra:v1.8.5
+        args:
+        - "migrate"
+        - "sql"
+        - "--yes"
+        - "$(DSN)"
+        envFrom:
+        - configMapRef:
+            name: hydra-config
+      containers:
+      - name: hydra
+        image: oryd/hydra:v1.8.5
+        args:
+        - "serve"
+        - "all"
+        envFrom:
+        - configMapRef:
+            name: hydra-config
+        ports:
+        - name: public
+          containerPort: 4444
+        - name: private
+          containerPort: 4445
