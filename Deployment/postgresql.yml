@@ -71,7 +71,6 @@ spec:
         image: dpage/pgadmin4:4.27
         envFrom:
           - configMapRef:
-              
               name: pgadmin-config
         volumeMounts:
           - mountPath: /pgadmin4/servers.json
