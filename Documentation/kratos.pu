@@ -3,9 +3,9 @@
 title Request to API-server
 
 actor Browser
-participant Kratos
 participant "K8s Auth Proxy" as k8auth
 participant "K8s API Server" as k8api
+participant Kratos
 
 
 Browser -> k8auth: GET: https://k8s.dolittle.cloud/api/pods\nHeader: { Cookie: <cookie-data> }
