@@ -10,6 +10,7 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
+  namespace: system-auth
   name: pgadmin-config
 data:
   PGADMIN_DEFAULT_EMAIL: postgres@dolittle.com
@@ -93,4 +94,3 @@ spec:
         resources:
           requests:
             storage: 1Gi
-        storageClassName: standard
