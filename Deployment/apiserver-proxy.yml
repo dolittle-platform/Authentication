@@ -1,0 +1,177 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  namespace: system-auth
+  name: apiserver-proxy
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: impersonator
+rules:
+- apiGroups: [""]
+  resources: ["users", "groups"]
+  verbs: ["impersonate"]
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: apiserver-proxy-impersonator
+subjects:
+- kind: ServiceAccount
+  name: apiserver-proxy
+  namespace: system-auth
+roleRef:
+  kind: ClusterRole
+  name: impersonator
+  apiGroup: rbac.authorization.k8s.io
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: guest-read
+rules:
+- apiGroups: [""]
+  resources:
+  - pods
+  verbs:
+  - get
+  - list
+  - watch
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: guest-read
+subjects:
+- kind: User
+  name: guest
+roleRef:
+  kind: ClusterRole
+  name: guest-read
+  apiGroup: rbac.authorization.k8s.io
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: system-auth
+  name: apiserver-proxy-config
+data:
+  oathkeeper.yaml: |
+    serve:
+      proxy:
+        port: 4455
+      api:
+        port: 4456
+      prometheus:
+        port: 9000
+    access_rules:
+      repositories:
+        - file:///etc/oathkeeper/config/rules.yaml
+
+    errors:
+      fallback:
+        - json
+      handlers:
+        json:
+          enabled: true
+          config:
+            verbose: true
+
+    mutators:
+      header:
+        enabled: true
+        config:
+          headers:
+            Authorization: 'Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IndYdjNpTnoxdGV5dVRaeUNRVmxqVFVSWDkwQTZONzJiTnlfNURnYWUwRGMifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJzeXN0ZW0tYXV0aCIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJhcGlzZXJ2ZXItcHJveHktdG9rZW4tYnNzdnIiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC5uYW1lIjoiYXBpc2VydmVyLXByb3h5Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQudWlkIjoiOWUxMTY3YzItMWI1NS00NTQ4LWFjZDMtNWVhNjgyN2RmZTgzIiwic3ViIjoic3lzdGVtOnNlcnZpY2VhY2NvdW50OnN5c3RlbS1hdXRoOmFwaXNlcnZlci1wcm94eSJ9.L1LE946NwqLaxPQDZpGKmYVL3kdeNj6wOH1xlMFTPd-Yiq2rjFyDzo6OYnbn1SIRRkbU1dqF2n78I8Ibuy13vmuUqIGrb0nM5iDIdveIi_ArWJ5bA79PoGCSSdAH1nV00p0uKpkUyggmbg-bnkE4sdqHPOkHf3YGAH7lUMqMrIqg0mN2WGfDKMbWa8X-7OdAGkHxTrGCSObRiohHT8kmarhirmOJH6g1TveukJjFzpYvS3lCRqklk7phugCIx9yR7ffu0uL8ZVRPPlnHobuoadJ82jVOs5IqgiufbUY6I535437c5c8QFTouOws7t9Tpcq9Gp9FRNKgK-GNdde-kkg'
+            Impersonate-User: '{{ print .Subject }}'
+
+    authorizers:
+      allow:
+        enabled: true
+
+    authenticators:
+      anonymous:
+        enabled: true
+
+    log:
+      level: debug
+      format: text
+
+  rules.yaml: |
+    - id: apiserver
+      upstream:
+        url: https://kubernetes.default.svc
+      match:
+        methods: ["GET", "PATCH", "POST", "PUT", "DELETE"]
+        url: http://localhost:4455/<.*>
+      authenticators:
+        - handler: anonymous
+          config:
+            subject: guest
+      authorizer:
+        handler: allow
+      mutators:
+        - handler: header
+      errors:
+        - handler: json
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: system-auth
+  name: apiserver-proxy
+  labels:
+    system: auth
+
+spec:
+  selector:
+    matchLabels:
+      system: auth
+      component: apiserver-proxy
+
+  replicas: 1
+
+  template:
+    metadata:
+      labels:
+        system: auth
+        component: apiserver-proxy
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9000" 
+    spec:
+      containers:
+      - name: oathkeeper
+        image: oryd/oathkeeper:v0.38.4
+        args:
+          - "--config"
+          - "/etc/oathkeeper/config/oathkeeper.yaml"
+          - "serve"
+        env:
+          - name: SSL_CERT_FILE
+            value: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        ports:
+        - name: proxy
+          containerPort: 4455
+        - name: metrics
+          containerPort: 9000
+        volumeMounts:
+        - name: config
+          mountPath: /etc/oathkeeper/config
+      volumes:
+      - name: config
+        configMap:
+          name: apiserver-proxy-config
