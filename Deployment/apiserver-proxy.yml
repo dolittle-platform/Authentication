@@ -27,11 +27,16 @@ data:
             verbose: true
 
     mutators:
+      bearer:
+        enabled: true
+        config:
+          token_from:
+            file: "/var/run/secrets/kubernetes.io/serviceaccount/token"
+      
       header:
         enabled: true
         config:
           headers:
-            Authorization: 'Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IndYdjNpTnoxdGV5dVRaeUNRVmxqVFVSWDkwQTZONzJiTnlfNURnYWUwRGMifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJzeXN0ZW0tYXV0aCIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJhcGlzZXJ2ZXItcHJveHktdG9rZW4tYnNzdnIiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC5uYW1lIjoiYXBpc2VydmVyLXByb3h5Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQudWlkIjoiOWUxMTY3YzItMWI1NS00NTQ4LWFjZDMtNWVhNjgyN2RmZTgzIiwic3ViIjoic3lzdGVtOnNlcnZpY2VhY2NvdW50OnN5c3RlbS1hdXRoOmFwaXNlcnZlci1wcm94eSJ9.L1LE946NwqLaxPQDZpGKmYVL3kdeNj6wOH1xlMFTPd-Yiq2rjFyDzo6OYnbn1SIRRkbU1dqF2n78I8Ibuy13vmuUqIGrb0nM5iDIdveIi_ArWJ5bA79PoGCSSdAH1nV00p0uKpkUyggmbg-bnkE4sdqHPOkHf3YGAH7lUMqMrIqg0mN2WGfDKMbWa8X-7OdAGkHxTrGCSObRiohHT8kmarhirmOJH6g1TveukJjFzpYvS3lCRqklk7phugCIx9yR7ffu0uL8ZVRPPlnHobuoadJ82jVOs5IqgiufbUY6I535437c5c8QFTouOws7t9Tpcq9Gp9FRNKgK-GNdde-kkg'
             Impersonate-User: '{{ print .Subject }}'
 
     authorizers:
@@ -60,6 +65,7 @@ data:
       authorizer:
         handler: allow
       mutators:
+        - handler: bearer
         - handler: header
       errors:
         - handler: json
@@ -93,7 +99,7 @@ spec:
     spec:
       containers:
       - name: oathkeeper
-        image: oryd/oathkeeper:v0.38.4
+        image: oryd/oathkeeper:dev
         args:
           - "--config"
           - "/etc/oathkeeper/config/oathkeeper.yaml"
