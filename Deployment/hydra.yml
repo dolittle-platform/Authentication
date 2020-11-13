@@ -29,7 +29,7 @@ spec:
     matchLabels:
       system: auth
       component: hydra
-      
+
   template:
     metadata:
       labels:

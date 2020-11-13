@@ -5,7 +5,6 @@ metadata:
   name: postgresql-config
 data:
   POSTGRES_PASSWORD: cGFzc3dvcmQ=
-  SECRETS_SYSTEM: RGdDUHRyM0lsRzBLRk1CcUhBN0xRNGl4TVNScU5IckE=
 
 ---
 
