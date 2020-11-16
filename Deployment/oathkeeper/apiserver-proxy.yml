@@ -57,7 +57,7 @@ data:
         url: https://kubernetes.default.svc
       match:
         methods: ["GET", "PATCH", "POST", "PUT", "DELETE"]
-        url: http://localhost:4455/<.*>
+        url: http://localhost:8080/<.*>
       authenticators:
         - handler: anonymous
           config:
@@ -145,17 +145,10 @@ metadata:
   name: apiserver-proxy
 spec:
   rules:
-  - host: k8s.dolittle.studio
+  - host: localhost
     http:
       paths:
       - path: /
-        backend:
-          serviceName: apiserver-proxy
-          servicePort: 80
-  - host: dolittle.studio
-    http:
-      paths:
-      - path: /k8s
         backend:
           serviceName: apiserver-proxy
           servicePort: 80
