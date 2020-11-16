@@ -119,3 +119,43 @@ spec:
       - name: config
         configMap:
           name: apiserver-proxy-config
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  namespace: system-auth
+  name: apiserver-proxy
+spec:
+  selector:
+    system: auth
+    component: apiserver-proxy
+  ports:
+    - port: 80
+      name: http
+      targetPort: proxy
+
+---
+
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  namespace: system-auth
+  name: apiserver-proxy
+spec:
+  rules:
+  - host: k8s.dolittle.studio
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: apiserver-proxy
+          servicePort: 80
+  - host: dolittle.studio
+    http:
+      paths:
+      - path: /k8s
+        backend:
+          serviceName: apiserver-proxy
+          servicePort: 80
