@@ -1,0 +1,62 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: studio
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: studio
+  namespace: studio
+spec:
+  selector:
+    matchLabels:
+      application: studio
+
+  replicas: 1
+
+  template:
+    metadata:
+      labels:
+        application: studio
+    spec:
+      containers:
+      - name: head
+        image: dolittle/spinner:0.0.0
+        ports:
+        - containerPort: 80
+          name: http
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: studio
+  name: studio
+spec:
+  selector:
+    application: studio
+  ports:
+    - port: 80
+      name: http
+      targetPort: http
+
+---
+
+# apiVersion: extensions/v1beta1
+# kind: Ingress
+# metadata:
+#   namespace: studio
+#   name: ingress-studio
+# spec:
+#   rules:
+#   - host: localhost
+#     http:
+#       paths:
+#       - path: /
+#         backend:
+#           serviceName: studio
+#           servicePort: 80

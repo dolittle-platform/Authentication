@@ -6,12 +6,30 @@ metadata:
   labels:
     component: hydra
 data:
-  # $(export LC_CTYPE=C; cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
-  SECRETS_SYSTEM: DgCPtr3IlG0KFMBqHA7LQ4ixMSRqNHrA
-  DSN: postgres://postgres:password@postgres.system-auth.svc.cluster.local:5432/postgres?sslmode=disable
-  URLS_SELF_ISSUER: "https://localhost:9000"
-  URLS_CONSENT: "https://localhost:9020/consent"
-  URLS_LOGIN: "https://localhost:9020/login"
+  hydra.yaml: |
+    dsn: postgres://postgres:password@postgres.system-auth.svc.cluster.local:5432/hydra?sslmode=disable
+
+    serve:
+      public:
+        port: 4444
+      admin:
+        port: 4445
+    
+    secrets:
+      system:
+        - DgCPtr3IlG0KFMBqHA7LQ4ixMSRqNHrA
+
+    urls:
+      self:
+        issuer: http://localhost:8080/
+        public: http://localhost:8080/
+      
+      login: http://localhost:8888/spa/login
+      consent: http://localhost:8888/spa/consent
+
+    log:
+      level: debug
+      format: text
 
 ---
 
@@ -40,24 +58,70 @@ spec:
       - name: hydra-init
         image: oryd/hydra:v1.8.5
         args:
+        - "--config"
+        - "/etc/hydra/config/hydra.yaml"
         - "migrate"
         - "sql"
+        - "-e"
         - "--yes"
-        - "$(DSN)"
-        envFrom:
-        - configMapRef:
-            name: hydra-config
+        volumeMounts:
+        - name: config
+          mountPath: /etc/hydra/config
       containers:
       - name: hydra
         image: oryd/hydra:v1.8.5
         args:
+        - "--config"
+        - "/etc/hydra/config/hydra.yaml"
         - "serve"
         - "all"
-        envFrom:
-        - configMapRef:
-            name: hydra-config
+        - "--dangerous-force-http"
+        volumeMounts:
+        - name: config
+          mountPath: /etc/hydra/config
         ports:
         - name: public
           containerPort: 4444
-        - name: private
+        - name: admin
           containerPort: 4445
+      volumes:
+      - name: config
+        configMap:
+          name: hydra-config
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: hydra
+  namespace: system-auth
+spec:
+  selector:
+    system: auth
+    component: hydra
+  ports:
+  - port: 80
+    targetPort: public
+    name: http
+
+---
+
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  namespace: system-auth
+  name: hydra
+spec:
+  rules:
+  - host: localhost
+    http:
+      paths:
+      - path: /oauth2
+        backend:
+          serviceName: hydra
+          servicePort: public
+      - path: /.well-known
+        backend:
+          serviceName: hydra
+          servicePort: 80

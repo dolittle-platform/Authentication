@@ -1,0 +1,90 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: oidc-provider
+  name: oidc-provider
+data:
+  config.json: |
+    {
+      "idp_name": "http://oidc-provider.oidc-provider.svc.cluster.local:9090/",
+      "port": 9090,
+      "client_config": [
+        {
+          "client_id": "foo",
+          "client_secret": "bar",
+          "redirect_uris": [
+            "http://localhost:8080/.ory/kratos/public/self-service/methods/oidc/callback/sample"
+          ]
+        }
+      ],
+      "claim_mapping": {
+        "openid": [ "sub" ],
+        "email": [ "email", "email_verified" ],
+        "profile": [ "name", "nickname" ]
+      }
+    }
+
+  users.json: |
+    [
+      {
+        "id": "SIMPLE_OIDC_USER_HARLEY",
+        "email": "do@do.do",
+        "email_verified": true,
+        "name": "Harley Kiffe",
+        "nickname": "harley",
+        "password": "password",
+        "groups": ["Everyone", "Sales"]
+      }
+    ]
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: oidc-provider
+  name: oidc-provider
+spec:
+  selector:
+    matchLabels:
+      name: oidc-provider
+  template:
+    metadata:
+      labels:
+        name: oidc-provider
+    spec:
+      containers:
+      - name: oidc-provider
+        image: qlik/simple-oidc-provider
+        env:
+        - name: CONFIG_FILE
+          value: /etc/simple-oidc-provider/config/config.json
+        - name: USERS_FILE
+          value: /etc/simple-oidc-provider/config/users.json
+        volumeMounts:
+        - name: config
+          mountPath: /etc/simple-oidc-provider/config
+        ports:
+        - name: http
+          containerPort: 9090
+      volumes:
+      - name: config
+        configMap:
+          name: oidc-provider
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: oidc-provider
+  namespace: oidc-provider
+spec:
+  externalTrafficPolicy: Local
+  type: LoadBalancer
+  selector:
+    name: oidc-provider
+  ports:
+    - name: http
+      port: 9090
+      targetPort: http
