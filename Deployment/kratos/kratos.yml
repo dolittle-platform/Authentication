@@ -22,6 +22,10 @@ data:
     selfservice:
       default_browser_return_url: http://localhost:8080/dashboard
 
+      whitelisted_return_urls:
+        - http://localhost:8080/.auth/select-tenant/
+        - /.auth/select-tenant/
+
       flows:
         registration:
           ui_url: http://localhost:8080/kratos/registration

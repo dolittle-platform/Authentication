@@ -8,9 +8,14 @@ $.get('/.ory/kratos/public/sessions/whoami',
 
         for (const tenant of tenants) {
             const form = $('<form>', {
-                action: 'action',
+                action: 'http://localhost:8080/.auth/selected-tenant/',
                 method: 'POST'
             });
+            form.append($('<input>', {
+                name: 'login_challenge',
+                type: 'hidden',
+                value: params.get('login_challenge')
+            }));
             form.append($('<input>', {
                 name: 'tenant',
                 type: 'submit',

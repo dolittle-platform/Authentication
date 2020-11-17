@@ -115,8 +115,8 @@ data:
         url: http://host.docker.internal:8888/
         strip_path: /.auth/
       match:
-        methods: ["GET"]
-        url: http://localhost:8080/.auth/select-tenant/<.*>
+        methods: ["GET", "POST"]
+        url: http://localhost:8080/.auth/<select-tenant|selected-tenant|consent>/<.*>
       authenticators:
         - handler: cookie_session
       authorizer:
@@ -127,6 +127,7 @@ data:
         - handler: redirect
           config:
             to: http://localhost:8080/.ory/kratos/public/self-service/login/browser
+            return_to_query_param: return_to
 
     - id: studio
       upstream:
@@ -141,7 +142,10 @@ data:
       mutators:
         - handler: header
       errors:
-        - handler: json
+        - handler: redirect
+          config:
+            to: http://localhost:8080/.auth/initiate/
+            return_to_query_param: return_to
 
 ---
 

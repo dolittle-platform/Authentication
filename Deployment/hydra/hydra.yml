@@ -24,8 +24,8 @@ data:
         issuer: http://localhost:8080/
         public: http://localhost:8080/
       
-      login: http://localhost:8888/spa/login
-      consent: http://localhost:8888/spa/consent
+      login: http://localhost:8080/.auth/select-tenant/
+      consent: http://localhost:8080/.auth/consent/
 
     log:
       level: debug
@@ -104,6 +104,24 @@ spec:
   - port: 80
     targetPort: public
     name: http
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: hydra-admin-external
+  namespace: system-auth
+spec:
+  externalTrafficPolicy: Local
+  type: LoadBalancer
+  selector:
+    system: auth
+    component: hydra
+  ports:
+    - name: http
+      port: 4445
+      targetPort: admin
 
 ---
 
