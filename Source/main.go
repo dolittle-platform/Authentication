@@ -87,17 +87,24 @@ func (h *callbackHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	oauth2Token, err := h.oauthConfig.Exchange(ctx, r.URL.Query().Get("code"))
 	if err != nil {
 		// handle error
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
 	// Extract the ID Token from OAuth2 token.
 	rawIDToken, ok := oauth2Token.Extra("id_token").(string)
 	if !ok {
-		// handle missing token
+		// handle empty
 	}
 
-	// Do more stuff to contents
+	log.Println("ACCESS TOKEN", oauth2Token.AccessToken)
+	log.Println("ID TOKEN", rawIDToken)
 
-	w.Header().Add("Cookie-dolittle", rawIDToken)
+	// Do more stuff to contents
+	cookie := &http.Cookie{}
+	http.SetCookie(w, cookie)
+
+	w.Header().Add("Cookie-dolittle", oauth2Token.AccessToken)
 
 	http.Redirect(w, r, "http://localhost:8080/", http.StatusFound)
 }
@@ -135,11 +142,11 @@ func (h *selectedHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	body := &models.AcceptLoginRequest{
 		Subject: &subject,
 		Context: struct {
-			email  string
-			tenant string
+			Email  string `json:"email"`
+			Tenant string `json:"tenant"`
 		}{
-			email:  traits["email"].(string),
-			tenant: r.PostFormValue("tenant"),
+			Email:  traits["email"].(string),
+			Tenant: r.PostFormValue("tenant"),
 		},
 		Remember: false,
 	}
@@ -157,8 +164,51 @@ type consentHandler struct {
 	*handler
 }
 
+/* Get challenge string
+get consent request from hydra (contains subject, email + selected tenant in context)
+accept consent request (and pass it claims to the tokens)
+redirect browser to result
+*/
 func (h *consentHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(200)
+	consentChallenge := r.URL.Query().Get("consent_challenge")
+
+	consentRequest, err := h.hydraClient.Admin.GetConsentRequest(admin.NewGetConsentRequestParams().WithConsentChallenge(consentChallenge))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	log.Println("Consent request", consentRequest, consentRequest.Payload.Subject, consentRequest.Payload.Context)
+
+	tokenData := struct {
+		Subject string `json:"sub"`
+		Email   string `json:"email"`
+		Tenant  string `json:"tenant"`
+	}{
+		Subject: consentRequest.Payload.Subject,
+		Email:   consentRequest.Payload.Context.(map[string]interface{})["email"].(string),
+		Tenant:  consentRequest.Payload.Context.(map[string]interface{})["tenant"].(string),
+	}
+
+	body := &models.AcceptConsentRequest{
+		Remember: false,
+		Session: &models.ConsentRequestSession{
+			AccessToken: tokenData,
+			IDToken:     tokenData,
+		},
+		GrantScope: []string{"openid"},
+	}
+	// lest just accept the whole thing as its for ourselves
+	acceptConsentRequestParams := admin.NewAcceptConsentRequestParams().WithConsentChallenge(consentChallenge).WithBody(body)
+	acceptResponse, err := h.hydraClient.Admin.AcceptConsentRequest(acceptConsentRequestParams)
+	if err != nil {
+		log.Println("error", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Store token in cookies
+	http.Redirect(w, r, *acceptResponse.Payload.RedirectTo, http.StatusFound)
 }
 
 func main() {
@@ -202,7 +252,7 @@ func main() {
 	http.Handle("/initiate/", &initiateHandler{h})
 	http.Handle("/selected-tenant/", &selectedHandler{h})
 	http.Handle("/consent/", &consentHandler{h})
-	http.Handle("/callback", &callbackHandler{h})
+	http.Handle("/callback/", &callbackHandler{h})
 
 	http.Handle("/", http.FileServer(http.Dir("spa")))
 
