@@ -104,6 +104,9 @@ spec:
   - port: 80
     targetPort: public
     name: http
+  - port: 4445
+    targetPort: admin
+    name: admin
 
 ---
 

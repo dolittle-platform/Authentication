@@ -9,6 +9,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"time"
 
 	oidc "github.com/coreos/go-oidc"
 	"github.com/gorilla/sessions"
@@ -91,20 +92,16 @@ func (h *callbackHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Extract the ID Token from OAuth2 token.
-	rawIDToken, ok := oauth2Token.Extra("id_token").(string)
-	if !ok {
-		// handle empty
-	}
-
 	log.Println("ACCESS TOKEN", oauth2Token.AccessToken)
-	log.Println("ID TOKEN", rawIDToken)
 
 	// Do more stuff to contents
-	cookie := &http.Cookie{}
+	cookie := &http.Cookie{
+		Name:    "dolittle-token",
+		Value:   oauth2Token.AccessToken,
+		Path:    "/",
+		Expires: time.Now().Add(30 * 24 * time.Hour),
+	}
 	http.SetCookie(w, cookie)
-
-	w.Header().Add("Cookie-dolittle", oauth2Token.AccessToken)
 
 	http.Redirect(w, r, "http://localhost:8080/", http.StatusFound)
 }

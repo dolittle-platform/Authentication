@@ -53,17 +53,13 @@ data:
     authenticators:
       noop:
         enabled: true
-      anonymous:
-        enabled: true
-      jwt:
+      oauth2_introspection:
         enabled: true
         config:
-          jwks_urls:
-            - http://hydra.system-auth.svc.cluster.local/.well-known/jwks.json
-          required_scope: 
-            - studio
+          introspection_url: http://hydra.system-auth.svc.cluster.local:4445/oauth2/introspect
           token_from:
-            cookie: dolittle
+            cookie: dolittle-token
+        
       cookie_session:
         enabled: true
         config:
@@ -84,9 +80,7 @@ data:
         methods: ["GET", "PATCH", "POST", "PUT", "DELETE"]
         url: http://k00bernates.localhost:8080/<.*>
       authenticators:
-        - handler: anonymous
-          config:
-            subject: guest
+        - handler: noop
       authorizer:
         handler: allow
       mutators:
@@ -136,7 +130,7 @@ data:
         methods: ["GET"]
         url: http://localhost:8080/
       authenticators:
-        - handler: jwt
+        - handler: oauth2_introspection
       authorizer:
         handler: allow
       mutators:
