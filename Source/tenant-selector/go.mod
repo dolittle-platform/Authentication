@@ -4,7 +4,7 @@ go 1.14
 
 require (
 	github.com/coreos/go-oidc v2.2.1+incompatible
-	github.com/go-openapi/runtime v0.19.23
+	github.com/go-openapi/runtime v0.19.24
 	github.com/gorilla/sessions v1.2.1
 	github.com/ory/hydra-client-go v1.8.5
 	github.com/ory/kratos-client-go v0.5.4-alpha.1
