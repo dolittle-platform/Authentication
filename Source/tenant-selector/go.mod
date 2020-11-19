@@ -1,4 +1,4 @@
-module dolittle.io/cookiething // Name suggestions: dough-puncher, pasty-maker,
+module dolittle.io/tenant-selector // Name suggestions: dough-puncher, pasty-maker,
 
 go 1.14
 
