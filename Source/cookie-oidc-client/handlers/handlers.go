@@ -10,13 +10,15 @@ import (
 	"net/http"
 	"time"
 
+	"dolittle.io/cookie-oidc-client/configuration"
 	"github.com/gorilla/sessions"
 	"golang.org/x/oauth2"
 )
 
-type Handler struct {
-	OauthConfig  oauth2.Config
-	SessionStore sessions.Store
+type Base struct {
+	Configuration configuration.Configuration
+	OauthConfig   oauth2.Config
+	SessionStore  sessions.Store
 }
 
 func generateNonce() (string, error) {
@@ -30,20 +32,20 @@ func generateNonce() (string, error) {
 }
 
 type initiateHandler struct {
-	*Handler
+	*Base
 }
 
-func CreateInitiateHandler(h *Handler) (*initiateHandler, error) {
+func CreateInitiateHandler(h *Base) (*initiateHandler, error) {
 	return &initiateHandler{h}, nil
 }
 
 func (h *initiateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	returnTo := r.URL.Query().Get("return_to")
 	if returnTo == "" {
-		returnTo = "http://localhost:8080/"
+		returnTo = fmt.Sprintf("%s/", h.Configuration.RedirectBaseURL)
 	}
 
-	session, err := h.SessionStore.New(r, "dolittle-session")
+	session, err := h.SessionStore.New(r, h.Configuration.SessionStoreName)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -68,10 +70,10 @@ func (h *initiateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 type callbackHandler struct {
-	*Handler
+	*Base
 }
 
-func CreateCallbackHandler(h *Handler) (*callbackHandler, error) {
+func CreateCallbackHandler(h *Base) (*callbackHandler, error) {
 	return &callbackHandler{h}, nil
 }
 
@@ -90,12 +92,12 @@ func (h *callbackHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	// Do more stuff to contents
 	cookie := &http.Cookie{
-		Name:    "dolittle-token",
+		Name:    h.Configuration.TokenCookieName,
 		Value:   oauth2Token.AccessToken,
-		Path:    "/",
-		Expires: time.Now().Add(30 * 24 * time.Hour),
+		Path:    h.Configuration.TokenCookiePath,
+		Expires: time.Now().Add(time.Duration(h.Configuration.TokenCookieExpiresInDays) * 24 * time.Hour),
 	}
 	http.SetCookie(w, cookie)
 
-	http.Redirect(w, r, "http://localhost:8080/", http.StatusFound)
+	http.Redirect(w, r, fmt.Sprintf("%s/", h.Configuration.RedirectBaseURL), http.StatusFound)
 }

@@ -2,31 +2,45 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 
+	"dolittle.io/cookie-oidc-client/configuration"
+	"dolittle.io/cookie-oidc-client/handlers"
 	oidc "github.com/coreos/go-oidc"
 	"github.com/gorilla/sessions"
 	"golang.org/x/oauth2"
-
-	handlers "dolittle.io/cookie-oidc-client/handlers"
 )
 
-func main() {
-	ctx := context.Background()
+func getConfiguration() *configuration.Configuration {
+	defaultConfig := configuration.GetDefaults()
+	err := configuration.Setup(&defaultConfig)
+	if err != nil {
+		log.Fatal(err)
+	}
+	config, err := configuration.Read()
+	if err != nil {
+		log.Fatal(err)
+	}
+	return config
+}
 
-	provider, err := oidc.NewProvider(ctx, "http://localhost:8080/")
+func main() {
+	config := getConfiguration()
+	ctx := context.Background()
+	provider, err := oidc.NewProvider(ctx, fmt.Sprintf("%s:%d/", config.ProviderHost, config.ProviderPort))
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	handlerBase := &handlers.Handler{
+	handlerBase := &handlers.Base{
 		OauthConfig: oauth2.Config{
-			ClientID:     "do",
-			ClientSecret: "little",
+			ClientID:     config.ClientID,
+			ClientSecret: config.ClientSecret,
 			Endpoint:     provider.Endpoint(),
-			RedirectURL:  "http://localhost:8080/.auth/callback/",
-			Scopes:       []string{oidc.ScopeOpenID},
+			RedirectURL:  fmt.Sprintf("%s/.auth/callback", config.RedirectBaseURL),
+			Scopes:       config.Scopes,
 		},
 		SessionStore: sessions.NewCookieStore([]byte("super-secret-value")),
 	}
@@ -37,6 +51,9 @@ func main() {
 
 	http.Handle("/", http.FileServer(http.Dir("spa")))
 
-	log.Println("Listening on http://localhost:8888")
-	http.ListenAndServe(":8888", nil)
+	log.Println(fmt.Sprintf("Listening on port %d", config.Port))
+	err = http.ListenAndServe(fmt.Sprintf(":%d", config.Port), nil)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
