@@ -1,10 +1,32 @@
 # Authentication
 
+## Paths
+
+
+```
+/ -> apiserver-proxy:80/
+/.ory/kratos/public -> kratos:4433/
+/oauth2 -> hydra:4444/oauth2
+/.well-known -> hydra:4444/well-known
+
+k8s.dolittle.studio/ -> "k8 apiserver proxy path"
+
+/ -> studio
+/.auth/select-tenant -> "select tenant page"
+/.auth/login -> "select login provider page"
+
+/.auth/initiate -> "cookie thing"
+/.auth/callback -> "cookie thing"
+
+/.openid -> hydra:public/
+
+/.ory/kratos/public -> kratos:public/
+```
+
 ## Running locally
 
-...
-
 ```shell
+# not needed anymore
 kubectl -n system-auth port-forward <postgres-pod> 8080:80
 ```
 
@@ -43,6 +65,7 @@ curl -X PUT http://localhost:4434/identities/{id} \
 EOF
 ```
 
+Example:
 ```shell
 curl -X PUT http://localhost:4434/identities/3a639238-05db-4256-a780-298af8e49f44\
   -H 'Content-Type: application/json' \
@@ -57,13 +80,14 @@ curl -X PUT http://localhost:4434/identities/3a639238-05db-4256-a780-298af8e49f4
 EOF
 ```
 
-### For minkube
-set the socats to do the port forwarding for load balancers
+## Minikube port-forwarding
+Set the socats to do the port forwarding for load balancers:
 ```shell
 ./socat.sh
 ```
 
-also modify the coredns like this with uor own minikube ip:
+## Linux `host.docker.internal` fix
+Modify the coredns like this with uor own minikube ip so that we can keep using `host.docker.internal` on Linux system:
 
 ```yaml
 apiVersion: v1
@@ -219,25 +243,6 @@ spec:
 
 ```
 
-## Paths
 
-
-```
-/ -> apiserver-proxy:80/
-/.ory/kratos/public -> kratos:4433/
-/oauth2 -> hydra:4444/oauth2
-/.well-known -> hydra:4444/well-known
-
-k8s.dolittle.studio/ -> "k8 apiserver proxy path"
-
-/ -> studio
-/.auth/select-tenant -> "select tenant page"
-/.auth/login -> "select login provider page"
-
-/.auth/initiate -> "cookie thing"
-/.auth/callback -> "cookie thing"
-
-/.openid -> hydra:public/
-
-/.ory/kratos/public -> kratos:public/
-```
+## `kubectl` HTTP token fix
+As `kubectl` [silenty doesn't transmit tokens over http](https://github.com/kubernetes/kubectl/issues/744) we need to do do some cert stuff in our localhost or kluster. WIP
