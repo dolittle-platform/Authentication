@@ -61,10 +61,6 @@ func Setup(defaultConfig *Configuration) error {
 	return nil
 }
 
-func getConfigFilePath() string {
-	return fmt.Sprintf("%s/%s", configPath, configName)
-}
-
 func Read() (*Configuration, error) {
 	log.Println(fmt.Sprintf("Reading configuration from '%s'", configPath))
 	err := viper.ReadInConfig()
