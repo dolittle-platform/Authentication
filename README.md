@@ -18,6 +18,8 @@ Add to your /etc/hosts (bottom is a good idea)
 127.0.0.1 oidc-provider.oidc-provider.svc.cluster.local
 ```
 
+Also in `chrome://flags` disable __"Cookies without SameSite must be secure"__
+
 To get users in kratos
 ```shell
 kubectl -n system-auth exec $(kubectl get pod -l "component=kratos" -o name -n system-auth) -- kratos --endpoint=http://localhost:4434 identities list -f=json-pretty

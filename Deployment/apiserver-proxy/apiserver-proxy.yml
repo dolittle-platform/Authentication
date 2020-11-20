@@ -57,9 +57,7 @@ data:
         enabled: true
         config:
           introspection_url: http://hydra.system-auth.svc.cluster.local:4445/oauth2/introspect
-          token_from:
-            cookie: dolittle-token
-        
+
       cookie_session:
         enabled: true
         config:
@@ -73,6 +71,23 @@ data:
       format: text
 
   rules.yaml: |
+    - id: apiserver
+      upstream:
+        url: https://kubernetes.default.svc
+        strip_path: /api/
+      match:
+        methods: ["GET", "PATCH", "POST", "PUT", "DELETE"]
+        url: http://localhost:8080/api/<.*>
+      authenticators:
+        - handler: oauth2_introspection
+      authorizer:
+        handler: allow
+      mutators:
+        - handler: bearer
+        - handler: header
+      errors:
+        - handler: json
+
     - id: login
       upstream:
         url: http://host.docker.internal:8888/
@@ -125,6 +140,7 @@ data:
             to: http://localhost:8080/.auth/initiate/
             return_to_query_param: return_to
 
+
 ---
 
 apiVersion: apps/v1
@@ -162,6 +178,8 @@ spec:
         env:
           - name: SSL_CERT_FILE
             value: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+          - name: LOG_LEAK_SENSITIVE_VALUES
+            value: "true"
         ports:
         - name: proxy
           containerPort: 4455

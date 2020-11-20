@@ -28,7 +28,8 @@ data:
       consent: http://localhost:8080/.auth/consent/
 
     log:
-      level: debug
+      level: trace
+      leak_sensitive_values: true
       format: text
 
 ---
