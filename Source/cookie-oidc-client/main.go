@@ -44,10 +44,8 @@ func main() {
 		},
 		SessionStore: sessions.NewCookieStore([]byte("super-secret-value")),
 	}
-	initiateHandler, err := handlers.CreateInitiateHandler(handlerBase)
-	http.Handle("/initiate/", initiateHandler)
-	callbackHandler, err := handlers.CreateCallbackHandler(handlerBase)
-	http.Handle("/callback/", callbackHandler)
+	http.Handle("/initiate/", &handlers.InitiateHandler{Base: handlerBase})
+	http.Handle("/callback/", &handlers.CallbackHandler{Base: handlerBase})
 
 	http.Handle("/", http.FileServer(http.Dir("spa")))
 

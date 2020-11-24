@@ -31,15 +31,11 @@ func generateNonce() (string, error) {
 	return base64.URLEncoding.EncodeToString(buf[0:18]), nil
 }
 
-type initiateHandler struct {
+type InitiateHandler struct {
 	*Base
 }
 
-func CreateInitiateHandler(h *Base) (*initiateHandler, error) {
-	return &initiateHandler{h}, nil
-}
-
-func (h *initiateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (h *InitiateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	returnTo := r.URL.Query().Get("return_to")
 	if returnTo == "" {
 		returnTo = fmt.Sprintf("%s/", h.Configuration.RedirectBaseURL)
@@ -69,15 +65,11 @@ func (h *initiateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, h.OauthConfig.AuthCodeURL(nonce), http.StatusFound)
 }
 
-type callbackHandler struct {
+type CallbackHandler struct {
 	*Base
 }
 
-func CreateCallbackHandler(h *Base) (*callbackHandler, error) {
-	return &callbackHandler{h}, nil
-}
-
-func (h *callbackHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (h *CallbackHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("GOT CALLBACK")
 
 	ctx := context.Background()
