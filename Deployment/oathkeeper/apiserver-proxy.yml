@@ -89,13 +89,28 @@ data:
       errors:
         - handler: json
 
-    - id: login
+    - id: oauth
       upstream:
         url: http://host.docker.internal:8888/
         strip_path: /.auth/
       match:
         methods: ["GET"]
-        url: http://localhost:8080/.auth/<login|initiate|callback|error>/<.*>
+        url: http://localhost:8080/.auth/<initiate|callback|error>/<.*>
+      authenticators:
+        - handler: noop
+      authorizer:
+        handler: allow
+      mutators:
+        - handler: noop
+      errors: []
+
+    - id: login
+      upstream:
+        url: http://host.docker.internal:8889/
+        strip_path: /.auth/
+      match:
+        methods: ["GET"]
+        url: http://localhost:8080/.auth/login/<.*>
       authenticators:
         - handler: noop
       authorizer:
@@ -106,7 +121,7 @@ data:
 
     - id: select-tenant
       upstream:
-        url: http://host.docker.internal:8888/
+        url: http://host.docker.internal:8889/
         strip_path: /.auth/
       match:
         methods: ["GET", "POST"]

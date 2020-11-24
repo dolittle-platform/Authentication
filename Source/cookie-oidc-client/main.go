@@ -29,25 +29,24 @@ func getConfiguration() *configuration.Configuration {
 func main() {
 	config := getConfiguration()
 	ctx := context.Background()
-	provider, err := oidc.NewProvider(ctx, fmt.Sprintf("%s:%d/", config.ProviderHost, config.ProviderPort))
+	provider, err := oidc.NewProvider(ctx, fmt.Sprintf("%s:%d/", config.Provider.Host, config.Provider.Port))
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	handlerBase := &handlers.Base{
 		OauthConfig: oauth2.Config{
-			ClientID:     config.ClientID,
-			ClientSecret: config.ClientSecret,
+			ClientID:     config.Provider.ClientID,
+			ClientSecret: config.Provider.ClientSecret,
 			Endpoint:     provider.Endpoint(),
-			RedirectURL:  fmt.Sprintf("%s/.auth/callback", config.RedirectBaseURL),
-			Scopes:       config.Scopes,
+			RedirectURL:  config.Provider.RedirectURL,
+			Scopes:       config.Provider.Scopes,
 		},
-		SessionStore: sessions.NewCookieStore([]byte("super-secret-value")),
+		SessionStore:  sessions.NewCookieStore([]byte("super-secret-value")),
+		Configuration: *config,
 	}
 	http.Handle("/initiate/", &handlers.InitiateHandler{Base: handlerBase})
 	http.Handle("/callback/", &handlers.CallbackHandler{Base: handlerBase})
-
-	http.Handle("/", http.FileServer(http.Dir("spa")))
 
 	log.Println(fmt.Sprintf("Listening on port %d", config.Port))
 	err = http.ListenAndServe(fmt.Sprintf(":%d", config.Port), nil)

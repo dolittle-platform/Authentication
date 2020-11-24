@@ -15,35 +15,71 @@ const (
 	configPath = "/etc/cookie-oidc-client"
 )
 
+/*
+example yaml
+host: hoster.io
+port: 2020
+provider:
+	host: hydrahost
+	port: 1800-hydra-ur-port-8080
+	client_id: id
+	client_secret: secreeeet
+	redirect_url: http://localhost:8080/.auth/callback
+	scopes:
+		- id: lol
+		- id: løl
+cookie:
+	name: dolittle-token
+	path: /
+	expires_in_days: 30
+session_store_name: sneaky-store
+*/
+
+type provider struct {
+	Host         string   `mapstructure:"host"`
+	Port         uint     `mapstructure:"port"`
+	ClientID     string   `mapstructure:"client_id"`
+	ClientSecret string   `mapstructure:"client_secret"`
+	RedirectURL  string   `mapstructure:"redirect_url"`
+	Scopes       []string `mapstructure:"scopes"`
+}
+
+type cookie struct {
+	Name          string `mapstructure:"name"`
+	Path          string `mapstructure:"path"`
+	ExpiresInDays uint   `mapstructure:"expires_in_days"`
+}
+
 type Configuration struct {
-	Host                     string   `mapstructure:"host"`
-	Port                     uint     `mapstructure:"port"`
-	ProviderHost             string   `mapstructure:"provider_host"`
-	ProviderPort             uint     `mapstructure:"provider_port"`
-	ClientID                 string   `mapstructure:"client_id"`
-	ClientSecret             string   `mapstructure:"client_secret"`
-	RedirectBaseURL          string   `mapstructure:"redirect_base_url"`
-	Scopes                   []string `mapstructure:"scopes"`
-	SessionStoreName         string   `mapstructure:"session_store_name"`
-	TokenCookieName          string   `mapstructure:"token_cookie_name"`
-	TokenCookiePath          string   `mapstructure:"token_cookie_path"`
-	TokenCookieExpiresInDays uint     `mapstructure:"token_cookie_expires_in_days"`
+	Host                string   `mapstructure:"host"`
+	Port                uint     `mapstructure:"port"`
+	Provider            provider `mapstructure:"provider"`
+	Cookie              cookie   `mapstructure:"cookie"`
+	SessionStoreName    string   `mapstructure:"session_store_name"`
+	DefaultReturnTo     string   `mapstructure:"default_return_to"`
+	CallbackRedirectURL string   `mapstructure:"callback_redirect_url"`
 }
 
 func GetDefaults() Configuration {
 	return Configuration{
-		Host:                     "http://localhost",
-		Port:                     8888,
-		ProviderHost:             "http://localhost",
-		ProviderPort:             8080,
-		ClientID:                 "do",
-		ClientSecret:             "little",
-		RedirectBaseURL:          "http://localhost:8080",
-		Scopes:                   []string{oidc.ScopeOpenID},
-		SessionStoreName:         "dolittle-session",
-		TokenCookieName:          "dolittle-token",
-		TokenCookiePath:          "/",
-		TokenCookieExpiresInDays: 30,
+		Host: "http://localhost",
+		Port: 8888,
+		Provider: provider{
+			Host:         "http://localhost",
+			Port:         8080,
+			ClientID:     "do",
+			ClientSecret: "little",
+			RedirectURL:  "http://localhost:8080/.auth/callback/",
+			Scopes:       []string{oidc.ScopeOpenID},
+		},
+		Cookie: cookie{
+			Name:          "dolittle-token",
+			Path:          "/",
+			ExpiresInDays: 30,
+		},
+		SessionStoreName:    "dolittle-session",
+		DefaultReturnTo:     "http://localhost:8080/",
+		CallbackRedirectURL: "http://localhost:8080/",
 	}
 }
 
@@ -78,6 +114,5 @@ func Read() (*Configuration, error) {
 	var configMap map[string]interface{}
 	mapstructure.Decode(config, &configMap)
 	log.Println(fmt.Sprintf("Configuration %v", configMap))
-
 	return &config, nil
 }

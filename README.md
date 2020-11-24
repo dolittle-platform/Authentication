@@ -7,7 +7,7 @@
 ```shell
 kubectl -n system-auth port-forward <postgres-pod> 8080:80
 ```
-
+Create/register the OAuth 2.0 client in hydra. Make sure the go code oath client is the exact same.
 ```shell
 kubectl -n system-auth exec $(kubectl get pod -l "component=hydra" -o name -n system-auth) -- hydra --endpoint http://localhost:4445 clients create --id do --secret little -c http://localhost:8080/.auth/callback/
 kubectl -n system-auth exec $(kubectl get pod -l "component=hydra" -o name -n system-auth) -- hydra --endpoint http://localhost:4445 clients list

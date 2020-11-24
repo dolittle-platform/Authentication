@@ -4,7 +4,6 @@ import (
 	"context"
 	"crypto/rand"
 	"encoding/base64"
-	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -38,17 +37,19 @@ type InitiateHandler struct {
 func (h *InitiateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	returnTo := r.URL.Query().Get("return_to")
 	if returnTo == "" {
-		returnTo = fmt.Sprintf("%s/", h.Configuration.RedirectBaseURL)
+		returnTo = h.Configuration.DefaultReturnTo
 	}
 
 	session, err := h.SessionStore.New(r, h.Configuration.SessionStoreName)
 	if err != nil {
+		log.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	nonce, err := generateNonce()
 	if err != nil {
+		log.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -58,6 +59,7 @@ func (h *InitiateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	err = session.Save(r, w)
 	if err != nil {
+		log.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -70,12 +72,12 @@ type CallbackHandler struct {
 }
 
 func (h *CallbackHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("GOT CALLBACK")
+	log.Println("GOT CALLBACK")
 
 	ctx := context.Background()
 	oauth2Token, err := h.OauthConfig.Exchange(ctx, r.URL.Query().Get("code"))
 	if err != nil {
-		// handle error
+		log.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -84,12 +86,12 @@ func (h *CallbackHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	// Do more stuff to contents
 	cookie := &http.Cookie{
-		Name:    h.Configuration.TokenCookieName,
+		Name:    h.Configuration.Cookie.Name,
 		Value:   oauth2Token.AccessToken,
-		Path:    h.Configuration.TokenCookiePath,
-		Expires: time.Now().Add(time.Duration(h.Configuration.TokenCookieExpiresInDays) * 24 * time.Hour),
+		Path:    h.Configuration.Cookie.Path,
+		Expires: time.Now().Add(30 * 24 * time.Hour),
 	}
 	http.SetCookie(w, cookie)
 
-	http.Redirect(w, r, fmt.Sprintf("%s/", h.Configuration.RedirectBaseURL), http.StatusFound)
+	http.Redirect(w, r, h.Configuration.CallbackRedirectURL, http.StatusFound)
 }
