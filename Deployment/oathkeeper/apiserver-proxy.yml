@@ -59,7 +59,7 @@ data:
           introspection_url: http://hydra.system-auth.svc.cluster.local:4445/oauth2/introspect
           token_from:
             cookie: dolittle-token
-        
+
       cookie_session:
         enabled: true
         config:

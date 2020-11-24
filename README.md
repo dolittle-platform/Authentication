@@ -87,7 +87,7 @@ Set the socats to do the port forwarding for load balancers:
 ```
 
 ## Linux `host.docker.internal` fix
-Modify the coredns like this with uor own minikube ip so that we can keep using `host.docker.internal` on Linux system:
+Modify the coredns like this with uor own minikube ip (with the `.1` ending as we anna modify the dns gateawy stuff) so that we can keep using `host.docker.internal` on Linux system:
 
 ```yaml
 apiVersion: v1
@@ -242,7 +242,6 @@ spec:
         name: config-volume
 
 ```
-
 
 ## `kubectl` HTTP token fix
 As `kubectl` [silenty doesn't transmit tokens over http](https://github.com/kubernetes/kubectl/issues/744) we need to do do some cert stuff in our localhost or kluster. WIP
