@@ -3,7 +3,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   namespace: system-auth
-  name: apiserver-proxy-config
+  name: oathkeeper-config
 data:
   oathkeeper.yaml: |
     serve:
@@ -131,7 +131,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   namespace: system-auth
-  name: apiserver-proxy
+  name: oathkeeper
   labels:
     system: auth
 
@@ -139,7 +139,7 @@ spec:
   selector:
     matchLabels:
       system: auth
-      component: apiserver-proxy
+      component: oathkeeper
 
   replicas: 1
 
@@ -147,7 +147,7 @@ spec:
     metadata:
       labels:
         system: auth
-        component: apiserver-proxy
+        component: oathkeeper
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/port: "9000" 
@@ -173,7 +173,7 @@ spec:
       volumes:
       - name: config
         configMap:
-          name: apiserver-proxy-config
+          name: oathkeeper-config
 
 ---
 
@@ -181,11 +181,11 @@ kind: Service
 apiVersion: v1
 metadata:
   namespace: system-auth
-  name: apiserver-proxy
+  name: oathkeeper
 spec:
   selector:
     system: auth
-    component: apiserver-proxy
+    component: oathkeeper
   ports:
     - port: 80
       name: http
@@ -197,7 +197,7 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   namespace: system-auth
-  name: apiserver-proxy
+  name: oathkeeper
 spec:
   rules:
   - host: localhost
@@ -205,5 +205,5 @@ spec:
       paths:
       - path: /
         backend:
-          serviceName: apiserver-proxy
+          serviceName: oathkeeper
           servicePort: 80

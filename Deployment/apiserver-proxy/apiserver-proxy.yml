@@ -73,11 +73,11 @@ data:
   rules.yaml: |
     - id: apiserver
       upstream:
-        url: https://kubernetes.default.svc
+        url: https://kubernetes.default.svc.cluster.local
         strip_path: /api/
       match:
         methods: ["GET", "PATCH", "POST", "PUT", "DELETE"]
-        url: http://localhost:8080/api/<.*>
+        url: <http|https>://localhost:4443/api/<.*>
       authenticators:
         - handler: oauth2_introspection
       authorizer:
@@ -87,59 +87,6 @@ data:
         - handler: header
       errors:
         - handler: json
-
-    - id: login
-      upstream:
-        url: http://host.docker.internal:8888/
-        strip_path: /.auth/
-      match:
-        methods: ["GET"]
-        url: http://localhost:8080/.auth/<login|initiate|callback|error>/<.*>
-      authenticators:
-        - handler: noop
-      authorizer:
-        handler: allow
-      mutators:
-        - handler: noop
-      errors: []
-
-    - id: select-tenant
-      upstream:
-        url: http://host.docker.internal:8888/
-        strip_path: /.auth/
-      match:
-        methods: ["GET", "POST"]
-        url: http://localhost:8080/.auth/<select-tenant|selected-tenant|consent>/<.*>
-      authenticators:
-        - handler: cookie_session
-      authorizer:
-        handler: allow
-      mutators:
-        - handler: header
-      errors:
-        - handler: redirect
-          config:
-            to: http://localhost:8080/.ory/kratos/public/self-service/login/browser
-            return_to_query_param: return_to
-
-    - id: studio
-      upstream:
-        url: http://studio.studio.svc.cluster.local
-      match:
-        methods: ["GET"]
-        url: http://localhost:8080/
-      authenticators:
-        - handler: oauth2_introspection
-      authorizer:
-        handler: allow
-      mutators:
-        - handler: header
-      errors:
-        - handler: redirect
-          config:
-            to: http://localhost:8080/.auth/initiate/
-            return_to_query_param: return_to
-
 
 ---
 
@@ -192,6 +139,7 @@ spec:
       - name: config
         configMap:
           name: apiserver-proxy-config
+      serviceAccountName: apiserver-proxy
 
 ---
 
@@ -221,7 +169,7 @@ spec:
   - host: localhost
     http:
       paths:
-      - path: /
+      - path: /api
         backend:
           serviceName: apiserver-proxy
           servicePort: 80
