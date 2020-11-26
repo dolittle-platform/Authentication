@@ -4,34 +4,66 @@ import (
 	"context"
 	"log"
 	"net/http"
-	"time"
+
+	urls "dolittle.io/cookie-oidc-client/urls/handlers"
+	"dolittle.io/cookie-oidc-client/utils"
+	"golang.org/x/oauth2"
 )
 
-type CallbackHandler struct {
-	*Base
+type TokenGetter interface {
+	Get(ctx context.Context, r *http.Request) (*oauth2.Token, error)
 }
 
-func (h *CallbackHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+type tokenGetter struct {
+	oauthConfig oauth2.Config
+}
+
+func NewTokenGetter(oauthConfig oauth2.Config) *tokenGetter {
+	return &tokenGetter{oauthConfig}
+}
+
+func (self *tokenGetter) Get(ctx context.Context, r *http.Request) (*oauth2.Token, error) {
+	return self.oauthConfig.Exchange(ctx, r.URL.Query().Get("code"))
+}
+
+type callbackHandler struct {
+	callbackRedirectGetter urls.CallbackRedirectGetter
+	cookieFactory          CookieFactory
+	tokenGetter            TokenGetter
+}
+
+func NewCallbackHandler(
+	callbackRedirectGetter urls.CallbackRedirectGetter,
+	cookieFactory CookieFactory,
+	tokenGetter TokenGetter) http.Handler {
+	return &callbackHandler{
+		callbackRedirectGetter,
+		cookieFactory,
+		tokenGetter,
+	}
+}
+
+func (self *callbackHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	log.Println("Received callback")
 
 	ctx := context.Background()
-	oauth2Token, err := h.OauthConfig.Exchange(ctx, r.URL.Query().Get("code"))
-	if err != nil {
-		log.Println("Error: ", err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+	oauth2Token, err := self.tokenGetter.Get(ctx, r)
+	if utils.TryLogIfErrorHttp(err, w) {
 		return
 	}
 
 	// Do more stuff to contents
-	cookie := &http.Cookie{
-		Name:    h.Configuration.Cookie.Name,
-		Value:   oauth2Token.AccessToken,
-		Path:    h.Configuration.Cookie.Path,
-		Expires: time.Now().Add(30 * 24 * time.Hour),
-	}
+	cookie := self.cookieFactory.Create(oauth2Token.AccessToken)
 	log.Println("Got access token and setting cookie")
 	http.SetCookie(w, cookie)
 
-	log.Println("Redirecting to ", h.Configuration.CallbackRedirectURL)
-	http.Redirect(w, r, h.Configuration.CallbackRedirectURL, http.StatusFound)
+	callbackURL, err := self.callbackRedirectGetter.GetCallbackRedirectURL()
+
+	if utils.TryLogIfErrorHttp(err, w) {
+		return
+	}
+	callbackURLString := callbackURL.String()
+	log.Println("Redirecting to ", callbackURLString)
+
+	http.Redirect(w, r, callbackURLString, http.StatusFound)
 }

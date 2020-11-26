@@ -14,8 +14,7 @@ func NewNonceGenerator() NonceGenerator {
 	return &nonceGenerator{}
 }
 
-type nonceGenerator struct {
-}
+type nonceGenerator struct{}
 
 func (g *nonceGenerator) Generate() (string, error) {
 	buf := make([]byte, 18)
