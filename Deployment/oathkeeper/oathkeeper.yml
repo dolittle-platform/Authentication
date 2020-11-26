@@ -1,0 +1,224 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: system-auth
+  name: oathkeeper-config
+data:
+  oathkeeper.yaml: |
+    serve:
+      proxy:
+        port: 4455
+      api:
+        port: 4456
+      prometheus:
+        port: 9000
+    access_rules:
+      repositories:
+        - file:///etc/oathkeeper/config/rules.yaml
+
+    errors:
+      fallback:
+        - json
+      handlers:
+        json:
+          enabled: true
+          config:
+            verbose: true
+        redirect:
+          enabled: true
+          config:
+            to: http://localhost:8080/
+
+    mutators:
+      noop:
+        enabled: true
+
+      bearer:
+        enabled: true
+        config:
+          token_from:
+            file: "/var/run/secrets/kubernetes.io/serviceaccount/token"
+      
+      header:
+        enabled: true
+        config:
+          headers:
+            Impersonate-User: '{{ print .Subject }}'
+
+    authorizers:
+      allow:
+        enabled: true
+
+    authenticators:
+      noop:
+        enabled: true
+      oauth2_introspection:
+        enabled: true
+        config:
+          introspection_url: http://hydra.system-auth.svc.cluster.local:4445/oauth2/introspect
+          token_from:
+            cookie: dolittle-token
+
+      cookie_session:
+        enabled: true
+        config:
+          preserve_path: true
+          check_session_url: http://kratos.system-auth.svc.cluster.local/sessions/whoami
+          only:
+            - ory_kratos_session
+
+    log:
+      level: debug
+      format: text
+
+  rules.yaml: |
+    - id: oauth
+      upstream:
+        url: http://host.docker.internal:8888/
+        strip_path: /.auth/
+      match:
+        methods: ["GET"]
+        url: http://localhost:8080/.auth/<initiate|callback|error>/<.*>
+      authenticators:
+        - handler: noop
+      authorizer:
+        handler: allow
+      mutators:
+        - handler: noop
+      errors: []
+
+    - id: login
+      upstream:
+        url: http://host.docker.internal:8889/
+        strip_path: /.auth/
+      match:
+        methods: ["GET"]
+        url: http://localhost:8080/.auth/login/<.*>
+      authenticators:
+        - handler: noop
+      authorizer:
+        handler: allow
+      mutators:
+        - handler: noop
+      errors: []
+
+    - id: select-tenant
+      upstream:
+        url: http://host.docker.internal:8889/
+        strip_path: /.auth/
+      match:
+        methods: ["GET", "POST"]
+        url: http://localhost:8080/.auth/<select-tenant|selected-tenant|consent>/<.*>
+      authenticators:
+        - handler: cookie_session
+      authorizer:
+        handler: allow
+      mutators:
+        - handler: header
+      errors:
+        - handler: redirect
+          config:
+            to: http://localhost:8080/.ory/kratos/public/self-service/login/browser
+            return_to_query_param: return_to
+
+    - id: studio
+      upstream:
+        url: http://studio.studio.svc.cluster.local
+      match:
+        methods: ["GET"]
+        url: http://localhost:8080/
+      authenticators:
+        - handler: oauth2_introspection
+      authorizer:
+        handler: allow
+      mutators:
+        - handler: header
+      errors:
+        - handler: redirect
+          config:
+            to: http://localhost:8080/.auth/initiate/
+            return_to_query_param: return_to
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: system-auth
+  name: oathkeeper
+  labels:
+    system: auth
+
+spec:
+  selector:
+    matchLabels:
+      system: auth
+      component: oathkeeper
+
+  replicas: 1
+
+  template:
+    metadata:
+      labels:
+        system: auth
+        component: oathkeeper
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9000" 
+    spec:
+      containers:
+      - name: oathkeeper
+        image: oryd/oathkeeper:dev
+        args:
+          - "--config"
+          - "/etc/oathkeeper/config/oathkeeper.yaml"
+          - "serve"
+        env:
+          - name: SSL_CERT_FILE
+            value: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        ports:
+        - name: proxy
+          containerPort: 4455
+        - name: metrics
+          containerPort: 9000
+        volumeMounts:
+        - name: config
+          mountPath: /etc/oathkeeper/config
+      volumes:
+      - name: config
+        configMap:
+          name: oathkeeper-config
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  namespace: system-auth
+  name: oathkeeper
+spec:
+  selector:
+    system: auth
+    component: oathkeeper
+  ports:
+    - port: 80
+      name: http
+      targetPort: proxy
+
+---
+
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  namespace: system-auth
+  name: oathkeeper
+spec:
+  rules:
+  - host: localhost
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: oathkeeper
+          servicePort: 80

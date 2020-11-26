@@ -1,15 +1,41 @@
 # Authentication
 
+## Paths
+
+
+```
+/ -> apiserver-proxy:80/
+/.ory/kratos/public -> kratos:4433/
+/oauth2 -> hydra:4444/oauth2
+/.well-known -> hydra:4444/well-known
+
+k8s.dolittle.studio/ -> "k8 apiserver proxy path"
+
+/ -> studio
+/.auth/select-tenant -> "select tenant page"
+/.auth/login -> "select login provider page"
+
+/.auth/initiate -> "cookie thing"
+/.auth/callback -> "cookie thing"
+
+/.openid -> hydra:public/
+
+/.ory/kratos/public -> kratos:public/
+```
+
 ## Running locally
 
-...
-
 ```shell
+# not needed anymore
 kubectl -n system-auth port-forward <postgres-pod> 8080:80
 ```
 Create/register the OAuth 2.0 client in hydra. Make sure the go code oath client is the exact same.
 ```shell
 kubectl -n system-auth exec $(kubectl get pod -l "component=hydra" -o name -n system-auth) -- hydra --endpoint http://localhost:4445 clients create --id do --secret little -c http://localhost:8080/.auth/callback/
+```
+
+List out your clients:
+```shell
 kubectl -n system-auth exec $(kubectl get pod -l "component=hydra" -o name -n system-auth) -- hydra --endpoint http://localhost:4445 clients list
 ```
 
@@ -17,6 +43,8 @@ Add to your /etc/hosts (bottom is a good idea)
 ```
 127.0.0.1 oidc-provider.oidc-provider.svc.cluster.local
 ```
+
+Also in `chrome://flags` disable __"Cookies without SameSite must be secure"__
 
 To get users in kratos
 ```shell
@@ -41,6 +69,7 @@ curl -X PUT http://localhost:4434/identities/{id} \
 EOF
 ```
 
+Example:
 ```shell
 curl -X PUT http://localhost:4434/identities/3a639238-05db-4256-a780-298af8e49f44\
   -H 'Content-Type: application/json' \
@@ -55,13 +84,14 @@ curl -X PUT http://localhost:4434/identities/3a639238-05db-4256-a780-298af8e49f4
 EOF
 ```
 
-### For minkube
-set the socats to do the port forwarding for load balancers
+## Minikube port-forwarding
+Set the socats to do the port forwarding for load balancers:
 ```shell
 ./socat.sh
 ```
 
-also modify the coredns like this with uor own minikube ip:
+## Linux `host.docker.internal` fix
+Modify the coredns like this with uor own minikube ip (with the `.1` ending as we anna modify the dns gateawy stuff) so that we can keep using `host.docker.internal` on Linux system:
 
 ```yaml
 apiVersion: v1
@@ -217,25 +247,5 @@ spec:
 
 ```
 
-## Paths
-
-
-```
-/ -> apiserver-proxy:80/
-/.ory/kratos/public -> kratos:4433/
-/oauth2 -> hydra:4444/oauth2
-/.well-known -> hydra:4444/well-known
-
-k8s.dolittle.studio/ -> "k8 apiserver proxy path"
-
-/ -> studio
-/.auth/select-tenant -> "select tenant page"
-/.auth/login -> "select login provider page"
-
-/.auth/initiate -> "cookie thing"
-/.auth/callback -> "cookie thing"
-
-/.openid -> hydra:public/
-
-/.ory/kratos/public -> kratos:public/
-```
+## `kubectl` HTTP token fix
+As `kubectl` [silenty doesn't transmit tokens over http](https://github.com/kubernetes/kubectl/issues/744) we need to do do some cert stuff in our localhost or kluster. WIP

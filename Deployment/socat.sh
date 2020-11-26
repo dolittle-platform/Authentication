@@ -1,6 +1,6 @@
 #! /bin/bash
 
-PARSED=$(kubectl get svc -A -o json | jq -r '.items[] | select(.spec.type == "LoadBalancer") | [.spec.ports[0].port, .spec.ports[0].nodePort] | join("-")')
+PARSED=$(kubectl get svc -A -o json | jq -r '.items[] | select(.spec.type =="LoadBalancer") | .spec.ports[] | [.port, .nodePort] | join("-")' )
 MINIKUBE_IP=$(minikube ip)
 
 PIDS=""
