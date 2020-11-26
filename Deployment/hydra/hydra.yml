@@ -28,7 +28,7 @@ data:
       consent: http://localhost:8080/.auth/consent/
 
     log:
-      level: info
+      level: debug
       format: text
 
 ---
