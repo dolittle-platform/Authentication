@@ -16,7 +16,7 @@ type Reader interface {
 }
 
 // NewReader returns a new Reader
-func NewReader(configuration Configuration, store gorilla.Store, logger zap.Logger) Reader {
+func NewReader(configuration Configuration, store gorilla.Store, logger *zap.Logger) Reader {
 	return &reader{
 		configuration: configuration,
 		store:         store,
@@ -27,7 +27,7 @@ func NewReader(configuration Configuration, store gorilla.Store, logger zap.Logg
 type reader struct {
 	configuration Configuration
 	store         gorilla.Store
-	logger        zap.Logger
+	logger        *zap.Logger
 }
 
 func (r *reader) ReadFrom(request *http.Request) (*Session, error) {

@@ -27,7 +27,7 @@ var _ = Describe("Generator", func() {
 			Expect(string(generated)).To(OnlyIncludeValidURLCharacters())
 		})
 		It("should not fail", func() {
-			Expect(err).NotTo(HaveOccurred())
+			Expect(err).ToNot(HaveOccurred())
 		})
 	})
 
@@ -44,7 +44,7 @@ var _ = Describe("Generator", func() {
 			generated, err = generator.Generate()
 		})
 		It("should not fail", func() {
-			Expect(err).NotTo(HaveOccurred())
+			Expect(err).ToNot(HaveOccurred())
 		})
 		It("should generate a string of length 32", func() {
 			Expect(generated).To(HaveLen(32))
@@ -73,9 +73,9 @@ var _ = Describe("Generator", func() {
 			generated3, err3 = generator.Generate()
 		})
 		It("should not fail", func() {
-			Expect(err1).NotTo(HaveOccurred())
-			Expect(err2).NotTo(HaveOccurred())
-			Expect(err3).NotTo(HaveOccurred())
+			Expect(err1).ToNot(HaveOccurred())
+			Expect(err2).ToNot(HaveOccurred())
+			Expect(err3).ToNot(HaveOccurred())
 		})
 		It("should generate three unique strings", func() {
 			Expect(generated1).NotTo(Equal(generated2))

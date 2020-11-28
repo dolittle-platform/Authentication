@@ -14,7 +14,7 @@ type Writer interface {
 }
 
 // NewWriter returns a new Writer
-func NewWriter(configuration Configuration, store gorilla.Store, logger zap.Logger) Writer {
+func NewWriter(configuration Configuration, store gorilla.Store, logger *zap.Logger) Writer {
 	return &writer{
 		configuration: configuration,
 		store:         store,
@@ -25,7 +25,7 @@ func NewWriter(configuration Configuration, store gorilla.Store, logger zap.Logg
 type writer struct {
 	configuration Configuration
 	store         gorilla.Store
-	logger        zap.Logger
+	logger        *zap.Logger
 }
 
 func (w *writer) WriteTo(session *Session, request *http.Request, responseWriter http.ResponseWriter) error {
