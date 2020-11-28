@@ -11,31 +11,36 @@ import (
 )
 
 var _ = Describe("Creator", func() {
-	When("creating a new session", func() {
+	Context("given a generator, a logger and a return to URL", func() {
 		var (
+			generator *mockNonceGenerator
+			logger    *zap.Logger
 			returnTo  sessions.ReturnToURL
-			generator = &mockNonceGenerator{nonce: "lZehpZpPki"}
-		)
-		var (
-			created *sessions.Session
-			err     error
 		)
 		BeforeEach(func() {
+			generator = &mockNonceGenerator{nonce: "lZehpZpPki"}
+			logger = zap.NewNop()
 			returnTo, _ = url.Parse("http://localhost:8080/return_to_url?with_params=yes")
+		})
 
-			logger := zap.NewNop()
-			creator := sessions.NewCreator(generator, logger)
-
-			created, err = creator.NewSession(returnTo)
-		})
-		It("should not fail", func() {
-			Expect(err).ToNot(HaveOccurred())
-		})
-		It("should create a session with the generated nonce", func() {
-			Expect(created.Nonce).To(Equal(generator.nonce))
-		})
-		It("should create a session with the return to URL", func() {
-			Expect(created.ReturnTo).To(Equal(returnTo))
+		When("creating a new session", func() {
+			var (
+				created *sessions.Session
+				err     error
+			)
+			BeforeEach(func() {
+				creator := sessions.NewCreator(generator, logger)
+				created, err = creator.NewSession(returnTo)
+			})
+			It("should not fail", func() {
+				Expect(err).ToNot(HaveOccurred())
+			})
+			It("should create a session with the generated nonce", func() {
+				Expect(created.Nonce).To(Equal(generator.nonce))
+			})
+			It("should create a session with the return to URL", func() {
+				Expect(created.ReturnTo).To(Equal(returnTo))
+			})
 		})
 	})
 })
