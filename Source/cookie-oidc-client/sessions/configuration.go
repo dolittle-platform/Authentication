@@ -1,6 +1,6 @@
 package sessions
 
-import "dolittle.io/cookie-oidc-client/sessions/nonce"
+import "dolittle.io/cookie-oidc-client/sessions/nonces"
 
 // Configuration for sessions
 type Configuration interface {
@@ -8,5 +8,5 @@ type Configuration interface {
 	CookieName() string
 
 	// Nonce returns the configuration for nonce generation
-	Nonce() nonce.Configuration
+	Nonce() nonces.Configuration
 }

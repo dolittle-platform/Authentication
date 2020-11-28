@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"net/url"
 
-	"dolittle.io/cookie-oidc-client/sessions/nonce"
+	"dolittle.io/cookie-oidc-client/sessions/nonces"
 	gorilla "github.com/gorilla/sessions"
 	"go.uber.org/zap"
 )
@@ -60,7 +60,7 @@ func (r *reader) ReadFrom(request *http.Request) (*Session, error) {
 	}
 
 	return &Session{
-		Nonce:    nonce.Nonce(nonceString),
+		Nonce:    nonces.Nonce(nonceString),
 		ReturnTo: returnTo,
 	}, nil
 }

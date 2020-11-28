@@ -1,4 +1,4 @@
-package nonce
+package nonces
 
 // Configuration for nonce generation
 type Configuration interface {

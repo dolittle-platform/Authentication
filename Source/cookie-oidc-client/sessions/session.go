@@ -3,7 +3,7 @@ package sessions
 import (
 	"net/url"
 
-	"dolittle.io/cookie-oidc-client/sessions/nonce"
+	"dolittle.io/cookie-oidc-client/sessions/nonces"
 	"go.uber.org/zap"
 )
 
@@ -13,7 +13,7 @@ type ReturnToURL *url.URL
 // Session represents an OIDC flow session
 type Session struct {
 	// Nonce is the unique nonce tied to this session
-	Nonce nonce.Nonce
+	Nonce nonces.Nonce
 
 	// ReturnTo defines where to redirect the browser after the OIDC flow is completed
 	ReturnTo ReturnToURL
@@ -26,7 +26,7 @@ type Creator interface {
 }
 
 // NewCreator returns a new Creator
-func NewCreator(generator nonce.Generator, logger zap.Logger) Creator {
+func NewCreator(generator nonces.Generator, logger zap.Logger) Creator {
 	return &creator{
 		generator: generator,
 		logger:    logger,
@@ -34,7 +34,7 @@ func NewCreator(generator nonce.Generator, logger zap.Logger) Creator {
 }
 
 type creator struct {
-	generator nonce.Generator
+	generator nonces.Generator
 	logger    zap.Logger
 }
 

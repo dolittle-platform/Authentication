@@ -1,4 +1,4 @@
-package nonce
+package nonces
 
 import (
 	"crypto/rand"
@@ -15,7 +15,7 @@ type Generator interface {
 }
 
 // NewGenerator returns a new Generator
-func NewGenerator(configuration Configuration, logger zap.Logger) Generator {
+func NewGenerator(configuration Configuration, logger *zap.Logger) Generator {
 	return &generator{
 		configuration: configuration,
 		logger:        logger,
@@ -24,7 +24,7 @@ func NewGenerator(configuration Configuration, logger zap.Logger) Generator {
 
 type generator struct {
 	configuration Configuration
-	logger        zap.Logger
+	logger        *zap.Logger
 }
 
 func (g *generator) Generate() (Nonce, error) {
