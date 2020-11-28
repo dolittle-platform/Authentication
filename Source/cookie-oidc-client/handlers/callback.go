@@ -54,7 +54,7 @@ func (self *callbackHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	// Do more stuff to contents
 	cookie := self.cookieFactory.Create(oauth2Token.AccessToken)
-	log.Println("Got access token and setting cookie")
+	log.Println("Got access token, now setting cookie")
 	http.SetCookie(w, cookie)
 
 	callbackURL, err := self.callbackRedirectGetter.GetCallbackRedirectURL()

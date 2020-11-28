@@ -106,13 +106,5 @@ func Read() (*Configuration, error) {
 		log.Println(fmt.Sprintf("Used configuration'%s'", viper.ConfigFileUsed()))
 	}
 	config := Configuration{}
-	err = viper.Unmarshal(&config)
-	if err != nil {
-		return nil, err
-	}
-
-	var configMap map[string]interface{}
-	mapstructure.Decode(config, &configMap)
-	log.Println(fmt.Sprintf("Configuration %v", configMap))
-	return &config, nil
+	return &config, viper.Unmarshal(&config)
 }
