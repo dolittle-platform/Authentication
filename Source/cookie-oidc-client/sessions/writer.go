@@ -2,6 +2,7 @@ package sessions
 
 import (
 	"net/http"
+	"net/url"
 
 	gorilla "github.com/gorilla/sessions"
 	"go.uber.org/zap"
@@ -34,8 +35,11 @@ func (w *writer) WriteTo(session *Session, request *http.Request, responseWriter
 		return w.logAndReturnError("could not create session", err)
 	}
 
-	cookie.Values["nonce"] = session.Nonce
-	cookie.Values["returnTo"] = session.ReturnTo
+	nonceValue := string(session.Nonce)
+	returnToValue := url.URL(*session.ReturnTo)
+
+	cookie.Values["nonce"] = nonceValue
+	cookie.Values["returnTo"] = returnToValue.String()
 
 	err = w.store.Save(request, responseWriter, cookie)
 	if err != nil {

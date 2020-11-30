@@ -4,6 +4,7 @@ go 1.14
 
 require (
 	github.com/coreos/go-oidc v2.2.1+incompatible
+	github.com/google/uuid v1.1.2
 	github.com/gorilla/sessions v1.2.1
 	github.com/mitchellh/mapstructure v1.3.3
 	github.com/onsi/ginkgo v1.14.2
