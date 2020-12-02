@@ -14,6 +14,7 @@ var serve = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return configuration.NewContainer(config).Server.Run()
+		container := configuration.NewContainer(config)
+		return container.Server.Run()
 	},
 }

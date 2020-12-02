@@ -38,6 +38,14 @@ func (c serverConfiguration) Port() int {
 	return 8080
 }
 
+func (c serverConfiguration) InitiatePath() string {
+	return "/initiate"
+}
+
+func (c serverConfiguration) CompletePath() string {
+	return "/complete"
+}
+
 func (c serverConfiguration) ErrorRedirect() *url.URL {
 	url, _ := url.Parse("http://localhost:8080/error")
 	return url

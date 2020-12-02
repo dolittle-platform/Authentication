@@ -2,6 +2,7 @@ package configuration
 
 import (
 	"dolittle.io/cookie-oidc-client/completion"
+	"dolittle.io/cookie-oidc-client/configuration/changes"
 	"dolittle.io/cookie-oidc-client/cookies"
 	"dolittle.io/cookie-oidc-client/initiation"
 	"dolittle.io/cookie-oidc-client/openid"
@@ -14,6 +15,8 @@ import (
 )
 
 type Container struct {
+	Notifier changes.ConfigurationChangeNotifier
+
 	SessionsCreator sessions.Creator
 	SessionsReader  sessions.Reader
 	SessionsWriter  sessions.Writer
@@ -39,6 +42,8 @@ type Container struct {
 func NewContainer(config Configuration) *Container {
 	logger, _ := zap.NewDevelopment()
 	container := Container{}
+
+	container.Notifier = changes.NewConfigurationChangeNotifier(logger)
 
 	sessionStore := gorilla.NewCookieStore([]byte("super-secret-value")) // TODO: incorporate into config so that keys can be hot-reloaded
 
@@ -90,6 +95,7 @@ func NewContainer(config Configuration) *Container {
 		container.CookiesWriter)
 	container.Server = server.NewServer(
 		config.Server(),
+		container.Notifier,
 		container.InitiateHandler,
 		container.CompleteHandler,
 		logger)
