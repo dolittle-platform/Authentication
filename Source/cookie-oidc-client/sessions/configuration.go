@@ -1,6 +1,11 @@
 package sessions
 
-import "dolittle.io/cookie-oidc-client/sessions/nonces"
+import (
+	"time"
+
+	"dolittle.io/cookie-oidc-client/cookies"
+	"dolittle.io/cookie-oidc-client/sessions/nonces"
+)
 
 type SessionEncryptionKey struct {
 	HashKey  []byte
@@ -9,8 +14,11 @@ type SessionEncryptionKey struct {
 
 // Configuration for sessions
 type Configuration interface {
-	// CookieName returns the name of the cookie to store sessions in
-	CookieName() string
+	// Lifetime returns the lifetime of authentication sessions
+	Lifetime() time.Duration
+
+	// Cookie returns the configuration for the session cookies
+	Cookies() cookies.Configuration
 
 	// EncryptionKeys returns the keys to use for session cookie encryption, decrytup, signing and verification
 	EncryptionKeys() []SessionEncryptionKey

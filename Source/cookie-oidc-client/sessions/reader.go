@@ -31,7 +31,7 @@ type reader struct {
 }
 
 func (r *reader) ReadFrom(request *http.Request) (*Session, error) {
-	cookie, err := r.store.Get(request, r.configuration.CookieName())
+	cookie, err := r.store.Get(request, r.configuration.Cookies().Name())
 	if err != nil {
 		return r.logAndReturnError("could not read session from request", err)
 	}

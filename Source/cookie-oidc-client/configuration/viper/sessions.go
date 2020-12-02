@@ -1,6 +1,10 @@
 package viper
 
 import (
+	"net/http"
+	"time"
+
+	"dolittle.io/cookie-oidc-client/cookies"
 	"dolittle.io/cookie-oidc-client/sessions"
 	"dolittle.io/cookie-oidc-client/sessions/nonces"
 	"github.com/spf13/viper"
@@ -8,22 +12,20 @@ import (
 
 const (
 	sessionsNonceLengthKey = "sessions.nonce_length"
-	sessionsCookieNameKey  = "sessions.cookie.name"
 	sessionsKeysKey        = "sessions.keys"
+	sessionsLifetimeKey    = "sessions.lifetime"
+	sessionsCookiesKey     = "sessions.cookies"
 
-	defaultSessionsNonceLength = 18
-	defeaultSessionsCookieName = ".cookie-oidc-client.session"
+	defaultSessionsNonceLength          = 18
+	defaultSessionsLifetime             = 5 * time.Minute
+	defeaultSessionsCookiesName         = ".cookie-oidc-client.session"
+	defeaultSessionsCookiesSameSiteMode = http.SameSiteLaxMode
+	defeaultSessionsCookiesPath         = "/"
 )
 
 type sessionsConfiguration struct {
-	nonce *nonceConfiguration
-}
-
-func (c *sessionsConfiguration) CookieName() string {
-	if name := viper.GetString(sessionsCookieNameKey); name != "" {
-		return name
-	}
-	return defeaultSessionsCookieName
+	nonce   *nonceConfiguration
+	cookies *cookiesConfiguration
 }
 
 type configurationSessionKey struct {
@@ -48,8 +50,19 @@ func (c *sessionsConfiguration) EncryptionKeys() []sessions.SessionEncryptionKey
 	return keys
 }
 
+func (c *sessionsConfiguration) Lifetime() time.Duration {
+	if viper.IsSet(sessionsLifetimeKey) {
+		return viper.GetDuration(sessionsLifetimeKey)
+	}
+	return defaultSessionsLifetime
+}
+
 func (c *sessionsConfiguration) Nonce() nonces.Configuration {
 	return c.nonce
+}
+
+func (c *sessionsConfiguration) Cookies() cookies.Configuration {
+	return c.cookies
 }
 
 type nonceConfiguration struct{}

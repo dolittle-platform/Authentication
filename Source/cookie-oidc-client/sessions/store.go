@@ -2,6 +2,7 @@ package sessions
 
 import (
 	"errors"
+	"time"
 
 	"dolittle.io/cookie-oidc-client/configuration/changes"
 	"github.com/gorilla/securecookie"
@@ -17,14 +18,21 @@ func NewCookieStore(configuration Configuration, notifier changes.ConfigurationC
 	store := &gorilla.CookieStore{
 		Codecs: codecs,
 		Options: &gorilla.Options{
-			Path:     "/",
-			MaxAge:   60 * 5,
+			MaxAge:   int(configuration.Lifetime() / time.Second),
+			Secure:   configuration.Cookies().Secure(),
+			SameSite: configuration.Cookies().SameSite(),
+			Path:     configuration.Cookies().Path(),
 			HttpOnly: true,
 		},
 	}
 	store.MaxAge(store.Options.MaxAge)
 
 	notifier.RegisterCallback("cookie-store", func() error {
+		store.Options.MaxAge = int(configuration.Lifetime() / time.Second)
+		store.Options.Path = configuration.Cookies().Path()
+		store.Options.Secure = configuration.Cookies().Secure()
+		store.Options.SameSite = configuration.Cookies().SameSite()
+
 		codecs, err := createCodecsFromEncryptionKeys(configuration)
 		if err != nil {
 			return err

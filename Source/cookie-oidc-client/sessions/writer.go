@@ -30,7 +30,7 @@ type writer struct {
 }
 
 func (w *writer) WriteTo(session *Session, request *http.Request, responseWriter http.ResponseWriter) error {
-	cookie, err := w.store.New(request, w.configuration.CookieName())
+	cookie, err := w.store.New(request, w.configuration.Cookies().Name())
 	if err != nil {
 		return w.logAndReturnError("could not create session", err)
 	}

@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	config "dolittle.io/cookie-oidc-client/configuration"
+	"dolittle.io/cookie-oidc-client/cookies"
 	"dolittle.io/cookie-oidc-client/initiation"
 	"dolittle.io/cookie-oidc-client/server"
 	"dolittle.io/cookie-oidc-client/sessions"
@@ -38,6 +39,18 @@ func NewViperConfiguration(configPath string) (config.Configuration, error) {
 		initiation: &initiationConfiguration{},
 		sessions: &sessionsConfiguration{
 			nonce: &nonceConfiguration{},
+			cookies: &cookiesConfiguration{
+				prefix:          sessionsCookiesKey,
+				defaultName:     defeaultSessionsCookiesName,
+				defaultSameSite: defeaultSessionsCookiesSameSiteMode,
+				defaultPath:     defeaultSessionsCookiesPath,
+			},
+		},
+		cookies: &cookiesConfiguration{
+			prefix:          cookiesKey,
+			defaultName:     defaultCookiesName,
+			defaultSameSite: defaultCookiesSameSiteMode,
+			defaultPath:     defaultCookiesPath,
 		},
 	}, nil
 }
@@ -46,6 +59,7 @@ type configuration struct {
 	server     *serverConfiguration
 	initiation *initiationConfiguration
 	sessions   *sessionsConfiguration
+	cookies    *cookiesConfiguration
 }
 
 func (c *configuration) OnChange(callback func()) {
@@ -64,4 +78,8 @@ func (c *configuration) Initiation() initiation.Configuration {
 
 func (c *configuration) Sessions() sessions.Configuration {
 	return c.sessions
+}
+
+func (c *configuration) Cookies() cookies.Configuration {
+	return c.cookies
 }

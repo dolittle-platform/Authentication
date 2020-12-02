@@ -65,7 +65,8 @@ func NewContainer(config Configuration) (*Container, error) {
 		container.SessionStore,
 		logger)
 
-	container.CookiesWriter = cookies.NewWriter()
+	container.CookiesWriter = cookies.NewWriter(
+		config.Cookies())
 
 	container.OpenidInitiator = openid.NewAuthenticationInitiator()
 
