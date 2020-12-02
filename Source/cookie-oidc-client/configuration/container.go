@@ -17,6 +17,7 @@ import (
 type Container struct {
 	Notifier changes.ConfigurationChangeNotifier
 
+	SessionStore    gorilla.Store
 	SessionsCreator sessions.Creator
 	SessionsReader  sessions.Reader
 	SessionsWriter  sessions.Writer
@@ -39,25 +40,29 @@ type Container struct {
 	Server          server.Server
 }
 
-func NewContainer(config Configuration) *Container {
+func NewContainer(config Configuration) (*Container, error) {
 	logger, _ := zap.NewDevelopment()
 	container := Container{}
 
 	container.Notifier = changes.NewConfigurationChangeNotifier(logger)
 	config.OnChange(container.Notifier.TriggerChanged)
 
-	sessionStore := gorilla.NewCookieStore([]byte("super-secret-value")) // TODO: incorporate into config so that keys can be hot-reloaded
+	cookieStore, err := sessions.NewCookieStore(config.Sessions(), container.Notifier)
+	if err != nil {
+		return nil, err
+	}
+	container.SessionStore = cookieStore
 
 	container.SessionsCreator = sessions.NewCreator(
 		nonces.NewGenerator(config.Sessions().Nonce(), logger),
 		logger)
 	container.SessionsReader = sessions.NewReader(
 		config.Sessions(),
-		sessionStore,
+		container.SessionStore,
 		logger)
 	container.SessionsWriter = sessions.NewWriter(
 		config.Sessions(),
-		sessionStore,
+		container.SessionStore,
 		logger)
 
 	container.CookiesWriter = cookies.NewWriter()
@@ -101,7 +106,7 @@ func NewContainer(config Configuration) *Container {
 		container.CompleteHandler,
 		logger)
 
-	return &container
+	return &container, nil
 }
 
 // import (
