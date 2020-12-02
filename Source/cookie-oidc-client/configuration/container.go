@@ -44,6 +44,7 @@ func NewContainer(config Configuration) *Container {
 	container := Container{}
 
 	container.Notifier = changes.NewConfigurationChangeNotifier(logger)
+	config.OnChange(container.Notifier.TriggerChanged)
 
 	sessionStore := gorilla.NewCookieStore([]byte("super-secret-value")) // TODO: incorporate into config so that keys can be hot-reloaded
 

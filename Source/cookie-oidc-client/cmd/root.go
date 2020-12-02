@@ -7,7 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var configFile string
+var configPath string
 
 var root = &cobra.Command{
 	Use:   "cookie-oidc-client",
@@ -15,7 +15,7 @@ var root = &cobra.Command{
 }
 
 func init() {
-	root.PersistentFlags().StringVarP(&configFile, "config", "c", "", "Config file (default is $HOME/cookie-oidc-client.yaml)")
+	root.PersistentFlags().StringVarP(&configPath, "config", "c", "", "Config file (default is $HOME/.cookie-oidc-client.yaml)")
 
 	root.AddCommand(serve)
 }

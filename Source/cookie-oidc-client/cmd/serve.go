@@ -10,7 +10,7 @@ var serve = &cobra.Command{
 	Use:   "serve",
 	Short: "Starts the server",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		config, err := viper.NewViperConfiguration()
+		config, err := viper.NewViperConfiguration(configPath)
 		if err != nil {
 			return err
 		}
