@@ -17,10 +17,11 @@ import (
 type Container struct {
 	Notifier changes.ConfigurationChangeNotifier
 
-	SessionStore    gorilla.Store
-	SessionsCreator sessions.Creator
-	SessionsReader  sessions.Reader
-	SessionsWriter  sessions.Writer
+	SessionStore      gorilla.Store
+	SessionsCreator   sessions.Creator
+	SessionsDestroyer sessions.Destroyer
+	SessionsReader    sessions.Reader
+	SessionsWriter    sessions.Writer
 
 	CookiesWriter cookies.Writer
 
@@ -59,6 +60,10 @@ func NewContainer(config Configuration) (*Container, error) {
 		nonces.NewGenerator(
 			config.Sessions().Nonce(),
 			logger),
+		logger)
+	container.SessionsDestroyer = sessions.NewDestroyer(
+		config.Sessions(),
+		container.SessionStore,
 		logger)
 	container.SessionsReader = sessions.NewReader(
 		config.Sessions(),
@@ -115,6 +120,7 @@ func NewContainer(config Configuration) (*Container, error) {
 	container.CompleteHandler = public.NewCompleteHandler(
 		container.CompletionParser,
 		container.SessionsReader,
+		container.SessionsDestroyer,
 		container.CompletionCompleter,
 		container.CookiesWriter)
 	container.Server = server.NewServer(

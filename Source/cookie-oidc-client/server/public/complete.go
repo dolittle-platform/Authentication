@@ -13,10 +13,11 @@ import (
 
 type CompleteHandler handling.Handler
 
-func NewCompleteHandler(parser completion.Parser, reader sessions.Reader, completer completion.Completer, writer cookies.Writer) CompleteHandler {
+func NewCompleteHandler(parser completion.Parser, reader sessions.Reader, destroyer sessions.Destroyer, completer completion.Completer, writer cookies.Writer) CompleteHandler {
 	return &complete{
 		parser:    parser,
 		reader:    reader,
+		destroyer: destroyer,
 		completer: completer,
 		writer:    writer,
 	}
@@ -25,6 +26,7 @@ func NewCompleteHandler(parser completion.Parser, reader sessions.Reader, comple
 type complete struct {
 	parser    completion.Parser
 	reader    sessions.Reader
+	destroyer sessions.Destroyer
 	completer completion.Completer
 	writer    cookies.Writer
 }
@@ -38,6 +40,11 @@ func (c *complete) Handle(w http.ResponseWriter, r *http.Request, ctx context.Co
 	session, err := c.reader.ReadFrom(r)
 	if err != nil {
 		return err
+	}
+
+	err = c.destroyer.Destroy(r, w)
+	if err != nil {
+		// TODO: Log
 	}
 
 	token, err := c.completer.Complete(response, session)
