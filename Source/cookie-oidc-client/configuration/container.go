@@ -47,14 +47,18 @@ func NewContainer(config Configuration) (*Container, error) {
 	container.Notifier = changes.NewConfigurationChangeNotifier(logger)
 	config.OnChange(container.Notifier.TriggerChanged)
 
-	cookieStore, err := sessions.NewCookieStore(config.Sessions(), container.Notifier)
+	cookieStore, err := sessions.NewCookieStore(
+		config.Sessions(),
+		container.Notifier)
 	if err != nil {
 		return nil, err
 	}
 	container.SessionStore = cookieStore
 
 	container.SessionsCreator = sessions.NewCreator(
-		nonces.NewGenerator(config.Sessions().Nonce(), logger),
+		nonces.NewGenerator(
+			config.Sessions().Nonce(),
+			logger),
 		logger)
 	container.SessionsReader = sessions.NewReader(
 		config.Sessions(),
@@ -68,7 +72,20 @@ func NewContainer(config Configuration) (*Container, error) {
 	container.CookiesWriter = cookies.NewWriter(
 		config.Cookies())
 
-	container.OpenidInitiator = openid.NewAuthenticationInitiator()
+	initiator, err := openid.NewAuthenticationInitiator(
+		config.OpenID(),
+		container.Notifier)
+	if err != nil {
+		return nil, err
+	}
+	container.OpenidInitiator = initiator
+	exchanger, err := openid.NewTokenExchanger(
+		config.OpenID(),
+		container.Notifier)
+	if err != nil {
+		return nil, err
+	}
+	container.OpenidExchanger = exchanger
 
 	container.InitiationParser = initiation.NewParser(
 		config.Initiation(),

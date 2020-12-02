@@ -6,6 +6,7 @@ import (
 	config "dolittle.io/cookie-oidc-client/configuration"
 	"dolittle.io/cookie-oidc-client/cookies"
 	"dolittle.io/cookie-oidc-client/initiation"
+	"dolittle.io/cookie-oidc-client/openid"
 	"dolittle.io/cookie-oidc-client/server"
 	"dolittle.io/cookie-oidc-client/sessions"
 	"github.com/fsnotify/fsnotify"
@@ -52,6 +53,7 @@ func NewViperConfiguration(configPath string) (config.Configuration, error) {
 			defaultSameSite: defaultCookiesSameSiteMode,
 			defaultPath:     defaultCookiesPath,
 		},
+		openid: &openidConfiguration{},
 	}, nil
 }
 
@@ -60,6 +62,7 @@ type configuration struct {
 	initiation *initiationConfiguration
 	sessions   *sessionsConfiguration
 	cookies    *cookiesConfiguration
+	openid     *openidConfiguration
 }
 
 func (c *configuration) OnChange(callback func()) {
@@ -82,4 +85,8 @@ func (c *configuration) Sessions() sessions.Configuration {
 
 func (c *configuration) Cookies() cookies.Configuration {
 	return c.cookies
+}
+
+func (c *configuration) OpenID() openid.Configuration {
+	return c.openid
 }

@@ -28,14 +28,14 @@ type cookiesConfiguration struct {
 }
 
 func (c *cookiesConfiguration) Name() string {
-	if name := viper.GetString(fmt.Sprintf("%.%", c.prefix, cookiesNameKey)); name != "" {
+	if name := viper.GetString(fmt.Sprintf("%s.%s", c.prefix, cookiesNameKey)); name != "" {
 		return name
 	}
 	return c.defaultName
 }
 
 func (c *cookiesConfiguration) Secure() bool {
-	key := fmt.Sprintf("%.%", c.prefix, cookiesSecureKey)
+	key := fmt.Sprintf("%s.%s", c.prefix, cookiesSecureKey)
 	if viper.IsSet(key) {
 		return viper.GetBool(key)
 	}
@@ -43,7 +43,7 @@ func (c *cookiesConfiguration) Secure() bool {
 }
 
 func (c *cookiesConfiguration) SameSite() http.SameSite {
-	mode := viper.GetString(fmt.Sprintf("%.%", c.prefix, cookiesSameSiteKey))
+	mode := viper.GetString(fmt.Sprintf("%s.%s", c.prefix, cookiesSameSiteKey))
 	switch {
 	case strings.EqualFold("strict", mode):
 		return http.SameSiteStrictMode
@@ -57,7 +57,7 @@ func (c *cookiesConfiguration) SameSite() http.SameSite {
 }
 
 func (c *cookiesConfiguration) Path() string {
-	if path := viper.GetString(fmt.Sprintf("%.%", c.prefix, cookiesPathKey)); path != "" {
+	if path := viper.GetString(fmt.Sprintf("%s.%s", c.prefix, cookiesPathKey)); path != "" {
 		return path
 	}
 	return c.defaultPath
