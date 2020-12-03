@@ -44,11 +44,11 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
     - name: Build Image
       uses: docker/build-push-action@v2
-      if: ${{ env.DOCKER_HUB_REPO != '' }}
+      if: ${{ steps.context.outputs.should-publish == 'true' && env.DOCKER_HUB_REPO != '' }}
       with:
         push: false
-        context: .
-        file: ./Docker/Development/Dockerfile
+        context: ./Source/Pascal
+        file: ./Source/Pascal/Dockerfile
     - name: Increment version
       id: increment-version
       if: ${{ steps.context.outputs.should-publish == 'true' }}
