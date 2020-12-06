@@ -1,0 +1,7 @@
+serve:
+  port: 8080
+  paths:
+    frontend: /
+
+urls:
+  error: http://localhost:8080/error

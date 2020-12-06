@@ -1,0 +1,7 @@
+package kratos
+
+import "net/url"
+
+type Configuration interface {
+	Endpoint() *url.URL
+}
