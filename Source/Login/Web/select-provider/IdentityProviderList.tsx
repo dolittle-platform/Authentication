@@ -5,6 +5,7 @@ import React from 'react';
 
 import { IdentityProviderListViewModel } from './IdentityProviderListViewModel';
 import { withViewModel } from '../MVVM/withViewModel';
+import { IdentityProviderListItem } from './IdentityProviderListItem';
 
 export type IdentityProviderListProps = {
     loading: Function;
@@ -15,9 +16,21 @@ export type IdentityProviderListProps = {
 export const IdentityProviderList = withViewModel<IdentityProviderListViewModel, IdentityProviderListProps>(IdentityProviderListViewModel, ({ viewModel, props }) => {
     return (
         <>
-            {viewModel.providers.map((provider => {
-                return <h3 key={provider.name}>{provider.name}</h3>;
-            }))}
+            <h1>Log in with:</h1>
+            {viewModel.providers.map(provider =>
+                <IdentityProviderListItem
+                    key={provider.id}
+                    provider={provider}
+                    formAction={viewModel.formAction}
+                    formMethod={viewModel.formMethod}
+                    formCsrfToken={viewModel.formCsrfToken} />
+            )}
         </>
+        // <form action={viewModel.formAction} method={viewModel.formMethod}>
+        //     <input name="csrf_token" type="hidden" value={viewModel.formCsrfToken} />
+        //     {viewModel.providers.map(provider => 
+        //         <input key={provider.id} type="submit" name="provider" value={provider.id}/>
+        //     )}
+        // </form>
     );
 });

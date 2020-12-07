@@ -17,10 +17,7 @@ export type SelectProviderProps = {
 
 export const SelectProvider = withViewModel<SelectProviderViewModel, SelectProviderProps>(SelectProviderViewModel, ({ viewModel, props }) => {
     return (
-        <>
-            <h2>Select login provider:</h2>
-            <IdentityProviderList loaded={props.loaded} loading={props.loading} flow={getFlow()} />
-        </>
+        <IdentityProviderList loaded={props.loaded} loading={props.loading} flow={getFlow()} />
     );
 });
 

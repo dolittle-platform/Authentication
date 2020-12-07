@@ -5,7 +5,7 @@ import { injectable } from 'tsyringe';
 
 import { IViewContext } from '../MVVM/IViewContext';
 
-import { IdentityProvider } from './IdentityProvider'
+import { IdentityProvider } from './IdentityProvider';
 import { IdentityProviderListProps } from './IdentityProviderList';
 
 @injectable()
@@ -14,8 +14,8 @@ export class IdentityProviderListViewModel {
     providers: IdentityProvider[] = [];
     forced: boolean = false;
     formCsrfToken: string = '';
-    formSubmitAction: string = '';
-    formSubmitMethod: string = '';
+    formAction: string = '';
+    formMethod: string = '';
 
     async activate({props}: IViewContext<IdentityProviderListViewModel, IdentityProviderListProps>) {
         props.loading();
@@ -31,9 +31,9 @@ export class IdentityProviderListViewModel {
         this.flowId = flow.ID;
         this.forced = flow.Forced;
         this.formCsrfToken = flow.FormCSRFToken;
-        this.formSubmitAction = `${flow.FormSubmitAction.Scheme}://${flow.FormSubmitAction.Host}${flow.FormSubmitAction.Path}`;
-        this.formSubmitMethod = flow.FormSubmitMethod;
-        this.providers = flow.Providers.map(provider => ({ name: provider.Display }));
+        this.formAction = `${flow.FormSubmitAction.Scheme}://${flow.FormSubmitAction.Host}${flow.FormSubmitAction.Path}`;
+        this.formMethod = flow.FormSubmitMethod;
+        this.providers = flow.Providers.map(provider => ({ id: provider.ID, display: provider.Display }));
     }
 }
 
