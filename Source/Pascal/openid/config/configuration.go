@@ -1,4 +1,4 @@
-package openid
+package config
 
 import "net/url"
 

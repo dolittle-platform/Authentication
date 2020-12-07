@@ -3,7 +3,7 @@ package configuration
 import (
 	"dolittle.io/pascal/cookies"
 	"dolittle.io/pascal/initiation"
-	"dolittle.io/pascal/openid"
+	openid "dolittle.io/pascal/openid/config"
 	"dolittle.io/pascal/server"
 	"dolittle.io/pascal/sessions"
 )

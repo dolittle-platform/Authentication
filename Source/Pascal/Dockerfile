@@ -8,6 +8,7 @@ FROM scratch
 COPY --from=build /build/pascal /bin/pascal
 COPY .docker/group /etc/group
 COPY .docker/passwd /etc/passwd
+COPY .docker/nsswitch.conf /etc/nsswitch.conf
 COPY --chown=pascal:pascal .docker/config.yaml /var/lib/pascal/.pascal.yaml
 USER pascal
 ENTRYPOINT [ "/bin/pascal" ]
