@@ -3,7 +3,7 @@ package viper
 import (
 	"net/url"
 
-	"github.com/ory/viper"
+	"github.com/spf13/viper"
 )
 
 const (

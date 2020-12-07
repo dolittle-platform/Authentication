@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { Spinner, SpinnerSize } from 'office-ui-fabric-react';
 import { Route, Switch, useLocation } from 'react-router-dom';
 
-import { Login } from '../login/Login';
+import { SelectProvider } from '../select-provider/SelectProvider';
 
 import './Layout.scss';
 import { LayoutViewModel } from './LayoutViewModel';
@@ -25,8 +25,8 @@ export const Layout = withViewModel(LayoutViewModel, ({ viewModel }) => {
                     </div>
 
                     <Switch>
-                        <Route path="/login">
-                            <Login loading={contentLoading} loaded={contentLoaded} />
+                        <Route path="/.auth/select-provider">
+                            <SelectProvider loading={contentLoading} loaded={contentLoaded} />
                         </Route>
                     </Switch>
                 </div>

@@ -11,8 +11,12 @@ type Getter interface {
 	GetLoginFlowFrom(r *http.Request) (*Flow, error)
 }
 
-func NewGetter() Getter {
-	return &getter{}
+func NewGetter(configuration Configuration, kratos kratos.Client, parser Parser) Getter {
+	return &getter{
+		configuration: configuration,
+		kratos:        kratos,
+		parser:        parser,
+	}
 }
 
 type getter struct {
@@ -22,7 +26,7 @@ type getter struct {
 }
 
 func (g *getter) GetLoginFlowFrom(r *http.Request) (*Flow, error) {
-	id := r.URL.Query().Get(g.configuration.FlowIdQueryParameter())
+	id := r.URL.Query().Get(g.configuration.FlowIDQueryParameter())
 	if id == "" {
 		return nil, errors.New("no flow id set in request")
 	}

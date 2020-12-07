@@ -7,7 +7,7 @@ metadata:
     component: hydra
 data:
   hydra.yaml: |
-    dsn: postgres://postgres:password@postgres.system-auth.svc.cluster.local:5432/hydra?sslmode=disable
+    dsn: postgres://postgres:password@postgres.system-auth.svc.cluster.local:5432/hydra_browser?sslmode=disable
 
     serve:
       public:
@@ -23,9 +23,15 @@ data:
       self:
         issuer: http://localhost:8080/
         public: http://localhost:8080/
-      
       login: http://localhost:8080/.auth/select-tenant/
       consent: http://localhost:8080/.auth/consent/
+
+    ttl:
+        login_consent_request: 1h
+        access_token: 1h
+        refresh_token: 720h
+        id_token: 1h
+        auth_code: 1h
 
     log:
       level: debug

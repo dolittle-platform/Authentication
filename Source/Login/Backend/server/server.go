@@ -71,5 +71,7 @@ func (s *server) Run() error {
 		Handler: router,
 	}
 
+	s.logger.Info("Starting server", zap.Int("port", s.configuration.Port()))
+
 	return server.ListenAndServe()
 }

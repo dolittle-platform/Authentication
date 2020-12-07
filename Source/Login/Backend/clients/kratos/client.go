@@ -55,7 +55,7 @@ func (c *client) handleConfigurationChanged() error {
 }
 
 func getORYClient(configuration Configuration) *ory.OryKratos {
-	url := configuration.Endpoint()
+	url := configuration.PublicEndpoint()
 	config := ory.DefaultTransportConfig().WithSchemes([]string{url.Scheme}).WithHost(url.Host).WithBasePath(url.Path)
 	return ory.NewHTTPClientWithConfig(nil, config)
 }

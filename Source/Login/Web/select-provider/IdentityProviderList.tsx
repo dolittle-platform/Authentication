@@ -3,16 +3,16 @@
 
 import React from 'react';
 
-import { LoginProviderListViewModel } from './LoginProviderListViewModel';
+import { IdentityProviderListViewModel } from './IdentityProviderListViewModel';
 import { withViewModel } from '../MVVM/withViewModel';
 
-export type LoginProviderListProps = {
+export type IdentityProviderListProps = {
     loading: Function;
     loaded: Function;
-    challenge: string | null;
+    flow: string | null;
 };
 
-export const LoginProviderList = withViewModel<LoginProviderListViewModel, LoginProviderListProps>(LoginProviderListViewModel, ({ viewModel, props }) => {
+export const IdentityProviderList = withViewModel<IdentityProviderListViewModel, IdentityProviderListProps>(IdentityProviderListViewModel, ({ viewModel, props }) => {
     return (
         <>
             {viewModel.providers.map((provider => {

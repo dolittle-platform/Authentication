@@ -22,7 +22,7 @@ type getter struct {
 }
 
 func (g *getter) GetConsentFlowFrom(r *http.Request) (*Flow, error) {
-	id := r.URL.Query().Get(g.configuration.FlowIdQueryParameter())
+	id := r.URL.Query().Get(g.configuration.FlowIDQueryParameter())
 	if id == "" {
 		return nil, errors.New("no flow id set in request")
 	}

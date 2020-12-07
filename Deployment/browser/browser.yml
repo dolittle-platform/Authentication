@@ -5,7 +5,7 @@ metadata:
   name: browser
 data:
   hydra.yaml: |
-    dsn: postgres://postgres:password@postgres.system-auth.svc.cluster.local:5432/hydra?sslmode=disable
+    dsn: postgres://postgres:password@postgres.system-auth.svc.cluster.local:5432/hydra_browser?sslmode=disable
 
     serve:
       public:
@@ -157,7 +157,7 @@ spec:
         component: browser
     spec:
       hostAliases:
-        - ip: "192.168.65.2"
+        - ip: "192.168.49.1"
           hostnames:
             - "local.dolittle.studio"
       initContainers:
@@ -206,7 +206,7 @@ spec:
         - name: config
           mountPath: /etc/oathkeeper/config
       - name: pascal
-        image: dolittle/pascal:1.0.0
+        image: dolittle/pascal:1.0.1
         args:
           - "--config"
           - "/etc/pascal/config/pascal.yaml"
@@ -247,6 +247,23 @@ spec:
       targetPort: pascal
 
 ---
+kind: Service
+apiVersion: v1
+metadata:
+  namespace: system-auth
+  name: browser2
+spec:
+  externalTrafficPolicy: Local
+  type: LoadBalancer
+  selector:
+    system: auth
+    component: browser
+  ports:
+    - name: hydra-admin
+      port: 4445
+      targetPort: hydra-admin
+
+---
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -275,7 +292,3 @@ spec:
         backend:
           serviceName: browser
           servicePort: pascal
-      # - path: \/\.auth\/(self-service\/login\/browser.*)
-      #   backend:
-      #     serviceName: browser
-      #     servicePort: pascal

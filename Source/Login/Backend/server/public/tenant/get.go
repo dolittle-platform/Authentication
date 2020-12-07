@@ -11,8 +11,10 @@ import (
 
 type GetHandler handling.Handler
 
-func NewGetHandler() GetHandler {
-	return &getHandler{}
+func NewGetHandler(flows tenant.Getter) GetHandler {
+	return &getHandler{
+		flows: flows,
+	}
 }
 
 type getHandler struct {

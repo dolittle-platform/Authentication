@@ -3,5 +3,5 @@ package hydra
 import "net/url"
 
 type Configuration interface {
-	Endpoint() *url.URL
+	AdminEndpoint() *url.URL
 }

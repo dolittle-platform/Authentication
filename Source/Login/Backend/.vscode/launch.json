@@ -11,7 +11,7 @@
             "mode": "auto",
             "program": "${workspaceFolder}",
             "env": {},
-            "args": ["serve"]
+            "args": ["serve", "--config", "config.yaml", "--dev"]
         }
     ]
 }

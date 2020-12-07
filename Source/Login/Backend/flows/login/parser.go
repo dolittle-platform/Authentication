@@ -12,8 +12,11 @@ type Parser interface {
 	ParseLoginFlowFrom(response *models.LoginFlow) (*Flow, error)
 }
 
-func NewParser() Parser {
-	return &parser{}
+func NewParser(configuration Configuration, providers providers.Getter) Parser {
+	return &parser{
+		configuration: configuration,
+		providers:     providers,
+	}
 }
 
 type parser struct {

@@ -1,5 +1,5 @@
 package consent
 
 type Configuration interface {
-	FlowIdQueryParameter() string
+	FlowIDQueryParameter() string
 }

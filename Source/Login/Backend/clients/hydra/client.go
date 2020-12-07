@@ -54,7 +54,7 @@ func (c *client) handleConfigurationChanged() error {
 }
 
 func getORYClient(configuration Configuration) *ory.OryHydra {
-	url := configuration.Endpoint()
+	url := configuration.AdminEndpoint()
 	config := ory.DefaultTransportConfig().WithSchemes([]string{url.Scheme}).WithHost(url.Host).WithBasePath(url.Path)
 	return ory.NewHTTPClientWithConfig(nil, config)
 }

@@ -1,7 +1,7 @@
 package login
 
 type Configuration interface {
-	FlowIdQueryParameter() string
+	FlowIDQueryParameter() string
 	CSRFTokenFieldName() string
 	ProviderFieldName() string
 }

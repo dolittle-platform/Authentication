@@ -14,6 +14,7 @@ require (
 	github.com/ory/kratos-client-go v0.5.4-alpha.1
 	github.com/ory/viper v1.7.5
 	github.com/spf13/cobra v0.0.3
+	github.com/spf13/viper v1.7.1
 	go.uber.org/atomic v1.4.0 // indirect
 	go.uber.org/zap v1.10.0
 )

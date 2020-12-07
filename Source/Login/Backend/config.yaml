@@ -5,3 +5,12 @@ serve:
 
 urls:
   error: http://local.dolittle.studio:8080/.auth/error
+
+clients:
+  hydra:
+    endpoints:
+      # http://browser.system-auth.svc.cluster.local:4445/.auth/
+      admin: http://localhost:4445
+  kratos:
+    endpoints:
+      public: http://localhost:4433

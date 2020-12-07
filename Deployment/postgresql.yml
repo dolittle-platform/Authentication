@@ -14,8 +14,8 @@ metadata:
   namespace: system-auth
   name: postgresql-config
 data:
-  init-hydra-db.sql:
-    CREATE DATABASE hydra
+  init-hydra-browser-db.sql:
+    CREATE DATABASE hydra_browser
       WITH
         OWNER = postgres
         ENCODING = 'UTF8'

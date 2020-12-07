@@ -190,7 +190,7 @@ spec:
         image: alpine/socat
         args:
           - "tcp-listen:8080,fork,reuseaddr"
-          - "tcp:192.168.65.2:8090"
+          - "tcp:host.docker.internal:8090"
         ports:
         - name: login-public
           containerPort: 8080
@@ -198,6 +198,23 @@ spec:
       - name: config
         configMap:
           name: login
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: login2
+  namespace: system-auth
+spec:
+  externalTrafficPolicy: Local
+  type: LoadBalancer
+  selector:
+    system: auth
+    component: login
+  ports:
+  - port: 4433
+    targetPort: kratos-public
+    name: kratos-public
 
 ---
 apiVersion: v1
@@ -234,3 +251,7 @@ spec:
         backend:
           serviceName: login
           servicePort: login-public
+      - path: /\.auth/(self-service/login/browser.*)
+        backend:
+          serviceName: login
+          servicePort: kratos-public

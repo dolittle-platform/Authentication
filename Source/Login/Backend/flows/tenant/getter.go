@@ -12,8 +12,13 @@ type Getter interface {
 	GetTenantFlowFrom(r *http.Request) (*Flow, error)
 }
 
-func NewGetter() Getter {
-	return &getter{}
+func NewGetter(configuration Configuration, hydra hydra.Client, users current.Getter, parser Parser) Getter {
+	return &getter{
+		configuration: configuration,
+		hydra:         hydra,
+		users:         users,
+		parser:        parser,
+	}
 }
 
 type getter struct {
@@ -24,7 +29,7 @@ type getter struct {
 }
 
 func (g *getter) GetTenantFlowFrom(r *http.Request) (*Flow, error) {
-	id := r.URL.Query().Get(g.configuration.FlowIdQueryParameter())
+	id := r.URL.Query().Get(g.configuration.FlowIDQueryParameter())
 	if id == "" {
 		return nil, errors.New("no flow id set in request")
 	}

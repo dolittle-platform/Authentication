@@ -10,8 +10,11 @@ import (
 
 type SelectHandler handling.Handler
 
-func NewSelectHandler() GetHandler {
-	return &selectHandler{}
+func NewSelectHandler(flows tenant.Getter, selecter tenant.Selecter) SelectHandler {
+	return &selectHandler{
+		flows:    flows,
+		selecter: selecter,
+	}
 }
 
 type selectHandler struct {

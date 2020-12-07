@@ -11,8 +11,10 @@ import (
 
 type GetHandler handling.Handler
 
-func NewGetHandler() GetHandler {
-	return &getHandler{}
+func NewGetHandler(getter login.Getter) GetHandler {
+	return &getHandler{
+		logins: getter,
+	}
 }
 
 type getHandler struct {
