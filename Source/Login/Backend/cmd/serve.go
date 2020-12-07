@@ -6,11 +6,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var devServer bool
+
 var serveCmd = &cobra.Command{
 	Use:   "serve",
 	Short: "Starts the Login server",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		config, err := viper.NewViperConfiguration(configPath)
+		config, err := viper.NewViperConfiguration(configPath, devServer)
 		if err != nil {
 			return err
 		}
@@ -20,4 +22,8 @@ var serveCmd = &cobra.Command{
 		}
 		return container.Server.Run()
 	},
+}
+
+func init() {
+	serveCmd.Flags().BoolVar(&devServer, "dev", false, "Starts the server in DEV mode")
 }

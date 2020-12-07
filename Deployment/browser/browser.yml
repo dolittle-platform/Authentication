@@ -128,7 +128,7 @@ data:
         secret: client-secret
       scopes:
         - openid
-      redirect: http://local.dolittle.studio:8080/.auth/cookies/initiate
+      redirect: http://local.dolittle.studio:8080/.auth/cookies/callback
 
     cookies:
       name: .dolittle.pascal.login

@@ -60,7 +60,7 @@ Backend-urls:
 
 
 User Facing SPA urls:
- - /.auth/login
+ - /.auth/select-provider
  - /.auth/consent
  - /.auth/select-tenant
 

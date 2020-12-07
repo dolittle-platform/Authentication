@@ -25,7 +25,9 @@ var (
 	}
 )
 
-type serverConfiguration struct{}
+type serverConfiguration struct {
+	devMode bool
+}
 
 func (c *serverConfiguration) Port() int {
 	port := viper.GetInt(servePortKey)
@@ -35,18 +37,8 @@ func (c *serverConfiguration) Port() int {
 	return port
 }
 
-func (c *serverConfiguration) FrontendPath() string {
-	if path := viper.GetString(servePathsFrontendKey); path != "" {
-		return path
-	}
-	return defaultServeFrontendPath
-}
-
-func (c *serverConfiguration) ConsentPath() string {
-	if path := viper.GetString(servePathsConsentKey); path != "" {
-		return path
-	}
-	return defaultServeConsentPath
+func (c *serverConfiguration) DevMode() bool {
+	return c.devMode
 }
 
 func (c *serverConfiguration) ErrorRedirect() *url.URL {

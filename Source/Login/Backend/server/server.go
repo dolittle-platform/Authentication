@@ -16,10 +16,24 @@ type Server interface {
 	Run() error
 }
 
-func NewServer(configuration Configuration, logger *zap.Logger) Server {
+func NewServer(
+	configuration Configuration,
+	frontend public.FrontendHandler,
+	loginGet login.GetHandler,
+	tenantInitiate tenant.InitiateHandler,
+	tenantGet tenant.GetHandler,
+	tenantSelect tenant.SelectHandler,
+	consentInitiate consent.InitiateHandler,
+	logger *zap.Logger) Server {
 	return &server{
-		configuration: configuration,
-		logger:        logger,
+		configuration:   configuration,
+		frontend:        frontend,
+		loginGet:        loginGet,
+		tenantInitiate:  tenantInitiate,
+		tenantGet:       tenantGet,
+		tenantSelect:    tenantSelect,
+		consentInitiate: consentInitiate,
+		logger:          logger,
 	}
 }
 

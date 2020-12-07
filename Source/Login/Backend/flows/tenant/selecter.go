@@ -12,16 +12,16 @@ type Selecter interface {
 	SelectTenantFrom(flow *Flow, r *http.Request) (*url.URL, error)
 }
 
-func NewSelecter() Selecter {
-	return &selecter{}
-}
+// func NewSelecter() Selecter {
+// 	return &selecter{}
+// }
 
-type selecter struct{}
+// type selecter struct{}
 
-func (s *selecter) SelectTenant(flow *Flow, tenant tenants.Tenant) (*url.URL, error) {
+// func (s *selecter) SelectTenant(flow *Flow, tenant tenants.Tenant) (*url.URL, error) {
 
-}
+// }
 
-func (s *selecter) SelectTenantFrom(flow *Flow, r *http.Request) (*url.URL, error) {
+// func (s *selecter) SelectTenantFrom(flow *Flow, r *http.Request) (*url.URL, error) {
 
-}
+// }

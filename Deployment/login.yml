@@ -1,0 +1,236 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: system-auth
+  name: login
+data:
+  kratos.yaml: |
+    dsn: postgres://postgres:password@postgres.system-auth.svc.cluster.local:5432/kratos?sslmode=disable&max_conns=20&max_idle_conns=4
+
+    serve:
+      public:
+        port: 4433
+        base_url: "http://local.dolittle.studio:8080/.auth/"
+      admin:
+        port: 4434
+
+    identity:
+      default_schema_url: file:///etc/kratos/config/identity.schema.json
+
+    selfservice:
+      default_browser_return_url: http://local.dolittle.studio:8080/dashboard
+
+      whitelisted_return_urls:
+        - http://local.dolittle.studio:8080/.auth/self-service/tenant/browser
+        - /.auth/self-service/tenant/browser
+
+      flows:
+        login:
+          ui_url: http://local.dolittle.studio:8080/.auth/select-provider
+          after:
+            oidc:
+              default_browser_return_url: /.auth/self-service/tenant/browser
+              hooks:
+                - hook: revoke_active_sessions
+
+        verification:
+          enabled: false
+        
+        error:
+          ui_url: http://local.dolittle.studio:8080/.auth/error
+
+      methods:
+        profile:
+          enabled: false
+        link:
+          enabled: false
+        password:
+          enabled: false
+        oidc:
+          enabled: true
+          config:
+            providers:
+              - id: sample
+                provider: generic
+                client_id: foo
+                client_secret: bar
+                issuer_url: http://oidc-provider.oidc-provider.svc.cluster.local:9090/
+                mapper_url: file:///etc/kratos/config/sample.mapper.jsonnet
+                scope:
+                  - profile
+                  - email
+                requested_claims:
+                  userinfo:
+                    email:
+                      essential: true
+
+    hashers:
+      argon2:
+        parallelism: 1
+        memory: 131072
+        iterations: 2
+        salt_length: 16
+        key_length: 16
+
+    secrets:
+      default:
+        - PLEASE-CHANGE-ME-I-AM-VERY-INSECURE-DUH
+      cookie:
+        - PLEASE-CHANGE-ME-I-AM-EVEN-MORE-INSECURE-I-WAS-NEVER-LOVED
+
+    session:
+      cookie:
+        persistent: true
+        same_site: Lax
+      lifespan: 24h
+
+    courier:
+      smtp:
+        connection_uri: "smtps://test:test@mailslurper:1025/?skip_ssl_verify=true"
+
+    log:
+      level: debug
+      format: text
+
+  identity.schema.json: |
+    {
+      "$id": "https://dolittle.studio/authentication/schemas/v1/customer.schema.json",
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Customer",
+      "type": "object",
+      "properties": {
+        "traits": {
+          "type": "object",
+          "properties": {
+            "email": {
+              "type": "string",
+              "format": "email",
+              "title": "E-Mail"
+            },
+            "tenants": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "title": "Tenants"
+            }
+          },
+          "required": [
+            "email",
+            "tenants"
+          ],
+          "additionalProperties": false
+        }
+      }
+    }
+
+  sample.mapper.jsonnet: |
+    local claims = std.extVar('claims');
+
+    {
+      identity: {
+        traits: {
+          email: claims.email,
+          tenants: []
+        }
+      }
+    }
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: system-auth
+  name: login
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      system: auth
+      component: login
+
+  template:
+    metadata:
+      labels:
+        system: auth
+        component: login
+    spec:
+      initContainers:
+      - name: kratos-init
+        image: oryd/kratos:v0.5.4
+        args:
+        - "--config"
+        - "/etc/kratos/config/kratos.yaml"
+        - "migrate"
+        - "sql"
+        - "-e"
+        - "--yes"
+        volumeMounts:
+        - name: config
+          mountPath: /etc/kratos/config
+      containers:
+      - name: kratos
+        image: oryd/kratos:v0.5.4
+        args:
+        - "--config"
+        - "/etc/kratos/config/kratos.yaml"
+        - "serve"
+        - "--dev"
+        volumeMounts:
+        - name: config
+          mountPath: /etc/kratos/config
+        ports:
+        - name: kratos-public
+          containerPort: 4433
+        - name: kratos-admin
+          containerPort: 4434
+      - name: login
+        image: alpine/socat
+        args:
+          - "tcp-listen:8080,fork,reuseaddr"
+          - "tcp:192.168.65.2:8090"
+        ports:
+        - name: login-public
+          containerPort: 8080
+      volumes:
+      - name: config
+        configMap:
+          name: login
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: login
+  namespace: system-auth
+spec:
+  selector:
+    system: auth
+    component: login
+  ports:
+  - port: 4433
+    targetPort: kratos-public
+    name: kratos-public
+  - port: 8080
+    targetPort: login-public
+    name: login-public
+
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  namespace: system-auth
+  name: login
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+spec:
+  rules:
+  - host: local.dolittle.studio
+    http:
+      paths:
+      - path: /(\.auth/.*)
+        backend:
+          serviceName: login
+          servicePort: login-public

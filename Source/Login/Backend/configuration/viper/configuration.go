@@ -10,7 +10,7 @@ import (
 	"github.com/ory/viper"
 )
 
-func NewViperConfiguration(configPath string) (config.Configuration, error) {
+func NewViperConfiguration(configPath string, devServer bool) (config.Configuration, error) {
 	if configPath != "" {
 		viper.SetConfigFile(configPath)
 	} else {
@@ -32,7 +32,9 @@ func NewViperConfiguration(configPath string) (config.Configuration, error) {
 	viper.WatchConfig()
 
 	return &configuration{
-		server: &serverConfiguration{},
+		server: &serverConfiguration{
+			devMode: devServer,
+		},
 	}, nil
 }
 

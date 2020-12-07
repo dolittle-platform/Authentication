@@ -1,7 +1,7 @@
 serve:
-  port: 8080
+  port: 8090
   paths:
     frontend: /
 
 urls:
-  error: http://localhost:8080/error
+  error: http://local.dolittle.studio:8080/.auth/error
