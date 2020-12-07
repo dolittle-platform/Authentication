@@ -111,5 +111,17 @@ services:
       - '4434:4434'
 
 
+  local-oidc-provider:
+    image: qlik/simple-oidc-provider
+    environment:
+      CONFIG_FILE: /etc/simple-oidc-provider/config/config.json
+      USERS_FILE: /etc/simple-oidc-provider/config/users.json
+    volumes:
+      - './oidc-provider/config.json:/etc/simple-oidc-provider/config/config.json'
+      - './oidc-provider/users.json:/etc/simple-oidc-provider/config/users.json'
+    ports:
+      - '9090:9090'
+
+
   studio:
     image: dolittle/spinner:0.0.0

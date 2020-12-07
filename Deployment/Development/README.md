@@ -4,11 +4,17 @@ First set the IP of your host machine (reachable from within Docker) in the `.en
 Append to your `/etc/hosts` file:
 ```
 127.0.0.1 local.dolittle.studio
+127.0.0.1 local-oidc-provider
 ```
 
 Then run:
 ```shell
 docker-compose up
+```
+
+Then run:
+```shell
+./add-pascal-client-to-hydra.sh
 ```
 
 Then run:

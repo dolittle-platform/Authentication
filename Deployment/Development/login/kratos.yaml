@@ -47,7 +47,7 @@ selfservice:
             provider: generic
             client_id: foo
             client_secret: bar
-            issuer_url: http://oidc-provider.oidc-provider.svc.cluster.local:9090/
+            issuer_url: http://local-oidc-provider:9090/
             mapper_url: file:///etc/kratos/config/sample.mapper.jsonnet
             scope:
               - profile
