@@ -1,0 +1,40 @@
+serve:
+  port: 8080
+
+  paths:
+    initiate: /.auth/cookies/initiate
+    complete: /.auth/cookies/callback
+
+urls:
+  error: http://local.dolittle.studio:8080/error
+  return:
+    query_parameter: return_to
+    default: http://local.dolittle.studio:8080/
+    allowed: []
+
+sessions:
+  nonce_length: 80
+  lifetime: 5m
+  cookies:
+    name: .dolittle.pascal.session
+    secure: true
+    samesite: lax
+    path: /
+  keys:
+    - hash: KEY-USED-TO-SIGN-SESSION-COOKIES-SHOULD-BE-64-BYTES-LONG--------
+      block: ENCRYPTION-KEY-SHOULD-BE-32-BYTS
+
+openid:
+  issuer: http://local.dolittle.studio:8080/.auth/
+  client:
+    id: client-id
+    secret: client-secret
+  scopes:
+    - openid
+  redirect: http://local.dolittle.studio:8080/.auth/cookies/callback
+
+cookies:
+  name: .dolittle.pascal.login
+  secure: true
+  samesite: lax
+  path: /

@@ -1,0 +1,23 @@
+dsn: postgres://postgres:password@postgres:5432/hydra_browser?sslmode=disable
+
+serve:
+  public:
+    port: 4444
+  admin:
+    port: 4445
+
+secrets:
+  system:
+    - DgCPtr3IlG0KFMBqHA7LQ4ixMSRqNHrA
+
+urls:
+  self:
+    issuer: http://local.dolittle.studio:8080/.auth/
+    public: http://local.dolittle.studio:8080/.auth/
+  
+  login: http://local.dolittle.studio:8080/.auth/self-service/tenant/browser
+  consent: http://local.dolittle.studio:8080/.auth/self-service/consent/browser
+
+log:
+  level: debug
+  format: text

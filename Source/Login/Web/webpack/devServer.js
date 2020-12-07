@@ -9,6 +9,7 @@ module.exports = (basePath) => {
         host: '0.0.0.0',
         port: 8091,
         publicPath: basePath,
-        contentBase: process.cwd()
+        contentBase: process.cwd(),
+        disableHostCheck: true
     };
 };
