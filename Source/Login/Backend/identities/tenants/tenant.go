@@ -1,3 +1,8 @@
 package tenants
 
-type Tenant string
+type TenantID string
+
+type Tenant struct {
+	ID      TenantID
+	Display string
+}

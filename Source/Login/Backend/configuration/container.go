@@ -7,6 +7,7 @@ import (
 	loginFlow "dolittle.io/login/flows/login"
 	tenantFlow "dolittle.io/login/flows/tenant"
 	"dolittle.io/login/identities/current"
+	"dolittle.io/login/identities/tenants"
 	"dolittle.io/login/providers"
 	"dolittle.io/login/server"
 	"dolittle.io/login/server/public"
@@ -21,6 +22,8 @@ type Container struct {
 
 	HydraClient  hydra.Client
 	KratosClient kratos.Client
+
+	TenantGetter tenants.Getter
 
 	CurrentUserParser current.Parser
 	CurrentUserGetter current.Getter
@@ -73,7 +76,10 @@ func NewContainer(configuration Configuration) (*Container, error) {
 	}
 	container.KratosClient = kratosClient
 
-	container.CurrentUserParser = current.NewParser()
+	container.TenantGetter = tenants.NewGetter()
+
+	container.CurrentUserParser = current.NewParser(
+		container.TenantGetter)
 
 	container.CurrentUserGetter = current.NewGetter(
 		configuration.Identities(),

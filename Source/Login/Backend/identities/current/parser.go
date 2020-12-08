@@ -10,11 +10,15 @@ type Parser interface {
 	ParseUserFrom(session *models.Session) (*users.User, error)
 }
 
-func NewParser() Parser {
-	return &parser{}
+func NewParser(tenants tenants.Getter) Parser {
+	return &parser{
+		tenants: tenants,
+	}
 }
 
-type parser struct{}
+type parser struct {
+	tenants tenants.Getter
+}
 
 func (p *parser) ParseUserFrom(session *models.Session) (*users.User, error) {
 	tenants, err := p.getTenantsFromTraits(session.Identity.Traits)
@@ -46,11 +50,15 @@ func (p *parser) getTenantsFromTraits(traits models.Traits) ([]tenants.Tenant, e
 
 	userTenants := make([]tenants.Tenant, 0)
 	for _, tenantValue := range tenantsSlice {
-		tenantString, ok := tenantValue.(string)
+		tenantID, ok := tenantValue.(string)
 		if !ok {
 			return nil, ErrKratosTenantWasNotString
 		}
-		userTenants = append(userTenants, tenants.Tenant(tenantString))
+		tenant, err := p.tenants.GetTenantFromID(tenants.TenantID(tenantID))
+		if err != nil {
+			return nil, err
+		}
+		userTenants = append(userTenants, *tenant)
 	}
 
 	return userTenants, nil
