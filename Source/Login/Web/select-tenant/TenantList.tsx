@@ -7,6 +7,8 @@ import { withViewModel } from '../MVVM/withViewModel';
 
 import { TenantListViewModel } from './TenantListViewModel';
 
+import { TenantListItem } from './TenantListItem';
+
 export type TenantListProps = {
     loading: Function;
     loaded: Function;
@@ -17,6 +19,14 @@ export const TenantList = withViewModel<TenantListViewModel, TenantListProps>(Te
     return (
         <>
             <h1>Select tenant:</h1>
+            { props.flow !== null ? viewModel.tenants.map(tenant =>
+                <TenantListItem
+                    key={tenant.id}
+                    formAction="http://studio.localhost:8080/.auth/self-service/tenant/select"
+                    formMethod="POST"
+                    flowId={props.flow!}
+                    tenant={tenant} />
+            ) : <></> }
         </>
     );
 });

@@ -10,6 +10,7 @@ require (
 	github.com/google/uuid v1.1.1
 	github.com/influxdata/influxdb v1.8.3 // indirect
 	github.com/mitchellh/go-homedir v1.0.0
+	github.com/mitchellh/mapstructure v1.3.2
 	github.com/ory/hydra-client-go v1.8.5
 	github.com/ory/kratos-client-go v0.5.4-alpha.1
 	github.com/ory/viper v1.7.5

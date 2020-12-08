@@ -11,8 +11,12 @@ type Getter interface {
 	GetConsentFlowFrom(r *http.Request) (*Flow, error)
 }
 
-func NewGetter() Getter {
-	return &getter{}
+func NewGetter(configuration Configuration, hydra hydra.Client, parser Parser) Getter {
+	return &getter{
+		configuration: configuration,
+		hydra:         hydra,
+		parser:        parser,
+	}
 }
 
 type getter struct {

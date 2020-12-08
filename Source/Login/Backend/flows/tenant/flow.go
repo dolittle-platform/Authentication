@@ -1,11 +1,12 @@
 package tenant
 
-import "dolittle.io/login/identities/tenants"
+import (
+	"dolittle.io/login/identities/users"
+)
 
 type FlowID string
 
 type Flow struct {
-	ID FlowID
-
-	AvailableTenants []tenants.Tenant
+	ID   FlowID
+	User *users.User
 }

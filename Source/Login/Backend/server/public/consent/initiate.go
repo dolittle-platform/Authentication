@@ -10,8 +10,11 @@ import (
 
 type InitiateHandler handling.Handler
 
-func NewInitiateHandler() InitiateHandler {
-	return &initiateHandler{}
+func NewInitiateHandler(getter consent.Getter, accepter consent.Accepter) InitiateHandler {
+	return &initiateHandler{
+		getter:   getter,
+		accepter: accepter,
+	}
 }
 
 type initiateHandler struct {
@@ -19,13 +22,14 @@ type initiateHandler struct {
 	accepter consent.Accepter
 }
 
+// /.auth/self-service/consent/browser
 func (h *initiateHandler) Handle(w http.ResponseWriter, r *http.Request, ctx context.Context) error {
 	flow, err := h.getter.GetConsentFlowFrom(r)
 	if err != nil {
 		return err
 	}
 
-	redirect, err := h.accepter.AcceptConsentFlow(flow)
+	redirect, err := h.accepter.AcceptConsentFlow(ctx, flow)
 	if err != nil {
 		return err
 	}

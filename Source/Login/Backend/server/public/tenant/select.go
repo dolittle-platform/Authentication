@@ -22,13 +22,15 @@ type selectHandler struct {
 	selecter tenant.Selecter
 }
 
+// Handles POST to /.auth/self-service/tenant/select to complete the Hydra login flow and to start
+// the consent flow
 func (h *selectHandler) Handle(w http.ResponseWriter, r *http.Request, ctx context.Context) error {
 	flow, err := h.flows.GetTenantFlowFrom(r)
 	if err != nil {
 		return err
 	}
 
-	redirect, err := h.selecter.SelectTenantFrom(flow, r)
+	redirect, err := h.selecter.SelectTenantFrom(ctx, flow, r)
 	if err != nil {
 		return err
 	}

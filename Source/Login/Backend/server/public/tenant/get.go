@@ -21,6 +21,7 @@ type getHandler struct {
 	flows tenant.Getter
 }
 
+// /.auth/self-service/tenant/flows
 func (h *getHandler) Handle(w http.ResponseWriter, r *http.Request, ctx context.Context) error {
 	flow, err := h.flows.GetTenantFlowFrom(r)
 	if err != nil {

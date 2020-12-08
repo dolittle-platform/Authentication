@@ -21,6 +21,8 @@ type getHandler struct {
 	logins login.Getter
 }
 
+// Handles GET /.auth/self-service/login/flows?id=<id> and provides a list of login providers from Kratos
+// for that specific flow
 func (h *getHandler) Handle(w http.ResponseWriter, r *http.Request, ctx context.Context) error {
 	flow, err := h.logins.GetLoginFlowFrom(r)
 	if err != nil {

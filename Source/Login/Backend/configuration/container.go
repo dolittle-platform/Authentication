@@ -4,6 +4,7 @@ import (
 	"dolittle.io/login/clients/hydra"
 	"dolittle.io/login/clients/kratos"
 	"dolittle.io/login/configuration/changes"
+	consentFlow "dolittle.io/login/flows/consent"
 	loginFlow "dolittle.io/login/flows/login"
 	tenantFlow "dolittle.io/login/flows/tenant"
 	"dolittle.io/login/identities/current"
@@ -36,6 +37,10 @@ type Container struct {
 	TenantFlowParser   tenantFlow.Parser
 	TenantFlowGetter   tenantFlow.Getter
 	TenantFlowSelecter tenantFlow.Selecter
+
+	ConsentFlowParser   consentFlow.Parser
+	ConsentFlowGetter   consentFlow.Getter
+	ConsentFlowAccepter consentFlow.Accepter
 
 	FrontendHandler public.FrontendHandler
 
@@ -105,6 +110,20 @@ func NewContainer(configuration Configuration) (*Container, error) {
 		container.CurrentUserGetter,
 		container.TenantFlowParser)
 
+	container.TenantFlowSelecter = tenantFlow.NewSelecter(
+		configuration.Flows().Tenant(),
+		container.HydraClient)
+
+	container.ConsentFlowParser = consentFlow.NewParser()
+
+	container.ConsentFlowGetter = consentFlow.NewGetter(
+		configuration.Flows().Consent(),
+		container.HydraClient,
+		container.ConsentFlowParser)
+
+	container.ConsentFlowAccepter = consentFlow.NewAccepter(
+		container.HydraClient)
+
 	container.FrontendHandler = public.NewFrontendHandler(
 		configuration.Server())
 
@@ -117,6 +136,14 @@ func NewContainer(configuration Configuration) (*Container, error) {
 
 	container.TenantGetHandler = tenant.NewGetHandler(
 		container.TenantFlowGetter)
+
+	container.TenantSelectHandler = tenant.NewSelectHandler(
+		container.TenantFlowGetter,
+		container.TenantFlowSelecter)
+
+	container.ConsentInitiateHandler = consent.NewInitiateHandler(
+		container.ConsentFlowGetter,
+		container.ConsentFlowAccepter)
 
 	container.Server = server.NewServer(
 		configuration.Server(),

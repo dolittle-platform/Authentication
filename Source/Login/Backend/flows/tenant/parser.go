@@ -17,7 +17,7 @@ type parser struct{}
 
 func (p *parser) ParseTenantFlowFrom(response *models.LoginRequest, user *users.User) (*Flow, error) {
 	return &Flow{
-		ID:               FlowID(*response.Challenge),
-		AvailableTenants: user.Tenants,
+		ID:   FlowID(*response.Challenge),
+		User: user,
 	}, nil
 }

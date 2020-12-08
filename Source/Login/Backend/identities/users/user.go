@@ -7,9 +7,9 @@ type User struct {
 	Tenants []tenants.Tenant
 }
 
-func (u *User) HasAccessToTenant(givenTenant tenants.Tenant) bool {
+func (u *User) HasAccessToTenant(givenID tenants.TenantID) bool {
 	for _, tenant := range u.Tenants {
-		if givenTenant == tenant {
+		if givenID == tenant.ID {
 			return true
 		}
 	}
