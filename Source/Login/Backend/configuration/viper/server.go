@@ -8,13 +8,9 @@ import (
 
 const (
 	servePortKey          = "serve.port"
-	servePathsFrontendKey = "serve.paths.frontend"
-	servePathsConsentKey  = "serve.paths.consent"
 	urlsErrorKey          = "urls.error"
 
 	defaultServePort         = 8080
-	defaultServeFrontendPath = "/"
-	defaultServeConsentPath  = "/consent"
 )
 
 var (
