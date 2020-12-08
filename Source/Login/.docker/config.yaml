@@ -1,0 +1,28 @@
+serve:
+  port: 8080
+
+urls:
+  error: http://localhost:8080/error
+
+identities:
+  cookie_name: ory_kratos_session
+
+flows:
+  login:
+    flow_id_query_parameter: id
+    csrf_token_parameter: csrf_token
+    provider_parameter: provider
+  tenant:
+    flow_id_query_parameter: login_challenge
+    flow_id_form_parameter: login_challenge
+    flow_tenant_form_parameter: tenant
+  consent:
+    flow_id_query_parameter: consent_challenge
+
+clients:
+  hydra:
+    endpoints:
+      admin: http://localhost:4455/
+  kratos:
+    endpoints:
+      public: http://localhost:4433/
