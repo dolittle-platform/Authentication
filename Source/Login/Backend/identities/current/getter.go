@@ -34,7 +34,7 @@ func (g *getter) GetCurrentUser(r *http.Request) (*users.User, error) {
 	if err != nil {
 		return nil, err
 	}
-	session, err := g.kratos.GetCurrentUser(r.Context(), cookie.Value)
+	session, err := g.kratos.GetCurrentUser(r.Context(), cookie)
 	if _, unauthorized := err.(*public.WhoamiUnauthorized); unauthorized {
 		return nil, ErrNoUserLoggedIn
 	}

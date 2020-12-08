@@ -2,6 +2,7 @@ package kratos
 
 import (
 	"context"
+	"net/http"
 
 	"dolittle.io/login/configuration/changes"
 	openapi "github.com/go-openapi/runtime/client"
@@ -11,7 +12,7 @@ import (
 )
 
 type Client interface {
-	GetCurrentUser(ctx context.Context, cookie string) (*models.Session, error)
+	GetCurrentUser(ctx context.Context, cookie *http.Cookie) (*models.Session, error)
 	GetLoginFlow(ctx context.Context, flowID string) (*models.LoginFlow, error)
 }
 
@@ -31,8 +32,9 @@ type client struct {
 	client        *ory.OryKratos
 }
 
-func (c *client) GetCurrentUser(ctx context.Context, cookie string) (*models.Session, error) {
-	params := public.NewWhoamiParams().WithCookie(&cookie).WithContext(ctx)
+func (c *client) GetCurrentUser(ctx context.Context, cookie *http.Cookie) (*models.Session, error) {
+	cookieHeaderValue := cookie.String()
+	params := public.NewWhoamiParams().WithCookie(&cookieHeaderValue).WithContext(ctx)
 	response, err := c.client.Public.Whoami(params, openapi.PassThroughAuth)
 	if err != nil {
 		return nil, err
