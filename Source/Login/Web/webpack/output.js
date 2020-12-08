@@ -17,9 +17,12 @@ module.exports = (env, argv, basePath) => {
                 : '[name].[hash].bundle.map',
         chunkFilename:
             production === true
-                ? '[name].[chunkhash].chunk.js'
-                : '[name].[hash].chunk.js',
-        path: path.resolve(process.cwd(), '..', 'Backend', 'wwwroot'),
+            ? '[name].[chunkhash].chunk.js'
+            : '[name].[hash].chunk.js',
+        path:
+            production === true
+            ? path.resolve(process.cwd(), 'wwwroot')
+            : path.resolve(process.cwd(), '..', 'Backend', 'wwwroot'),
         publicPath: basePath
     }
 };
