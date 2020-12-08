@@ -26,11 +26,5 @@ export const IdentityProviderList = withViewModel<IdentityProviderListViewModel,
                     formCsrfToken={viewModel.formCsrfToken} />
             )}
         </>
-        // <form action={viewModel.formAction} method={viewModel.formMethod}>
-        //     <input name="csrf_token" type="hidden" value={viewModel.formCsrfToken} />
-        //     {viewModel.providers.map(provider => 
-        //         <input key={provider.id} type="submit" name="provider" value={provider.id}/>
-        //     )}
-        // </form>
     );
 });
