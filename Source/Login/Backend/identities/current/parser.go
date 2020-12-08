@@ -39,14 +39,18 @@ func (p *parser) getTenantsFromTraits(traits models.Traits) ([]tenants.Tenant, e
 		return nil, ErrKratosTraitsDoesNotContainTenants
 	}
 
-	tenantsSlice, ok := tenantsValue.([]string)
+	tenantsSlice, ok := tenantsValue.([]interface{})
 	if !ok {
-		return nil, ErrKratosTenantsWasNotStringSlice
+		return nil, ErrKratosTenantsWasNotArray
 	}
 
 	userTenants := make([]tenants.Tenant, 0)
-	for _, tenant := range tenantsSlice {
-		userTenants = append(userTenants, tenants.Tenant(tenant))
+	for _, tenantValue := range tenantsSlice {
+		tenantString, ok := tenantValue.(string)
+		if !ok {
+			return nil, ErrKratosTenantWasNotString
+		}
+		userTenants = append(userTenants, tenants.Tenant(tenantString))
 	}
 
 	return userTenants, nil
