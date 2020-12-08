@@ -3,6 +3,7 @@ package tenant
 import (
 	"context"
 	"net/http"
+	"net/url"
 
 	"dolittle.io/login/flows/tenant"
 	"dolittle.io/login/identities/current"
@@ -26,7 +27,9 @@ type initiateHandler struct {
 func (h *initiateHandler) Handle(w http.ResponseWriter, r *http.Request, ctx context.Context) error {
 	flow, err := h.flows.GetTenantFlowFrom(r)
 	if err == current.ErrNoUserLoggedIn {
-		http.Redirect(w, r, "/.auth/self-service/login/browser", http.StatusFound)
+		params := url.Values{}
+		params.Add("return_to", r.URL.String())
+		http.Redirect(w, r, "/.auth/self-service/login/browser?"+params.Encode(), http.StatusFound)
 		return nil
 	}
 	if err != nil {

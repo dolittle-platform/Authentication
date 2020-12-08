@@ -18,6 +18,13 @@ selfservice:
     - /.auth/self-service/tenant/browser
 
   flows:
+    registration:
+          after:
+            oidc:
+              default_browser_return_url: /.auth/self-service/tenant/browser
+              hooks:
+                - hook: session
+
     login:
       ui_url: http://local.dolittle.studio:8080/.auth/select-provider
       after:
