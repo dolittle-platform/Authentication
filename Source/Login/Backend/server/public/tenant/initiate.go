@@ -46,6 +46,8 @@ func (h *initiateHandler) Handle(w http.ResponseWriter, r *http.Request, ctx con
 		return nil
 	}
 
-	http.Redirect(w, r, "/.auth/select-tenant", http.StatusFound)
+	params := url.Values{}
+	params.Add("login_challenge", string(flow.ID))
+	http.Redirect(w, r, "/.auth/select-tenant?"+params.Encode(), http.StatusFound)
 	return nil
 }
