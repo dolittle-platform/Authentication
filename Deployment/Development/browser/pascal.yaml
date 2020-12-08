@@ -6,10 +6,10 @@ serve:
     complete: /.auth/cookies/callback
 
 urls:
-  error: http://local.dolittle.studio:8080/error
+  error: http://studio.localhost:8080/error
   return:
     query_parameter: return_to
-    default: http://local.dolittle.studio:8080/
+    default: http://studio.localhost:8080/
     allowed: []
 
 sessions:
@@ -17,7 +17,7 @@ sessions:
   lifetime: 5m
   cookies:
     name: .dolittle.pascal.session
-    secure: true
+    secure: false
     samesite: lax
     path: /
   keys:
@@ -25,16 +25,16 @@ sessions:
       block: ENCRYPTION-KEY-SHOULD-BE-32-BYTS
 
 openid:
-  issuer: http://local.dolittle.studio:8080/.auth/
+  issuer: http://studio.localhost:8080/.auth/
   client:
     id: client-id
     secret: client-secret
   scopes:
     - openid
-  redirect: http://local.dolittle.studio:8080/.auth/cookies/callback
+  redirect: http://studio.localhost:8080/.auth/cookies/callback
 
 cookies:
   name: .dolittle.pascal.login
-  secure: true
+  secure: false
   samesite: lax
   path: /

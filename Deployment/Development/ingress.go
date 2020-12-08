@@ -35,7 +35,9 @@ func main() {
 	http.Handle("/.auth/", proxyTo("http://localhost:8090/"))
 	http.Handle("/.auth/self-service/tenant/", proxyTo("http://localhost:8090/"))
 	http.Handle("/.auth/self-service/login/flows", proxyTo("http://localhost:8090/"))
+	http.Handle("/.auth/self-service/consent/", proxyTo("http://localhost:8090/"))
 
 	fmt.Println("Starting reverse proxy on :8080")
+	// http.ListenAndServeTLS(":8080", "cert.pem", "key.pem", nil)
 	http.ListenAndServe(":8080", nil)
 }

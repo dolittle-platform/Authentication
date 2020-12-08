@@ -49,6 +49,8 @@ services:
       - "serve"
       - "all"
       - "--dangerous-force-http"
+      - "--dangerous-allow-insecure-redirect-urls"
+      - "http://studio.localhost/.auth/cookies/callback"
     volumes:
       - './browser/hydra.yaml:/etc/hydra/config/hydra.yaml'
     ports:
@@ -74,7 +76,7 @@ services:
     volumes:
       - './browser/pascal.yaml:/etc/pascal/config/pascal.yaml'
     extra_hosts:
-      - "local.dolittle.studio:${HOST_IP}"
+      - "studio.localhost:${HOST_IP}"
     ports:
       - '8002:8080'
 

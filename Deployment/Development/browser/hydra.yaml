@@ -12,11 +12,11 @@ secrets:
 
 urls:
   self:
-    issuer: http://local.dolittle.studio:8080/.auth/
-    public: http://local.dolittle.studio:8080/.auth/
+    issuer: http://studio.localhost:8080/.auth/
+    public: http://studio.localhost:8080/.auth/
   
-  login: http://local.dolittle.studio:8080/.auth/self-service/tenant/browser
-  consent: http://local.dolittle.studio:8080/.auth/self-service/consent/browser
+  login: http://studio.localhost:8080/.auth/self-service/tenant/browser
+  consent: http://studio.localhost:8080/.auth/self-service/consent/browser
 
 log:
   level: debug

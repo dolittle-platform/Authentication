@@ -3,7 +3,7 @@
     url: http://studio
   match:
     methods: ["GET"]
-    url: http://local.dolittle.studio:8080/
+    url: http://studio.localhost:8080/
   authenticators:
     - handler: oauth2_introspection
   authorizer:
@@ -13,5 +13,5 @@
   errors:
     - handler: redirect
       config:
-        to: http://local.dolittle.studio:8080/.auth/cookies/initiate
+        to: http://studio.localhost:8080/.auth/cookies/initiate
         return_to_query_param: return_to

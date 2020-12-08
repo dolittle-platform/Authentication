@@ -16,7 +16,7 @@ errors:
     redirect:
       enabled: true
       config:
-        to: http://local.dolittle.studio:8080/
+        to: http://studio.localhost:8080/
 
 mutators:
   noop:
@@ -32,4 +32,4 @@ authenticators:
     config:
       introspection_url: http://browser-hydra:4445/oauth2/introspect
       token_from:
-        cookie: dolittle-token
+        cookie: .dolittle.pascal.login

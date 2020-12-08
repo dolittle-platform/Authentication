@@ -3,7 +3,7 @@ dsn: postgres://postgres:password@postgres:5432/kratos?sslmode=disable&max_conns
 serve:
   public:
     port: 4433
-    base_url: "http://local.dolittle.studio:8080/.auth/"
+    base_url: "http://studio.localhost:8080/.auth/"
   admin:
     port: 4434
 
@@ -11,10 +11,10 @@ identity:
   default_schema_url: file:///etc/kratos/config/identity.schema.json
 
 selfservice:
-  default_browser_return_url: http://local.dolittle.studio:8080/dashboard
+  default_browser_return_url: http://studio.localhost:8080/dashboard
 
   whitelisted_return_urls:
-    - http://local.dolittle.studio:8080/.auth/self-service/tenant/browser
+    - http://studio.localhost:8080/.auth/self-service/tenant/browser
     - /.auth/self-service/tenant/browser
 
   flows:
@@ -26,7 +26,7 @@ selfservice:
                 - hook: session
 
     login:
-      ui_url: http://local.dolittle.studio:8080/.auth/select-provider
+      ui_url: http://studio.localhost:8080/.auth/select-provider
       after:
         oidc:
           default_browser_return_url: /.auth/self-service/tenant/browser
@@ -37,7 +37,7 @@ selfservice:
       enabled: false
     
     error:
-      ui_url: http://local.dolittle.studio:8080/.auth/error
+      ui_url: http://studio.localhost:8080/.auth/error
 
   methods:
     profile:

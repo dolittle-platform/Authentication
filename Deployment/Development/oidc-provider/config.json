@@ -6,7 +6,7 @@
             "client_id": "foo",
             "client_secret": "bar",
             "redirect_uris": [
-                "http://local.dolittle.studio:8080/.auth/self-service/methods/oidc/callback/sample"
+                "http://studio.localhost:8080/.auth/self-service/methods/oidc/callback/sample"
             ]
         }
     ],

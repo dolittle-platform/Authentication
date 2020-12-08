@@ -3,7 +3,7 @@ First set the IP of your host machine (reachable from within Docker) in the `.en
 
 Append to your `/etc/hosts` file:
 ```
-127.0.0.1 local.dolittle.studio
+127.0.0.1 studio.localhost
 127.0.0.1 local-oidc-provider
 ```
 
@@ -24,5 +24,5 @@ go run ingress.go
 
 ## Clean up with
 ```shell
-docker-compose down
+docker-compose down -v
 ```
