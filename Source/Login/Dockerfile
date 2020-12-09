@@ -11,7 +11,10 @@ RUN yarn
 COPY ./Web /build
 RUN yarn build
 
+FROM alpine:latest as ssl-certs
+
 FROM scratch
+COPY --from=ssl-certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=build-backend /build/login /bin/login
 COPY .docker/group /etc/group
 COPY .docker/passwd /etc/passwd
