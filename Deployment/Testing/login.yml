@@ -5,12 +5,12 @@ metadata:
   name: login
 data:
   kratos.yaml: |
-    dsn: postgres://postgres:password@postgres.system-auth.svc.cluster.local:5432/kratos?sslmode=disable&max_conns=20&max_idle_conns=4
+    dsn: postgres://postgres:password@postgresql.system-auth.svc.cluster.local:5432/kratos?sslmode=disable&max_conns=20&max_idle_conns=4
 
     serve:
       public:
         port: 4433
-        base_url: "http://local.dolittle.studio:8080/.auth/"
+        base_url: "http://studio.localhost:8080/.auth/"
       admin:
         port: 4434
 
@@ -18,15 +18,15 @@ data:
       default_schema_url: file:///etc/kratos/config/identity.schema.json
 
     selfservice:
-      default_browser_return_url: http://local.dolittle.studio:8080/dashboard
+      default_browser_return_url: http://studio.localhost:8080/
 
       whitelisted_return_urls:
-        - http://local.dolittle.studio:8080/.auth/self-service/tenant/browser
+        - http://studio.localhost:8080/.auth/self-service/tenant/browser
         - /.auth/self-service/tenant/browser
 
       flows:
         login:
-          ui_url: http://local.dolittle.studio:8080/.auth/select-provider
+          ui_url: http://studio.localhost:8080/.auth/select-provider
           after:
             oidc:
               default_browser_return_url: /.auth/self-service/tenant/browser
@@ -37,7 +37,7 @@ data:
           enabled: false
         
         error:
-          ui_url: http://local.dolittle.studio:8080/.auth/error
+          ui_url: http://studio.localhost:8080/.auth/error
 
       methods:
         profile:
@@ -54,7 +54,7 @@ data:
                 provider: generic
                 client_id: foo
                 client_secret: bar
-                issuer_url: http://oidc-provider.oidc-provider.svc.cluster.local:9090/
+                issuer_url: http://local-oidc-provider:9090/
                 mapper_url: file:///etc/kratos/config/sample.mapper.jsonnet
                 scope:
                   - profile
@@ -135,22 +135,49 @@ data:
         }
       }
     }
+  
+  login.yaml: |
+    serve:
+      port: 8080
+
+    urls:
+      error: http://studio.localhost:8080/error
+
+    identities:
+      cookie_name: ory_kratos_session
+
+    flows:
+      login:
+        flow_id_query_parameter: id
+        csrf_token_parameter: csrf_token
+        provider_parameter: provider
+      tenant:
+        flow_id_query_parameter: login_challenge
+        flow_id_form_parameter: login_challenge
+        flow_tenant_form_parameter: tenant
+      consent:
+        flow_id_query_parameter: consent_challenge
+
+    clients:
+      hydra:
+        endpoints:
+          admin: http://browser.system-auth.svc.cluster.local:4445/
+      kratos:
+        endpoints:
+          public: http://login.system-auth.svc.cluster.local:4433/
 
 ---
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   namespace: system-auth
   name: login
-
 spec:
   replicas: 1
   selector:
     matchLabels:
       system: auth
       component: login
-
   template:
     metadata:
       labels:
@@ -187,34 +214,21 @@ spec:
         - name: kratos-admin
           containerPort: 4434
       - name: login
-        image: alpine/socat
+        image: dolittle/login:local
         args:
-          - "tcp-listen:8080,fork,reuseaddr"
-          - "tcp:host.docker.internal:8090"
+        - "--config"
+        - "/etc/login/config/login.yaml"
+        - "serve"
         ports:
         - name: login-public
           containerPort: 8080
+        volumeMounts:
+        - name: config
+          mountPath: /etc/login/config
       volumes:
       - name: config
         configMap:
           name: login
-
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: login2
-  namespace: system-auth
-spec:
-  externalTrafficPolicy: Local
-  type: LoadBalancer
-  selector:
-    system: auth
-    component: login
-  ports:
-  - port: 4433
-    targetPort: kratos-public
-    name: kratos-public
 
 ---
 apiVersion: v1
@@ -244,14 +258,43 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: /$1
 spec:
   rules:
-  - host: local.dolittle.studio
+  - host: studio.localhost
     http:
       paths:
       - path: /(\.auth/.*)
         backend:
           serviceName: login
           servicePort: login-public
-      - path: /\.auth/(self-service/login/browser.*)
+      - path: /(\.auth/self-service/tenant/.*)
+        backend:
+          serviceName: login
+          servicePort: login-public
+      - path: /(\.auth/self-service/login/flows.*)
+        backend:
+          serviceName: login
+          servicePort: login-public
+      - path: /(\.auth/self-service/consent/.*)
+        backend:
+          serviceName: login
+          servicePort: login-public
+      - path: /\.auth/(self-service/.*)
         backend:
           serviceName: login
           servicePort: kratos-public
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: system-auth
+  name: kratos-admin-external
+spec:
+  externalTrafficPolicy: Local
+  type: LoadBalancer
+  selector:
+    system: auth
+    component: login
+  ports:
+  - port: 4434
+    targetPort: kratos-admin
+    name: kratos-admin

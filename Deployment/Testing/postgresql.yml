@@ -2,17 +2,16 @@ apiVersion: v1
 kind: Secret
 metadata:
   namespace: system-auth
-  name: postgresql-secret
+  name: postgresql
 data:
   POSTGRES_PASSWORD: cGFzc3dvcmQ=
 
 ---
-
 apiVersion: v1
 kind: ConfigMap
 metadata:
   namespace: system-auth
-  name: postgresql-config
+  name: postgresql-databases
 data:
   init-hydra-browser-db.sql:
     CREATE DATABASE hydra_browser
@@ -34,12 +33,11 @@ data:
         CONNECTION LIMIT = -1;
 
 ---
-
 apiVersion: v1
 kind: ConfigMap
 metadata:
   namespace: system-auth
-  name: pgadmin-config
+  name: postgresql-pgadmin
 data:
   PGADMIN_DEFAULT_EMAIL: postgres@dolittle.com
   PGADMIN_DEFAULT_PASSWORD: password
@@ -59,82 +57,69 @@ data:
     }
 
 ---
-
 apiVersion: v1
 kind: Service
 metadata:
   namespace: system-auth
-  name:  postgres
+  name:  postgresql
 spec:
   selector:
     system: auth
-    component: postgres
+    component: postgresql
   clusterIP: None
-  ports:
-  - name:  postgresql
-    port:  5432
-    targetPort:  5432
 
 ---
-
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   namespace: system-auth
   name: postgresql
-  labels:
-    system: auth
-
 spec:
   selector:
     matchLabels:
       system: auth
-      component: postgres
-
+      component: postgresql
   serviceName: postgresql
   replicas: 1
-
   template:
     metadata:
       labels:
         system: auth
-        component: postgres
+        component: postgresql
     spec:
       containers:
       - name: postgresql
         image: postgres:9.6.19
         envFrom:
           - secretRef:
-              name: postgresql-secret
+              name: postgresql
         ports:
         - name: postgresql
           containerPort: 5432
         volumeMounts:
-        - name: postgresql-config
+        - name: databases
           mountPath: /docker-entrypoint-initdb.d
         - name: postgresql-storage
           mountPath: /var/lib/postgresql/data
-
       - name: pgadmin
         image: dpage/pgadmin4:4.27
         envFrom:
           - configMapRef:
-              name: pgadmin-config
+              name: postgresql-pgadmin
         volumeMounts:
           - mountPath: /pgadmin4/servers.json
             subPath: servers.json
-            name: pgadmin-config
+            name: pgadmin
         ports:
           - name: admin
             containerPort: 80
       volumes:
-        - name: postgresql-config
+        - name: databases
           configMap:
-            name: postgresql-config
-        - name: pgadmin-config
+            name: postgresql-databases
+        - name: pgadmin
           configMap:
-            name: pgadmin-config
-
+            name: postgresql-pgadmin
   volumeClaimTemplates:
     - metadata:
         name: postgresql-storage
