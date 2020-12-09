@@ -68,7 +68,9 @@ services:
     ports:
       - '8001:4455'
   browser-pascal:
-    image: dolittle/pascal:1.0.1
+    image: dolittle/pascal:local
+    build:
+      context: ../../Source/Pascal
     command:
       - "--config"
       - "/etc/pascal/config/pascal.yaml"
@@ -111,6 +113,12 @@ services:
     ports:
       - '4433:4433'
       - '4434:4434'
+  login-login:
+    image: dolittle/login:local
+    build:
+      context: ../../Source/Login
+    command:
+      - "serve"
 
 
   local-oidc-provider:
