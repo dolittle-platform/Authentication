@@ -1,0 +1,35 @@
+serve:
+  proxy:
+    port: 4455
+access_rules:
+  repositories:
+    - file:///etc/oathkeeper/config/rules.yaml
+
+errors:
+  fallback:
+    - json
+  handlers:
+    json:
+      enabled: true
+      config:
+        verbose: true
+    redirect:
+      enabled: true
+      config:
+        to: http://studio.localhost:8080/
+
+mutators:
+  noop:
+    enabled: true
+
+authorizers:
+  allow:
+    enabled: true
+
+authenticators:
+  oauth2_introspection:
+    enabled: true
+    config:
+      introspection_url: http://browser-hydra:4445/oauth2/introspect
+      token_from:
+        cookie: .dolittle.pascal.login

@@ -1,0 +1,188 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: system-auth
+  name: browser
+data:
+  hydra.yaml: |
+    dsn: postgres://postgres:password@postgresql.system-auth.svc.cluster.local:5432/hydra_browser?sslmode=disable
+
+    serve:
+      public:
+        port: 4444
+      admin:
+        port: 4445
+    
+    secrets:
+      system:
+        - DgCPtr3IlG0KFMBqHA7LQ4ixMSRqNHrA
+
+    urls:
+      self:
+        issuer: http://studio.localhost:8080/.auth/
+        public: http://studio.localhost:8080/.auth/
+      
+      login: http://studio.localhost:8080/.auth/self-service/tenant/browser
+      consent: http://studio.localhost:8080/.auth/self-service/consent/browser
+
+    log:
+      level: debug
+      format: text
+
+  pascal.yaml: |
+    serve:
+      port: 8080
+
+      paths:
+        initiate: /.auth/cookies/initiate
+        complete: /.auth/cookies/callback
+
+    urls:
+      error: http://studio.localhost:8080/error
+      return:
+        query_parameter: return_to
+        default: http://studio.localhost:8080/
+        allowed: []
+
+    sessions:
+      nonce_length: 80
+      lifetime: 5m
+      cookies:
+        name: .dolittle.pascal.session
+        secure: false
+        samesite: lax
+        path: /
+      keys:
+        - hash: KEY-USED-TO-SIGN-SESSION-COOKIES-SHOULD-BE-64-BYTES-LONG--------
+          block: ENCRYPTION-KEY-SHOULD-BE-32-BYTS
+
+    openid:
+      issuer: http://studio.localhost:8080/.auth/
+      client:
+        id: client-id
+        secret: client-secret
+      scopes:
+        - openid
+      redirect: http://studio.localhost:8080/.auth/cookies/callback
+
+    cookies:
+      name: .dolittle.pascal.login
+      secure: false
+      samesite: lax
+      path: /
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: system-auth
+  name: browser
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      system: auth
+      component: browser
+  template:
+    metadata:
+      labels:
+        system: auth
+        component: browser
+    spec:
+      hostAliases:
+        - ip: "192.168.65.2"
+          hostnames:
+            - "studio.localhost"
+      initContainers:
+      - name: hydra-init
+        image: oryd/hydra:v1.8.5
+        args:
+        - "--config"
+        - "/etc/hydra/config/hydra.yaml"
+        - "migrate"
+        - "sql"
+        - "-e"
+        - "--yes"
+        volumeMounts:
+        - name: config
+          mountPath: /etc/hydra/config
+      containers:
+      - name: hydra
+        image: oryd/hydra:v1.8.5
+        args:
+        - "--config"
+        - "/etc/hydra/config/hydra.yaml"
+        - "serve"
+        - "all"
+        - "--dangerous-force-http"
+        volumeMounts:
+        - name: config
+          mountPath: /etc/hydra/config
+        ports:
+        - name: hydra-public
+          containerPort: 4444
+        - name: hydra-admin
+          containerPort: 4445
+      - name: pascal
+        image: dolittle/pascal:local
+        args:
+          - "--config"
+          - "/etc/pascal/config/pascal.yaml"
+          - "serve"
+        ports:
+        - name: pascal
+          containerPort: 8080
+        volumeMounts:
+        - name: config
+          mountPath: /etc/pascal/config
+      volumes:
+      - name: config
+        configMap:
+          name: browser
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  namespace: system-auth
+  name: browser
+spec:
+  selector:
+    system: auth
+    component: browser
+  ports:
+    - port: 4444
+      name: hydra-public
+      targetPort: hydra-public
+    - port: 4445
+      name: hydra-admin
+      targetPort: hydra-admin
+    - port: 8080
+      name: pascal
+      targetPort: pascal
+
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  namespace: system-auth
+  name: browser
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+spec:
+  rules:
+  - host: studio.localhost
+    http:
+      paths:
+      - path: /\.auth/(\.well-known.*)
+        backend:
+          serviceName: browser
+          servicePort: hydra-public
+      - path: /\.auth/(oauth2.*)
+        backend:
+          serviceName: browser
+          servicePort: hydra-public
+      - path: /(\.auth/cookies.*)
+        backend:
+          serviceName: browser
+          servicePort: pascal

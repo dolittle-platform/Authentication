@@ -1,0 +1,17 @@
+- id: studio
+  upstream:
+    url: http://studio
+  match:
+    methods: ["GET"]
+    url: http://studio.localhost:8080/
+  authenticators:
+    - handler: oauth2_introspection
+  authorizer:
+    handler: allow
+  mutators:
+    - handler: noop
+  errors:
+    - handler: redirect
+      config:
+        to: http://studio.localhost:8080/.auth/cookies/initiate
+        return_to_query_param: return_to

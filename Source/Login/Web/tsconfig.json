@@ -1,0 +1,51 @@
+{
+    "compilerOptions": {
+        "baseUrl": ".",
+        "outDir": "./wwwroot",
+        "rootDir": "./",
+
+        "declaration": false,
+        "declarationMap": false,
+        "sourceMap": false,
+        "composite": false,
+        "strict": true,
+        "allowJs": false,
+        "checkJs": false,
+        "module": "CommonJS",
+        "noEmit": false,
+        "pretty": true,
+        "noImplicitAny": false,
+        "skipLibCheck": true,
+        "target": "ES2015",
+        "moduleResolution": "node",
+        "jsx": "react",
+        "esModuleInterop": true,
+        "strictNullChecks": true,
+        "resolveJsonModule": true,
+
+        "downlevelIteration": true,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "noImplicitReturns": true,
+        "noFallthroughCasesInSwitch": true,
+        "stripInternal": true,
+        "allowSyntheticDefaultImports": true,
+        "watch": true,
+        "forceConsistentCasingInFileNames": true,
+        "assumeChangesOnlyAffectDirectDependencies": true,
+        "alwaysStrict": true,
+        "preserveConstEnums": true,
+        "newLine": "lf",
+        "disableSourceOfProjectReferenceRedirect": true //https://github.com/microsoft/TypeScript/issues/34677
+
+     },
+
+     "exclude": [
+         "**/dist"
+     ],
+     "include": [
+         "**/*.ts",
+         "**/*.tsx",
+     ],
+     "references": []
+}

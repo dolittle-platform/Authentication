@@ -1,0 +1,137 @@
+version: '3.8'
+volumes:
+  postgres_data:
+services:
+  postgres:
+    image: postgres:9.6.19
+    environment:
+      POSTGRES_PASSWORD: password
+    volumes:
+      - './postgres/init-hydra-browser-db.sql:/docker-entrypoint-initdb.d/init-hydra-browser-db.sql'
+      - './postgres/init-kratos-db.sql:/docker-entrypoint-initdb.d/init-kratos-db.sql'
+      - 'postgres_data:/var/lib/postgresql/data'
+    logging:
+      driver: none
+  pgadmin:
+    image: dpage/pgadmin4:4.27
+    environment:
+      PGADMIN_DEFAULT_EMAIL: postgres@dolittle.com
+      PGADMIN_DEFAULT_PASSWORD: password
+    volumes:
+      - './postgres/servers.json:/pgadmin4/servers.json'
+    ports:
+      - '9999:80'
+    logging:
+      driver: none
+
+  browser-hydra-init:
+    image: oryd/hydra:v1.8.5
+    restart: on-failure
+    command:
+      - "--config"
+      - "/etc/hydra/config/hydra.yaml"
+      - "migrate"
+      - "sql"
+      - "-e"
+      - "--yes"
+    volumes:
+      - './browser/hydra.yaml:/etc/hydra/config/hydra.yaml'
+    logging:
+      driver: none
+  browser-hydra:
+    image: oryd/hydra:v1.8.5
+    restart: unless-stopped
+    depends_on:
+      - browser-hydra-init
+    command:
+      - "--config"
+      - "/etc/hydra/config/hydra.yaml"
+      - "serve"
+      - "all"
+      - "--dangerous-force-http"
+      - "--dangerous-allow-insecure-redirect-urls"
+      - "http://studio.localhost/.auth/cookies/callback"
+    volumes:
+      - './browser/hydra.yaml:/etc/hydra/config/hydra.yaml'
+    ports:
+      - '4444:4444'
+      - '4445:4445'
+  browser-oathkeeper:
+    image: oryd/oathkeeper:v0.38.4-beta.1
+    command:
+      - "--config"
+      - "/etc/oathkeeper/config/oathkeeper.yaml"
+      - "serve"
+    volumes:
+      - './browser/oathkeeper.yaml:/etc/oathkeeper/config/oathkeeper.yaml'
+      - './browser/rules.yaml:/etc/oathkeeper/config/rules.yaml'
+    ports:
+      - '8001:4455'
+  browser-pascal:
+    image: dolittle/pascal:local
+    build:
+      context: ../../Source/Pascal
+    command:
+      - "--config"
+      - "/etc/pascal/config/pascal.yaml"
+      - "serve"
+    volumes:
+      - './browser/pascal.yaml:/etc/pascal/config/pascal.yaml'
+    extra_hosts:
+      - "studio.localhost:${HOST_IP}"
+    ports:
+      - '8002:8080'
+
+  login-kratos-init:
+    image: oryd/kratos:v0.5.4
+    restart: on-failure
+    command:
+      - "--config"
+      - "/etc/kratos/config/kratos.yaml"
+      - "migrate"
+      - "sql"
+      - "-e"
+      - "--yes"
+    volumes:
+      - './login/kratos.yaml:/etc/kratos/config/kratos.yaml'
+    logging:
+      driver: none
+  login-kratos:
+    image: oryd/kratos:v0.5.4
+    restart: unless-stopped
+    depends_on:
+      - login-kratos-init
+    command:
+      - "--config"
+      - "/etc/kratos/config/kratos.yaml"
+      - "serve"
+      - "--dev"
+    volumes:
+      - './login/kratos.yaml:/etc/kratos/config/kratos.yaml'
+      - './login/identity.schema.json:/etc/kratos/config/identity.schema.json'
+      - './login/sample.mapper.jsonnet:/etc/kratos/config/sample.mapper.jsonnet'
+    ports:
+      - '4433:4433'
+      - '4434:4434'
+  login-login:
+    image: dolittle/login:local
+    build:
+      context: ../../Source/Login
+    command:
+      - "serve"
+
+
+  local-oidc-provider:
+    image: qlik/simple-oidc-provider
+    environment:
+      CONFIG_FILE: /etc/simple-oidc-provider/config/config.json
+      USERS_FILE: /etc/simple-oidc-provider/config/users.json
+    volumes:
+      - './oidc-provider/config.json:/etc/simple-oidc-provider/config/config.json'
+      - './oidc-provider/users.json:/etc/simple-oidc-provider/config/users.json'
+    ports:
+      - '9090:9090'
+
+
+  studio:
+    image: dolittle/spinner:0.0.0

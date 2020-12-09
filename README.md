@@ -31,7 +31,7 @@ kubectl -n system-auth port-forward <postgres-pod> 8080:80
 ```
 Create/register the OAuth 2.0 client in hydra. Make sure the go code oath client is the exact same.
 ```shell
-kubectl -n system-auth exec $(kubectl get pod -l "component=hydra" -o name -n system-auth) -- hydra --endpoint http://localhost:4445 clients create --id do --secret little -c http://localhost:8080/.auth/callback/
+kubectl -n system-auth exec $(kubectl get pod -l "component=browser" -o name -n system-auth) -- hydra --endpoint http://localhost:4445 clients create --id client-id --secret client-secret -c http://local.dolittle.studio:8080/.auth/cookies/callback
 ```
 
 List out your clients:
@@ -249,3 +249,9 @@ spec:
 
 ## `kubectl` HTTP token fix
 As `kubectl` [silenty doesn't transmit tokens over http](https://github.com/kubernetes/kubectl/issues/744) we need to do do some cert stuff in our localhost or kluster. WIP
+
+
+## Local browser.yml changes
+Add `127.0.0.1 local.dolittle.studio` to your local _/etc/hosts_.
+
+Change the `hostAliases.ip` of hydra in browser.yml to point the _local.dolittle.studio_ to your local cluster host network, eg `docker.internal` ip or `minikube ip` minus one usually.

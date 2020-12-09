@@ -1,0 +1,70 @@
+@startuml "Browser flow"
+
+skinparam DefaultTextAlignment center
+
+start
+: /<path>;
+
+if (Authenticated?\nOathkeeper) then (yes)
+else (no)
+    : Redirect: /.auth/initiate?return_to=<path>
+      Pascal;
+    -> Set session cookie
+       Store return_to;
+    : Redirect: /.auth/oauth2/auth
+      Hydra;
+    -> Create login request;
+    : Redirect: /.auth/tenant-x
+      Login - BE;
+    if (ory_kratos_session cookie valid?\nOathkeeper) then (yes)
+    else (no)
+        : Redirect: /.auth/self-service/login/browser?return_to=/.auth/tenant-x
+          Kratos;
+        -> Create login flow;
+        : Redirect: /.auth/login
+          Login - FE;
+        #palegreen:Perform remote authentication;
+        : Redirect: /.auth/self-service/methods/oidc/callback/provider
+          Kratos;
+        -> Set ory_kratos_session cookie;
+        : Redirect: /.auth/tenant-x
+          Login - BE;
+    endif
+endif
+: Serve content
+  Studio;
+stop
+
+
+/'
+
+Backend-urls:
+ - /.auth/.well-known/ (hydra)
+ - /.auth/ouath2/ (hydra)
+
+ - /.auth/cookies/initiate (pascal)
+ - /.auth/cookies/callback (pascal)
+
+ - /.auth/self-service/login/browser (kratos)
+ - /.auth/self-service/login/flows?id=<> (login) GET
+ - /.auth/self-service/methods/oidc/callback (kratos)
+ 
+ - /.auth/self-service/tenant/browser (login) GET
+ - /.auth/self-service/tenant/select (login) PUT
+ - /.auth/self-service/tenant/flows?id=<> (login) GET
+
+ - /.auth/self-service/consent/browser (login) GET
+ - /.auth/self-service/consent/flows?id=<> (login) GET
+ - /.auth/self-service/consent/accept (login) PUT
+ - /.auth/self-service/consent/reject (login) PUT
+
+
+User Facing SPA urls:
+ - /.auth/select-provider
+ - /.auth/consent
+ - /.auth/select-tenant
+
+ - /.auth/assets/
+'/
+
+@enduml
