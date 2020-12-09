@@ -9,15 +9,21 @@ type Parser interface {
 	ParseTenantFlowFrom(response *models.LoginRequest, user *users.User) (*Flow, error)
 }
 
-func NewParser() Parser {
-	return &parser{}
+func NewParser(configuration Configuration) Parser {
+	return &parser{
+		configuration: configuration,
+	}
 }
 
-type parser struct{}
+type parser struct {
+	configuration Configuration
+}
 
 func (p *parser) ParseTenantFlowFrom(response *models.LoginRequest, user *users.User) (*Flow, error) {
 	return &Flow{
-		ID:   FlowID(*response.Challenge),
-		User: user,
+		ID:               FlowID(*response.Challenge),
+		FormSubmitAction: p.configuration.SelectTenantFormSubmitAction(),
+		FormSubmitMethod: "POST",
+		User:             user,
 	}, nil
 }

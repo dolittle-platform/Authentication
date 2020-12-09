@@ -22,8 +22,8 @@ export const TenantList = withViewModel<TenantListViewModel, TenantListProps>(Te
             { props.flow !== null ? viewModel.tenants.map(tenant =>
                 <TenantListItem
                     key={tenant.id}
-                    formAction="http://studio.localhost:8080/.auth/self-service/tenant/select"
-                    formMethod="POST"
+                    formAction={viewModel.formAction}
+                    formMethod={viewModel.formMethod}
                     flowId={props.flow!}
                     tenant={tenant} />
             ) : <></> }
