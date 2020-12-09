@@ -4,6 +4,8 @@ import (
 	"context"
 
 	"dolittle.io/pascal/configuration/changes"
+	"dolittle.io/pascal/openid/config"
+	"go.uber.org/zap"
 	"golang.org/x/oauth2"
 )
 
@@ -13,18 +15,24 @@ type TokenExchanger interface {
 	Exchange(code AuthenticationCode) (*oauth2.Token, error)
 }
 
-func NewTokenExchanger(configuration Configuration, notifier changes.ConfigurationChangeNotifier) (TokenExchanger, error) {
-	watcher, err := newOauthConfigWatcher(configuration, notifier, "openid-exchanger")
+func NewTokenExchanger(configuration config.Configuration, notifier changes.ConfigurationChangeNotifier, logger *zap.Logger) (TokenExchanger, error) {
+	watcher, err := config.NewWatcher(configuration, notifier, logger, "openid-exchanger")
 	if err != nil {
 		return nil, err
 	}
-	return &exchanger{watcher}, nil
+	return &exchanger{
+		watcher: watcher,
+	}, nil
 }
 
 type exchanger struct {
-	*oauthConfigWatcher
+	watcher config.Watcher
 }
 
 func (e *exchanger) Exchange(code AuthenticationCode) (*oauth2.Token, error) {
-	return e.oauthConfig.Exchange(context.Background(), string(code))
+	config, err := e.watcher.GetConfig()
+	if err != nil {
+		return nil, err
+	}
+	return config.Exchange(context.Background(), string(code))
 }

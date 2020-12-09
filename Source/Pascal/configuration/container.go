@@ -79,14 +79,16 @@ func NewContainer(config Configuration) (*Container, error) {
 
 	initiator, err := openid.NewAuthenticationInitiator(
 		config.OpenID(),
-		container.Notifier)
+		container.Notifier,
+		logger)
 	if err != nil {
 		return nil, err
 	}
 	container.OpenidInitiator = initiator
 	exchanger, err := openid.NewTokenExchanger(
 		config.OpenID(),
-		container.Notifier)
+		container.Notifier,
+		logger)
 	if err != nil {
 		return nil, err
 	}

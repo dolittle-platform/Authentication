@@ -56,6 +56,12 @@ jobs:
       with:
         version: ${{ steps.context.outputs.current-version }}
         release-type: ${{ steps.context.outputs.release-type }}
+    - name: Create GitHub Release
+      uses: dolittle/github-release-action@v1
+      if: ${{ steps.context.outputs.should-publish == 'true' }}
+      with:
+        cascading-release: ${{ steps.context.outputs.cascading-release }}
+        version: ${{ steps.increment-version.outputs.next-version }}
     - name: Push Production Image to Docker Hub
       uses: docker/build-push-action@v2
       if: ${{ steps.context.outputs.should-publish == 'true' && env.DOCKER_HUB_REPO != '' }}
