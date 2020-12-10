@@ -13,7 +13,7 @@ import { LayoutViewModel } from './LayoutViewModel';
 import { withViewModel } from '../MVVM/withViewModel';
 
 export const Layout = withViewModel(LayoutViewModel, ({ viewModel }) => {
-    const [loadingSpinner, setLoadingSpinner] = useState(true);
+    const [loadingSpinner, setLoadingSpinner] = useState(false);
     const contentLoading = () => setLoadingSpinner(true);
     const contentLoaded = () => setLoadingSpinner(false);
 
