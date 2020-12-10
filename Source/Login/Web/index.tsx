@@ -8,6 +8,7 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter as Router } from 'react-router-dom';
 
 import { Layout } from './layouts/Layout';
+import { AppHeader } from './layouts/AppHeader';
 
 import './styles/theme';
 import './index.scss';
@@ -15,6 +16,7 @@ import './index.scss';
 export default function App(this: any) {
     return (
         <Router>
+            <AppHeader />
             <Layout />
         </Router>
     );
