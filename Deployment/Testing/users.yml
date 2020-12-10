@@ -166,8 +166,7 @@ data:
           admin: http://browser.system-auth.svc.cluster.local:4445/
       kratos:
         endpoints:
-          public: http://users.system-auth.svc:4433/
-          # public: http://localhost:4433/
+          public: http://localhost:4433/
 
 ---
 apiVersion: apps/v1
