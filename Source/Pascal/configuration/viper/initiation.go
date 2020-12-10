@@ -3,6 +3,7 @@ package viper
 import (
 	"net/url"
 
+	"dolittle.io/pascal/initiation"
 	"github.com/spf13/viper"
 )
 
@@ -10,8 +11,10 @@ const (
 	urlsReturnQueryParameterKey = "urls.return.query_parameter"
 	urlsReturnDefaultKey        = "urls.return.default"
 	urlsReturnAllowedKey        = "urls.return.allowed"
+	urlsReturnModeKey           = "urls.return.mode"
 
 	defaultReturnToParameter = "return_to"
+	defaultReturnMode        = initiation.MatchModeStrict
 )
 
 var (
@@ -53,4 +56,13 @@ func (c *initiationConfiguration) AllowedReturnTo() []*url.URL {
 	}
 
 	return allowed
+}
+
+func (c *initiationConfiguration) ReturnToMatchMode() initiation.MatchMode {
+	switch viper.GetString(urlsReturnModeKey) {
+	case "prefix":
+		return initiation.MatchModePrefix
+	default:
+		return defaultReturnMode
+	}
 }
