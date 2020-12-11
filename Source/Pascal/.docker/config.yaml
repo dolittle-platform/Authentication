@@ -12,6 +12,7 @@ urls:
     default: http://localhost:80/return
     allowed:
       - http://localhost:80/return
+    mode: strict
 
 sessions:
   nonce_length: 80
