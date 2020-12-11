@@ -22,17 +22,10 @@ func (c *identitiesConfiguration) Cookie() string {
 }
 
 func (c *identitiesConfiguration) TenantNamesMap() map[tenants.TenantID]string {
-	return createTenantNameMap(viper.GetStringMapString(identitiesTenantNameMapKey))
-}
-
-func createTenantNameMap(in map[string]string) map[tenants.TenantID]string {
-	if in == nil || len(in) == 0 {
-		return nil
+	tenantNameMapRaw := viper.GetStringMapString(identitiesTenantNameMapKey)
+	tenantNameMap := map[tenants.TenantID]string{}
+	for tenantIDString, tenantName := range tenantNameMapRaw {
+		tenantNameMap[tenants.TenantID(tenantIDString)] = tenantName
 	}
-	out := make(map[tenants.TenantID]string, len(in))
-	for tenantIDString, tenantName := range in {
-		out[tenants.TenantID(tenantIDString)] = tenantName
-	}
-
-	return out
+	return tenantNameMap
 }
