@@ -121,6 +121,7 @@ data:
           config:
             headers:
               Impersonate-User: '{{ print .Subject }}'
+              Impersonate-Group: '{{ print .Extra.Tenant }}'
 
 ---
 apiVersion: apps/v1
