@@ -157,6 +157,8 @@ data:
         flow_tenant_form_parameter: tenant
       consent:
         flow_id_query_parameter: consent_challenge
+        tenants:
+          tenant-a: Cool Company AS
 
     clients:
       hydra:
