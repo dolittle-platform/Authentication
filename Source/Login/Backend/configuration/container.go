@@ -81,7 +81,8 @@ func NewContainer(configuration Configuration) (*Container, error) {
 	}
 	container.KratosClient = kratosClient
 
-	container.TenantGetter = tenants.NewGetter()
+	container.TenantGetter = tenants.NewGetter(
+		configuration.Identities())
 
 	container.CurrentUserParser = current.NewParser(
 		container.TenantGetter)
