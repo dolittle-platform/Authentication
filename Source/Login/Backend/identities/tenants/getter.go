@@ -14,11 +14,10 @@ type getter struct {
 	configuration Configuration
 }
 
-// Use tenant mapper
 func (g *getter) GetTenantFromID(tenantID TenantID) (*Tenant, error) {
 	tenantNamesMap := g.configuration.TenantNamesMap()
 	displayName := string(tenantID)
-	if value, ok := (*tenantNamesMap)[tenantID]; ok {
+	if value, ok := tenantNamesMap[tenantID]; ok {
 		displayName = value
 	}
 
