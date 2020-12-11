@@ -50,6 +50,7 @@ func NewViperConfiguration(configPath string, devServer bool) (config.Configurat
 			kratos: &clientsConfig.Kratos{},
 		},
 		identitites: &identitiesConfiguration{},
+		providers:   &providersConfiguration{},
 	}, nil
 }
 
@@ -58,6 +59,7 @@ type configuration struct {
 	flows       *flowsConfiguration
 	clients     *clientsConfiguration
 	identitites *identitiesConfiguration
+	providers   *providersConfiguration
 }
 
 func (c *configuration) OnChange(callback func()) {
@@ -81,3 +83,4 @@ func (c *configuration) Clients() clients.Configuration {
 func (c *configuration) Identities() identities.Configuration {
 	return c.identitites
 }
+func (c *configuration) Providers() providers.

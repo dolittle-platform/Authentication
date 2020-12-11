@@ -1,6 +1,8 @@
 package providers
 
+type ProviderID = string
+
 type Provider struct {
-	ID      string
+	ID      ProviderID
 	Display string
 }
