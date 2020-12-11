@@ -38,7 +38,7 @@ data:
         complete: /.auth/cookies/callback
 
     urls:
-      error: http://studio.localhost:8080/error
+      error: http://studio.localhost:8080/.auth/error
       return:
         query_parameter: return_to
         default: http://studio.localhost:8080/
@@ -124,7 +124,7 @@ spec:
         - name: hydra-admin
           containerPort: 4445
       - name: pascal
-        image: dolittle/pascal:local
+        image: dolittle/pascal:1.1.1
         args:
           - "--config"
           - "/etc/pascal/config/pascal.yaml"

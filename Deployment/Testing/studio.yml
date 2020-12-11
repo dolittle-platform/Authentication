@@ -51,6 +51,9 @@ data:
     serve:
       proxy:
         port: 4455
+      api:
+        port: 4456
+
     access_rules:
       repositories:
         - file:///etc/oathkeeper/config/rules.yaml
@@ -68,14 +71,6 @@ data:
           config:
             to: http://studio.localhost:8080/
 
-    mutators:
-      noop:
-        enabled: true
-
-    authorizers:
-      allow:
-        enabled: true
-
     authenticators:
       oauth2_introspection:
         enabled: true
@@ -84,28 +79,49 @@ data:
           token_from:
             cookie: .dolittle.pascal.login
 
+    authorizers:
+      allow:
+        enabled: true
+
+    mutators:
+      noop:
+        enabled: true
+      header:
+        enabled: true
+        config:
+          headers:
+            User-ID: '{{ print .Subject }}'
+            Tenant-ID: '{{ print .Extra.Tenant }}'
+
     log:
       level: debug
       format: text
 
   rules.yaml: |
-    - id: studio
-      upstream:
-        url: http://studio.studio.svc.cluster.local
+    - id: decision
       match:
         methods: ["GET"]
-        url: http://studio.localhost:8080/
+        url: http://studio-proxy.studio.svc.cluster.local
       authenticators:
         - handler: oauth2_introspection
       authorizer:
         handler: allow
       mutators:
-       - handler: noop
-      errors:
-        - handler: redirect
+       - handler: header
+    - id: k8-decision
+      match:
+        methods: ["GET", "PATCH", "POST", "PUT", "DELETE"]
+        url: http://studio-proxy.studio.svc.cluster.local/k8-decision
+      authenticators:
+        - handler: oauth2_introspection
+      authorizer:
+        handler: allow
+      mutators:
+        - handler: header
           config:
-            to: http://studio.localhost:8080/.auth/cookies/initiate
-            return_to_query_param: return_to
+            headers:
+              Impersonate-User: '{{ print .Subject }}'
+              Impersonate-Group: '{{ print .Extra.Tenant }}'
 
 ---
 apiVersion: apps/v1
@@ -135,6 +151,8 @@ spec:
         ports:
         - name: oath-proxy
           containerPort: 4455
+        - name: oath-api
+          containerPort: 4456
         volumeMounts:
         - name: config
           mountPath: /etc/oathkeeper/config
@@ -142,7 +160,6 @@ spec:
       - name: config
         configMap:
           name: studio-proxy
-
 
 ---
 kind: Service
@@ -157,7 +174,7 @@ spec:
   ports:
     - port: 80
       name: http
-      targetPort: oath-proxy
+      targetPort: oath-api
 
 ---
 apiVersion: extensions/v1beta1
@@ -165,6 +182,11 @@ kind: Ingress
 metadata:
   namespace: studio
   name: studio-proxy
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/auth-url: "http://studio-proxy.studio.svc.cluster.local/decisions"
+    nginx.ingress.kubernetes.io/auth-signin: "http://studio.localhost:8080/.auth/cookies/initiate"
+    nginx.ingress.kubernetes.io/auth-response-headers: Tenant-ID, User-ID
 spec:
   rules:
   - host: studio.localhost
@@ -172,5 +194,5 @@ spec:
       paths:
       - path: /
         backend:
-          serviceName: studio-proxy
-          servicePort: http
+          serviceName: studio
+          servicePort: 80

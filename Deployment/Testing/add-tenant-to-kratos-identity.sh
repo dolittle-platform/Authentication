@@ -1,5 +1,5 @@
 #!/bin/bash
-KRATOS_POD=$(kubectl get pod -n system-auth -l "component=login" -o name)
+KRATOS_POD=$(kubectl get pod -n system-auth -l "component=users" -o name)
 IDENTITY=$(kubectl -n system-auth exec "$KRATOS_POD" -c kratos -- kratos --endpoint http://localhost:4434 identities get $1 -f=json)
 if [ $? -ne 0 ]; then
     exit 1

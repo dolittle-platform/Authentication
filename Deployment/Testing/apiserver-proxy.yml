@@ -1,0 +1,129 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: system-auth
+  name: nginx
+  labels:
+    system: auth
+    component: apiserver-proxy
+data:
+  # add a tilde to the Bearer token so it's easy for sed to find and replace with the correct 
+  # service account token to identify it as the apiserver-proxy impersonator user
+  # for authorization https://serverfault.com/a/511612
+  nginx.conf: |
+    events {
+    }
+
+    http {
+
+      # log_format   main '$remote_addr - $remote_user [$time_local]  $status '
+      #     '"$request" $body_bytes_sent "$http_referer" '
+      #     '"$http_user_agent" "$http_x_forwarded_for"';
+
+      # access_log /var/log/nginx/access.log main;
+
+      server { # simple reverse-proxy
+        listen       80;
+        server_name  studio.localhost;
+
+        location / {
+          proxy_pass  https://kubernetes.default.svc.cluster.local;
+          proxy_set_header  Authorization "Bearer ~";
+          proxy_pass_header Authorization;
+        }
+      }
+    }
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: system-auth
+  name: apiserver-proxy
+  labels:
+    system: auth
+    component: apiserver-proxy
+spec:
+  selector:
+    matchLabels:
+      system: auth
+      component: apiserver-proxy
+
+  replicas: 1
+
+  template:
+    metadata:
+      labels:
+        system: auth
+        component: apiserver-proxy
+    spec:
+      initContainers:
+        - name: apiserver-proxy-init
+          image: busybox
+          args:
+          - "/bin/sh"
+          - "-c"
+          - "sed -e \"s|\\~|$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)|\" /nginx/nginx.conf > /new-nginx/nginx.conf"
+          volumeMounts:
+            - name: new-nginx
+              mountPath: /new-nginx
+            - name: nginx
+              mountPath: /nginx
+      containers:
+        - name: apiserver-proxy
+          image: nginx
+          # env:
+          #   - name: SSL_CERT_FILE
+          #     value: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+          volumeMounts:
+            - name: new-nginx
+              subPath: nginx.conf
+              mountPath: /etc/nginx/nginx.conf
+          ports:
+          - name: http
+            containerPort: 80
+      volumes:
+      - name: new-nginx
+        newDir:
+      - name: nginx
+        configMap:
+            name: nginx
+      serviceAccountName: apiserver-proxy
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  namespace: system-auth
+  name: apiserver-proxy
+spec:
+  selector:
+    system: auth
+    component: apiserver-proxy
+  ports:
+    - port: 80
+      name: http
+      targetPort: http
+
+---
+
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  namespace: system-auth
+  name: apiserver-proxy
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/auth-url: "http://studio-proxy.studio.svc.cluster.local/decisions/k8-decision"
+    nginx.ingress.kubernetes.io/auth-response-headers: Tenant-ID, User-ID, Impersonate-User, Impersonate-Group
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+spec:
+  rules:
+  - host: studio.localhost
+    http:
+      paths:
+      - path: /api/(.*)
+        backend:
+          serviceName: apiserver-proxy
+          servicePort: http
