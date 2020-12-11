@@ -38,7 +38,7 @@ data:
         complete: /.auth/cookies/callback
 
     urls:
-      error: http://studio.localhost:8080/error
+      error: http://studio.localhost:8080/.auth/error
       return:
         query_parameter: return_to
         default: http://studio.localhost:8080/
@@ -90,7 +90,7 @@ spec:
         component: browser
     spec:
       hostAliases:
-        - ip: "192.168.49.1"
+        - ip: "192.168.65.2"
           hostnames:
             - "studio.localhost"
       initContainers:
