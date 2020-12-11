@@ -33,6 +33,13 @@ data:
               hooks:
                 - hook: revoke_active_sessions
 
+        registration:
+          after:
+            oidc:
+              default_browser_return_url: /.auth/cookies/initiate
+              hooks:
+                - hook: session
+
         verification:
           enabled: false
         
