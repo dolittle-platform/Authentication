@@ -7,6 +7,11 @@ Append to your `/etc/hosts` file:
 127.0.0.1 local-oidc-provider
 ```
 
+Build local Docker images with (in the `../Development` directory)
+```shell
+docker-compose build
+```
+
 Then run:
 ```shell
 kubectl apply -f .
