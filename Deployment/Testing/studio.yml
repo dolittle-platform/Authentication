@@ -108,20 +108,6 @@ data:
         handler: allow
       mutators:
        - handler: header
-    - id: k8-decision
-      match:
-        methods: ["GET", "PATCH", "POST", "PUT", "DELETE"]
-        url: http://studio-proxy.studio.svc.cluster.local/k8-decision
-      authenticators:
-        - handler: oauth2_introspection
-      authorizer:
-        handler: allow
-      mutators:
-        - handler: header
-          config:
-            headers:
-              Impersonate-User: '{{ print .Subject }}'
-              Impersonate-Group: '{{ print .Extra.Tenant }}'
 
 ---
 apiVersion: apps/v1
