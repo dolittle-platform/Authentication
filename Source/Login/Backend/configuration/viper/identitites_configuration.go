@@ -21,11 +21,13 @@ func (c *identitiesConfiguration) Cookie() string {
 	return defaultIdentitiesCurrentUserCookieNameValue
 }
 
-func (c *identitiesConfiguration) TenantNamesMap() map[tenants.TenantID]string {
-	tenantNameMapRaw := viper.GetStringMapString(identitiesTenantNameMapKey)
-	tenantNameMap := map[tenants.TenantID]string{}
-	for tenantIDString, tenantName := range tenantNameMapRaw {
-		tenantNameMap[tenants.TenantID(tenantIDString)] = tenantName
+func (c *identitiesConfiguration) TenantNames() map[tenants.TenantID]string {
+	if !viper.IsSet(identitiesTenantNamesKey) {
+		return nil
 	}
-	return tenantNameMap
+	tenantNames := map[tenants.TenantID]string{}
+	for id, name := range viper.GetStringMapString(identitiesTenantNamesKey) {
+		tenantNames[tenants.TenantID(id)] = name
+	}
+	return tenantNames
 }
