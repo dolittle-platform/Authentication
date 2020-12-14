@@ -30,7 +30,7 @@ jobs:
     - name: Create GitHub Release
       uses: dolittle/github-release-action@v1
       with:
-        version: ${{ steps.context.outputs.next-version }}
+        version: ${{ steps.increment-version.outputs.next-version }}
     
   release-pascal:
     name: Publish
