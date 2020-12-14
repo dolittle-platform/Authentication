@@ -1,5 +1,5 @@
 package tenants
 
 type Configuration interface {
-	TenantNamesMap() map[TenantID]string
+	TenantNames() map[TenantID]string
 }

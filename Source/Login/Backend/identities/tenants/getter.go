@@ -15,14 +15,14 @@ type getter struct {
 }
 
 func (g *getter) GetTenantFromID(tenantID TenantID) (*Tenant, error) {
-	tenantNamesMap := g.configuration.TenantNamesMap()
-	displayName := string(tenantID)
-	if value, ok := tenantNamesMap[tenantID]; ok {
-		displayName = value
+	tenant := &Tenant{
+		ID:      tenantID,
+		Display: string(tenantID),
 	}
 
-	return &Tenant{
-		ID:      tenantID,
-		Display: displayName,
-	}, nil
+	if name, ok := g.configuration.TenantNames()[tenantID]; ok {
+		tenant.Display = name
+	}
+
+	return tenant, nil
 }
