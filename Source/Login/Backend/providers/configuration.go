@@ -7,6 +7,8 @@ type ProviderConfiguration struct {
 	ImageURL *url.URL
 }
 
+type Providers = map[ProviderID]*ProviderConfiguration
+
 type Configuration interface {
-	Providers() map[ProviderID]ProviderConfiguration
+	Providers() Providers
 }

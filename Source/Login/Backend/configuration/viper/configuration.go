@@ -9,6 +9,7 @@ import (
 	flowsConfig "dolittle.io/login/configuration/viper/flows"
 	"dolittle.io/login/flows"
 	"dolittle.io/login/identities"
+	"dolittle.io/login/providers"
 	"dolittle.io/login/server"
 	"github.com/fsnotify/fsnotify"
 	"github.com/mitchellh/go-homedir"
@@ -83,4 +84,6 @@ func (c *configuration) Clients() clients.Configuration {
 func (c *configuration) Identities() identities.Configuration {
 	return c.identitites
 }
-func (c *configuration) Providers() providers.
+func (c *configuration) Providers() providers.Configuration {
+	return c.providers
+}

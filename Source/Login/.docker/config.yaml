@@ -4,6 +4,14 @@ serve:
 urls:
   error: http://localhost:8080/error
 
+providers:
+  microsoft:
+    name: Microsoft
+    image_url: file://etc/login/config/provider_images/microsoft.png
+  github:
+    name: GitHub
+    image_url: file://etc/login/config/provider_images/github.png
+
 identities:
   cookie_name: ory_kratos_session
 
