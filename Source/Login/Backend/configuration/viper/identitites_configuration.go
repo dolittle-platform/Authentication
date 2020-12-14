@@ -7,7 +7,7 @@ import (
 
 const (
 	identitiesCurrentUserCookieNameKey = "identities.cookie_name"
-	identitiesTenantNameMapKey         = "identities.tenants"
+	identitiesTenantNamesKey         = "identities.tenants"
 
 	defaultIdentitiesCurrentUserCookieNameValue = "ory_kratos_session"
 )
