@@ -1,4 +1,4 @@
-name: Pascal
+name: Release
 
 env:
   PRERELEASE_BRANCHES: alpha,beta,rc
@@ -6,9 +6,6 @@ env:
   DOCKER_HUB_REPO_LOGIN: dolittle/login
 
 on:
-  push:
-    branches:
-    - '**'
   pull_request:
     types: [closed]
 
