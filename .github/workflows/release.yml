@@ -29,6 +29,10 @@ jobs:
       with:
         version: ${{ steps.context.outputs.current-version }}
         release-type: ${{ steps.context.outputs.release-type }}
+    - name: Create GitHub Release
+      uses: dolittle/github-release-action@v1
+      with:
+        version: ${{ steps.context.outputs.next-version }}
     
   release-pascal:
     name: Publish
@@ -75,15 +79,3 @@ jobs:
         context: ./Source/Login
         file: ./Source/Login/Dockerfile
         tags: ${{ env.DOCKER_HUB_REPO_LOGIN }}:${{ needs.setup.outputs.next-version }},${{ env.DOCKER_HUB_REPO_LOGIN }}:latest
-
-  release:
-    name: Release
-    needs: ["setup", "release-pascal", "release-login"]
-    runs-on: ubuntu-latest
-    if: needs.setup.outputs.should-publish == 'true'
-    steps:
-    - uses: actions/checkout@v2
-    - name: Create GitHub Release
-      uses: dolittle/github-release-action@v1
-      with:
-        version: ${{ needs.setup.outputs.next-version }}
