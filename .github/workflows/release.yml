@@ -2,8 +2,6 @@ name: Release
 
 env:
   PRERELEASE_BRANCHES: alpha,beta,rc
-  DOCKER_HUB_REPO_PASCAL: dolittle/pascal
-  DOCKER_HUB_REPO_LOGIN: dolittle/login
 
 on:
   pull_request:
@@ -38,7 +36,7 @@ jobs:
     name: Publish
     needs: setup
     runs-on: ubuntu-latest
-    if: needs.setup.outputs.should-publish == 'true' && env.DOCKER_HUB_REPO_PASCAL != ''
+    if: needs.setup.outputs.should-publish == 'true'
     steps:
     - uses: actions/checkout@v2
     - uses: actions/setup-go@v2
@@ -53,13 +51,13 @@ jobs:
         push: true
         context: ./Source/Pascal
         file: ./Source/Pascal/Dockerfile
-        tags: ${{ env.DOCKER_HUB_REPO_PASCAL }}:${{ needs.setup.outputs.next-version }},${{ env.DOCKER_HUB_REPO_PASCAL }}:latest
+        tags: dolittle/pascal:${{ needs.setup.outputs.next-version }},dolittle/pascal:latest
 
   release-login:
     name: Publish
     needs: setup
     runs-on: ubuntu-latest
-    if: needs.setup.outputs.should-publish == 'true' && env.DOCKER_HUB_REPO_LOGIN != ''
+    if: needs.setup.outputs.should-publish == 'true'
     steps:
     - uses: actions/checkout@v2
     - uses: actions/setup-node@v1
@@ -78,4 +76,4 @@ jobs:
         push: true
         context: ./Source/Login
         file: ./Source/Login/Dockerfile
-        tags: ${{ env.DOCKER_HUB_REPO_LOGIN }}:${{ needs.setup.outputs.next-version }},${{ env.DOCKER_HUB_REPO_LOGIN }}:latest
+        tags: dolittle/login:${{ needs.setup.outputs.next-version }},dolittle/login:latest

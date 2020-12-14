@@ -1,9 +1,5 @@
 name: Login
 
-env:
-  PRERELEASE_BRANCHES: alpha,beta,rc
-  DOCKER_HUB_REPO: dolittle/login
-
 on:
   push:
     branches:
