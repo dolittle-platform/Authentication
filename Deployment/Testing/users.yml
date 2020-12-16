@@ -154,6 +154,8 @@ data:
 
     identities:
       cookie_name: ory_kratos_session
+      tenants:
+        tenant-a: Cool Company AS
 
     flows:
       login:

@@ -4,15 +4,25 @@ type Getter interface {
 	GetTenantFromID(tenantID TenantID) (*Tenant, error)
 }
 
-func NewGetter() Getter {
-	return &getter{}
+func NewGetter(configuration Configuration) Getter {
+	return &getter{
+		configuration,
+	}
 }
 
-type getter struct{}
+type getter struct {
+	configuration Configuration
+}
 
 func (g *getter) GetTenantFromID(tenantID TenantID) (*Tenant, error) {
-	return &Tenant{
+	tenant := &Tenant{
 		ID:      tenantID,
 		Display: string(tenantID),
-	}, nil
+	}
+
+	if name, ok := g.configuration.TenantNames()[tenantID]; ok {
+		tenant.Display = name
+	}
+
+	return tenant, nil
 }

@@ -1,15 +1,9 @@
 name: Login
 
-env:
-  PRERELEASE_BRANCHES: alpha,beta,rc
-  DOCKER_HUB_REPO: dolittle/login
-
 on:
   push:
     branches:
     - '**'
-  pull_request:
-    types: [closed]
 
 jobs:
   build-backend:
@@ -39,43 +33,3 @@ jobs:
       run: |
         yarn
         yarn build
-  
-  publish:
-    name: Publish
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: Establish context
-      id: context
-      uses: dolittle/establish-context-action@v2
-      with:
-        prerelease-branches: ${{ env.PRERELEASE_BRANCHES }}
-    - uses: docker/setup-buildx-action@v1
-      if: ${{ steps.context.outputs.should-publish == 'true' }}
-    - uses: docker/login-action@v1
-      if: ${{ steps.context.outputs.should-publish == 'true' }}
-      with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
-    - name: Build Image
-      uses: docker/build-push-action@v2
-      if: ${{ steps.context.outputs.should-publish == 'true' && env.DOCKER_HUB_REPO != '' }}
-      with:
-        push: false
-        context: ./Source/Login
-        file: ./Source/Login/Dockerfile
-    - name: Increment version
-      id: increment-version
-      if: ${{ steps.context.outputs.should-publish == 'true' }}
-      uses: dolittle/increment-version-action@v2
-      with:
-        version: ${{ steps.context.outputs.current-version }}
-        release-type: ${{ steps.context.outputs.release-type }}
-    - name: Push Production Image to Docker Hub
-      uses: docker/build-push-action@v2
-      if: ${{ steps.context.outputs.should-publish == 'true' && env.DOCKER_HUB_REPO != '' }}
-      with:
-        push: true
-        context: ./Source/Login
-        file: ./Source/Login/Dockerfile
-        tags: ${{ env.DOCKER_HUB_REPO }}:${{ steps.increment-version.outputs.next-version }},${{ env.DOCKER_HUB_REPO }}:latest
