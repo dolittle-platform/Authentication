@@ -17,10 +17,25 @@ Then run:
 kubectl apply -f .
 ```
 
-Then run:
+Wait for a little while until the databases are initialised (it's ready when all pods are running `kubectl -n system-auth get pod`), then run:
 ```shell
 ./add-pascal-client-to-hydra.sh
 ```
+
+Then you can proceed to `http://studio.localhost:8080` and follow the links through the login.
+After logging in, you should get to the _Select Tenant_ page, with no options.
+
+Find the ID of your user with:
+```shell
+./get-kratos-identities.sh
+```
+
+And add a tenant to your user:
+```shell
+./add-tenant-to-kratos-identity.sh <user-id-from-previous-output> tenant-a
+```
+You can add more tenants with the same command.
+If you only have one tenant, you will not be presented with the page to select tenant.
 
 ## Clean up with
 ```shell
