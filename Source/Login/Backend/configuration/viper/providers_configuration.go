@@ -14,15 +14,14 @@ const (
 )
 
 var (
-	defaultProviderName     = "UNKNOWN PROVIDER NAME"
-	defaultProviderImageURL = "file:///etc/login/config/provider_images/default.png"
+	defaultProviderName     = "UNKNOWN PROVIDER"
+	defaultProviderImageURL = ""
 )
 
 func newNilProvider() *providers.ProviderConfiguration {
-	imageURL, _ := url.Parse(defaultProviderImageURL)
 	return &providers.ProviderConfiguration{
 		Name:     defaultProviderName,
-		ImageURL: imageURL,
+		ImageURL: nil,
 	}
 }
 

@@ -4,6 +4,7 @@ import (
 	"dolittle.io/login/clients"
 	"dolittle.io/login/flows"
 	"dolittle.io/login/identities"
+	"dolittle.io/login/providers"
 	"dolittle.io/login/server"
 )
 
@@ -14,4 +15,5 @@ type Configuration interface {
 	Clients() clients.Configuration
 	Flows() flows.Configuration
 	Identities() identities.Configuration
+	Providers() providers.Configuration
 }
