@@ -1,4 +1,7 @@
-name: Pascal
+name: Impersonator
+
+env:
+  PRERELEASE_BRANCHES: alpha,beta,rc
 
 on:
   push:
@@ -13,8 +16,8 @@ jobs:
     - uses: actions/checkout@v2
     - uses: actions/setup-go@v2
     - name: Build
-      working-directory: ./Source/Pascal
+      working-directory: ./Source/Impersonator
       run: go build .
     - name: Test
-      working-directory: ./Source/Pascal
+      working-directory: ./Source/Impersonator
       run: go test -v ./...

@@ -1,0 +1,16 @@
+serve:
+  proxy:
+    port: 8080
+    path_prefix: /
+  metrics:
+    port: 9700
+
+identities:
+  headers:
+    user_id: User-ID
+    tenant_id: Tenant-ID
+
+proxy:
+  url: https://kubernetes.default.svc.cluster.local
+  token_path: /var/run/secrets/kubernetes.io/serviceaccount/token
+  ca_path: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt

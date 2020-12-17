@@ -14,6 +14,7 @@ providers:
 
 identities:
   cookie_name: ory_kratos_session
+  tenants: {}
 
 flows:
   login:
