@@ -4,13 +4,7 @@ serve:
 urls:
   error: http://localhost:8080/error
 
-providers:
-  microsoft:
-    name: Microsoft
-    image_url: https://aadcdn.msauth.net/shared/1.0/content/images/microsoft_logo_ed9c9eb0dce17d752bedea6b5acda6d9.png
-  github:
-    name: GitHub
-    image_url: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
+providers: {}
 
 identities:
   cookie_name: ory_kratos_session
