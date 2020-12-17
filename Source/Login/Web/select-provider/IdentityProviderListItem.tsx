@@ -23,14 +23,15 @@ export class IdentityProviderListItem extends React.Component<IdentityProviderLi
     render() {
         return (
             <DocumentCard type={DocumentCardType.compact} onClick={this.onClick}>
-                <DocumentCardPreview previewImages={[
-                    {
-                        // previewImageSrc: 'https://docs.microsoft.com/en-us/azure/active-directory/develop/media/howto-add-branding-in-azure-ad-apps/ms-symbollockup_mssymbol_19.svg',
-                        previewImageSrc: this.props.provider.imageURL || '',
-                        width: 60,
-                        height: 60,
-                    }
-                ]} />
+                { this.props.provider.imageURL &&
+                    <DocumentCardPreview previewImages={[
+                        {
+                            previewImageSrc: this.props.provider.imageURL,
+                            width: 60,
+                            height: 60,
+                        }
+                    ]} />
+                }
                 <DocumentCardDetails>
                     <DocumentCardTitle title={this.props.provider.display} />
                     <form ref={this.form} action={this.props.formAction} method={this.props.formMethod}>
