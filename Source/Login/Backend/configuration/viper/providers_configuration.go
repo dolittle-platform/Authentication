@@ -18,13 +18,6 @@ var (
 	defaultProviderImageURL = ""
 )
 
-func newNilProvider() *providers.ProviderConfiguration {
-	return &providers.ProviderConfiguration{
-		Name:     defaultProviderName,
-		ImageURL: nil,
-	}
-}
-
 type providersConfiguration struct{}
 
 func (c *providersConfiguration) Providers() providers.Providers {
@@ -35,37 +28,40 @@ func (c *providersConfiguration) Providers() providers.Providers {
 }
 
 func getProviderConfigurationMap(in map[string]interface{}) providers.Providers {
-	providerConfigMap := make(map[providers.ProviderID]*providers.ProviderConfiguration, len(in))
-	for provider, config := range in {
-		providerConfigMap[provider] = getProviderConfiguration(provider, config)
+	providerConfigMap := make(map[providers.ProviderID]*providers.ProviderConfiguration)
+	for providerID, config := range in {
+		provider, ok := getProviderConfiguration(providerID, config)
+		if ok {
+			providerConfigMap[providerID] = provider
+		}
 	}
 	return providers.Providers(providerConfigMap)
 }
 
-func getProviderConfiguration(providerID providers.ProviderID, config interface{}) *providers.ProviderConfiguration {
+func getProviderConfiguration(providerID providers.ProviderID, config interface{}) (*providers.ProviderConfiguration, bool) {
 	configMap, ok := config.(map[string]interface{})
 	if !ok {
-		return newNilProvider()
+		return nil, false
 	}
 	name, ok := configMap[providersNameKey].(string)
 
 	if !ok {
-		return newNilProvider()
+		return nil, false
 	}
 
 	imageURLString, ok := configMap[providersImageURLKey].(string)
 
 	if !ok {
-		return newNilProvider()
+		return nil, false
 	}
 
 	imageURL, err := url.Parse(imageURLString)
 	if err != nil {
-		return newNilProvider()
+		return nil, false
 	}
 
 	return &providers.ProviderConfiguration{
 		Name:     name,
 		ImageURL: imageURL,
-	}
+	}, true
 }
