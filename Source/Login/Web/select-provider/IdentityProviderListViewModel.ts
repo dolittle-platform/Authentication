@@ -33,7 +33,7 @@ export class IdentityProviderListViewModel {
         this.formCsrfToken = flow.FormCSRFToken;
         this.formAction = `${flow.FormSubmitAction.Scheme}://${flow.FormSubmitAction.Host}${flow.FormSubmitAction.Path}`;
         this.formMethod = flow.FormSubmitMethod;
-        this.providers = flow.Providers.map(provider => ({ id: provider.ID, display: provider.Display }));
+        this.providers = flow.Providers.map(provider => ({ id: provider.ID, display: provider.Display, imageURL: provider.ImageURL}));
     }
 }
 
@@ -55,7 +55,8 @@ export class IdentityProviderListViewModel {
     "Providers":[
         {
         "ID":"sample",
-        "Display":"sample"
+        "Display":"sample",
+        "ImageURL": "sample"
         }
     ]
 }"
