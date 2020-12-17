@@ -19,7 +19,7 @@ func (g *getter) GetProviderByID(id string) (Provider, error) {
 	if !ok {
 		return Provider{
 			ID:       id,
-			Display:  id + " Display Name",
+			Display:  id,
 			ImageURL: "",
 		}, nil
 	}
