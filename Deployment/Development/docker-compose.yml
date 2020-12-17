@@ -120,6 +120,11 @@ services:
     command:
       - "serve"
 
+  
+  apiserver-proxy:
+    image: dolittle/impersonator:local
+    build:
+      context: ../../Source/Impersonator
 
   local-oidc-provider:
     image: qlik/simple-oidc-provider

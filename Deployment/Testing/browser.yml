@@ -124,7 +124,7 @@ spec:
         - name: hydra-admin
           containerPort: 4445
       - name: pascal
-        image: dolittle/pascal:1.1.1
+        image: dolittle/pascal:local
         args:
           - "--config"
           - "/etc/pascal/config/pascal.yaml"

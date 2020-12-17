@@ -108,20 +108,6 @@ data:
         handler: allow
       mutators:
        - handler: header
-    - id: k8-decision
-      match:
-        methods: ["GET", "PATCH", "POST", "PUT", "DELETE"]
-        url: http://studio-proxy.studio.svc.cluster.local/k8-decision
-      authenticators:
-        - handler: oauth2_introspection
-      authorizer:
-        handler: allow
-      mutators:
-        - handler: header
-          config:
-            headers:
-              Impersonate-User: '{{ print .Subject }}'
-              Impersonate-Group: '{{ print .Extra.Tenant }}'
 
 ---
 apiVersion: apps/v1
@@ -193,6 +179,26 @@ spec:
     http:
       paths:
       - path: /
+        backend:
+          serviceName: studio
+          servicePort: 80
+
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  namespace: studio
+  name: studio-proxy-no-redirect
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/auth-url: "http://studio-proxy.studio.svc.cluster.local/decisions"
+    nginx.ingress.kubernetes.io/auth-response-headers: Tenant-ID, User-ID
+spec:
+  rules:
+  - host: studio.localhost
+    http:
+      paths:
+      - path: /favicon.ico
         backend:
           serviceName: studio
           servicePort: 80
