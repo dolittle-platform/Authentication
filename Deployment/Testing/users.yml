@@ -176,6 +176,11 @@ data:
       kratos:
         endpoints:
           public: http://localhost:4433/
+    
+    providers:
+      sample:
+        name: AWESOME PROVIDER
+        image_url: https://png.pngtree.com/png-clipart/20190903/original/pngtree-small-url-icon-opened-on-the-computer-png-image_4424025.jpg
 
 ---
 apiVersion: apps/v1
