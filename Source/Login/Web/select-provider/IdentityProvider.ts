@@ -4,4 +4,5 @@
 export type IdentityProvider = {
     id: string;
     display: string;
+    imageURL: string;
 };

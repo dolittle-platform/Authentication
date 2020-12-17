@@ -4,6 +4,8 @@ serve:
 urls:
   error: http://localhost:8080/error
 
+providers: {}
+
 identities:
   cookie_name: ory_kratos_session
   tenants: {}

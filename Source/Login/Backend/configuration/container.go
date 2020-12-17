@@ -92,7 +92,9 @@ func NewContainer(configuration Configuration) (*Container, error) {
 		container.KratosClient,
 		container.CurrentUserParser)
 
-	container.ProvidersGetter = providers.NewGetter()
+	container.ProvidersGetter = providers.NewGetter(
+		configuration.Providers(),
+	)
 
 	container.LoginFlowParser = loginFlow.NewParser(
 		configuration.Flows().Login(),
