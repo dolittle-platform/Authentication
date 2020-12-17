@@ -1,0 +1,23 @@
+name: Impersonator
+
+env:
+  PRERELEASE_BRANCHES: alpha,beta,rc
+
+on:
+  push:
+    branches:
+    - '**'
+
+jobs:
+  build:
+    name: Build + Test
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-go@v2
+    - name: Build
+      working-directory: ./Source/Impersonator
+      run: go build .
+    - name: Test
+      working-directory: ./Source/Impersonator
+      run: go test -v ./...
