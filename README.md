@@ -1,7 +1,7 @@
 # Authentication
+To get users / or add teants to a user [Go here](./Documentation/user-management.md).
 
 ## Paths
-
 
 ```
 / -> apiserver-proxy:80/
@@ -27,16 +27,17 @@ k8s.dolittle.studio/ -> "k8 apiserver proxy path"
 
 ```shell
 # not needed anymore
-kubectl -n system-auth port-forward <postgres-pod> 8080:80
+kubectl -n system-authentication port-forward <postgres-pod> 8080:80
 ```
+
 Create/register the OAuth 2.0 client in hydra. Make sure the go code oath client is the exact same.
 ```shell
-kubectl -n system-auth exec $(kubectl get pod -l "component=browser" -o name -n system-auth) -- hydra --endpoint http://localhost:4445 clients create --id client-id --secret client-secret -c http://local.dolittle.studio:8080/.auth/cookies/callback
+kubectl -n system-authentication exec $(kubectl get pod -l "component=Browser" -o name -n system-authentication) -- hydra --endpoint http://localhost:4445 clients create --id client-id --secret client-secret -c http://local.dolittle.studio:8080/.auth/cookies/callback
 ```
 
 List out your clients:
 ```shell
-kubectl -n system-auth exec $(kubectl get pod -l "component=hydra" -o name -n system-auth) -- hydra --endpoint http://localhost:4445 clients list
+kubectl -n system-authentication exec $(kubectl get pod -l "component=Browser" -o name -n system-authentication) -- hydra --endpoint http://localhost:4445 clients list
 ```
 
 Add to your /etc/hosts (bottom is a good idea)
@@ -46,43 +47,8 @@ Add to your /etc/hosts (bottom is a good idea)
 
 Also in `chrome://flags` disable __"Cookies without SameSite must be secure"__
 
-To get users in kratos
-```shell
-kubectl -n system-auth exec $(kubectl get pod -l "component=kratos" -o name -n system-auth) -- kratos --endpoint=http://localhost:4434 identities list -f=json-pretty
-```
+To get users / or add teants to a user [Go here](./Documentation/user-management.md).
 
-To add tenants to a user in kratos
-
-```shell
-kubectl -n system-auth port-forward $(kubectl get pod -l "component=kratos" -o name -n system-auth) 4434:4434
-
-curl -X PUT http://localhost:4434/identities/{id} \
-  -H 'Content-Type: application/json' \
-  -H 'Accept: application/json' --data @- <<EOF
-    {
-        "schema_id": "default",
-        "traits": {
-            "email": "{email}",
-            "tenants": [ "tenant-a", "tenant-b" ]
-        }
-    }
-EOF
-```
-
-Example:
-```shell
-curl -X PUT http://localhost:4434/identities/3a639238-05db-4256-a780-298af8e49f44\
-  -H 'Content-Type: application/json' \
-  -H 'Accept: application/json' --data @- <<EOF
-    {
-        "schema_id": "default",
-        "traits": {
-            "email": "do@do.do",
-            "tenants": [ "tenant-a", "tenant-b" ]
-        }
-    }
-EOF
-```
 
 ## Minikube port-forwarding
 Set the socats to do the port forwarding for load balancers:
