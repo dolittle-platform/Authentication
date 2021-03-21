@@ -7,25 +7,17 @@ $toolbar-color: lighten($navigation-color, 10%);
 $content-color: darken($ms-color-white, 5%);
 
 .application {
-    @extend .acrylic;
-    position: absolute;
+    margin-top: $app-header-height;
     display: flex;
-    left: 12rem;
-    right: 12rem;
-    top: 4rem;
-    bottom: 4rem;
-    flex: 1;
-    flex-direction: row;
-    margin-top: 2rem;
-    margin-left: 2rem;
-    margin-right: 2rem;
-    margin-bottom: 2rem;
-    padding: 0;
+    height: calc(100vh - #{$app-header-height});
 
     .main {
-        margin: 0;
-        width: 100%;
-        
+        @extend .acrylic;
+        width: 85vw;
+        height: calc(90vh - #{$app-header-height});
+        padding: 0;
+        margin: auto;
+
         .content {
             position: relative;
             width: calc(100%);
