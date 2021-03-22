@@ -5,7 +5,21 @@ There are three ways to run the code in this repository locally:
 3. Running in a local Kubernetes cluster to most accurately simulate the runtime environment.
 
 ## 1. Running with a mocked backend
+> The files and scripts referenced in this section is in the `/Deployment/Frontend` directory in this repository.
 
+Install and run the express server:
+```shell
+yarn
+yarn start
+```
+
+Start the frontend code in `Source/Login/Web`, navigate to http://localhost:8080.
+
+Select a provider to log in, then a tenant, and you should be presented with a page saying you are logged in. The page also has a link to restart the login process, or to view the error page in the frontend.
+
+To test out with different sets of providers or tenants, you can modify the `identityProviders` and `availableTenants` variables on the top of the `index.js` file.
+
+> Note: no special handling is required for a case where a single tenant is available for a user, this is handled by the backend which would jump over the select tenant page.
 
 ## 2. Running with Docker Compose
 > The files and scripts referenced in this section is in the `/Deployment/Development` directory in this repository.
