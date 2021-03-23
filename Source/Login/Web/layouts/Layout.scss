@@ -7,7 +7,7 @@ $toolbar-color: lighten($navigation-color, 10%);
 $content-color: darken($ms-color-white, 5%);
 
 .application {
-    margin-top: $app-header-height;
+    padding-top: $app-header-height;
     display: flex;
     height: calc(100vh - #{$app-header-height});
 
