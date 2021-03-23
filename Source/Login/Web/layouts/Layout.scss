@@ -29,8 +29,8 @@ $content-color: darken($ms-color-white, 5%);
                 position: fixed;
                 left: 50%;
                 top: 50%;
-                margin-top: -4rem;
-                margin-left: -4rem;
+                margin-top: -$app-header-height;
+                margin-left: -$app-header-height;
             }
         }
     }
