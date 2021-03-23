@@ -13,8 +13,8 @@ $content-color: darken($ms-color-white, 5%);
 
     .main {
         @extend .acrylic;
-        width: 85vw;
-        height: calc(90vh - #{$app-header-height});
+        width: 70vw;
+        height: calc(85vh - #{$app-header-height});
         padding: 0;
         margin: auto;
 
