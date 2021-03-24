@@ -2,7 +2,7 @@ const identityProviders = [
     {
         ID: 'sample',
         Display: 'sample',
-        ImageURL: ''
+        ImageURL: 'https://via.placeholder.com/60'
     }
 ];
 
