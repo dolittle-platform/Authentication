@@ -117,8 +117,14 @@ services:
     image: dolittle/login:local
     build:
       context: ../../Source/Login
+    ports:
+      - '8090:8090'
     command:
+      - "--config"
+      - "/etc/login/config/login.yaml"
       - "serve"
+    volumes:
+      - './login/login.yaml:/etc/login/config/login.yaml'
 
   
   apiserver-proxy:
