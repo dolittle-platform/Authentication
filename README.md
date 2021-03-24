@@ -2,7 +2,6 @@
 
 ## Paths
 
-
 ```
 / -> apiserver-proxy:80/
 /.ory/kratos/public -> kratos:4433/
