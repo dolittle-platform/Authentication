@@ -28,6 +28,8 @@ To test out with different sets of providers or tenants, you can modify the `ide
 ##### Configuring the network
 First, set the IP of your host machine (reachable from a Docker container) to the `HOST_IP` in the `.env` file.
 
+> If you're on a Linux host, you can find the IP from the `inet` field of the `docker0` interface using `ip addr show docker0`
+
 Then, append to your `/etc/hosts` file the following:
 ```
 127.0.0.1 studio.localhost
