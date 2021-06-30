@@ -2,6 +2,7 @@ package config
 
 import (
 	"context"
+	"net/url"
 	"time"
 
 	"dolittle.io/pascal/configuration/changes"
@@ -43,7 +44,15 @@ func (w *watcher) GetConfig() (*oauth2.Config, error) {
 
 func (w *watcher) configLoop() {
 	for {
-		provider, err := oidc.NewProvider(context.Background(), w.configuration.Issuer().String())
+		issuer, query := w.splitIssuerUrlAndQuery(w.configuration.Issuer())
+
+		ctx := context.Background()
+		if len(query) > 0 {
+			client := getHttpClientFor(issuer, query)
+			ctx = context.WithValue(ctx, oauth2.HTTPClient, client)
+		}
+
+		provider, err := oidc.NewProvider(ctx, issuer.String())
 		if err != nil {
 			w.logger.Warn("OpenID Connect issuer error, not ready to serve requests", zap.Error(err))
 
@@ -70,6 +79,21 @@ func (w *watcher) configLoop() {
 func (w *watcher) handleConfigurationChanged() error {
 	w.changed <- struct{}{}
 	return nil
+}
+
+func (w *watcher) splitIssuerUrlAndQuery(issuer *url.URL) (*url.URL, url.Values) {
+	if len(issuer.Query()) > 0 {
+		return &url.URL{
+			Scheme:  issuer.Scheme,
+			Opaque:  issuer.Opaque,
+			User:    issuer.User,
+			Host:    issuer.Host,
+			Path:    issuer.Path,
+			RawPath: issuer.RawPath,
+		}, issuer.Query()
+	} else {
+		return issuer, nil
+	}
 }
 
 func (w *watcher) getScopesWithOpenID() []string {
