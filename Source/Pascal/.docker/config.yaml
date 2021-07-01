@@ -33,6 +33,7 @@ openid:
     secret: client-secret
   scopes:
     - openid
+  token_type: access_token
   redirect: http://localhost:80/callback
 
 cookies:
