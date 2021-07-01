@@ -2,13 +2,13 @@ package completion
 
 import (
 	"dolittle.io/pascal/openid"
+	"dolittle.io/pascal/openid/issuer"
 	"dolittle.io/pascal/sessions"
 	"go.uber.org/zap"
-	"golang.org/x/oauth2"
 )
 
 type Completer interface {
-	Complete(response *Response, session *sessions.Session) (*oauth2.Token, error)
+	Complete(response *Response, session *sessions.Session) (*issuer.Token, error)
 }
 
 func NewCompleter(validator Validator, exchanger openid.TokenExchanger, logger *zap.Logger) Completer {
@@ -25,7 +25,7 @@ type completer struct {
 	logger    *zap.Logger
 }
 
-func (c *completer) Complete(response *Response, session *sessions.Session) (*oauth2.Token, error) {
+func (c *completer) Complete(response *Response, session *sessions.Session) (*issuer.Token, error) {
 	if sesionIsValid, err := c.validator.Validate(response, session); !sesionIsValid {
 		c.logger.Error("session was not valid", zap.Error(err))
 		return nil, ErrSessionDoesNotMatchProviderCallback

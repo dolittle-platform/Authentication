@@ -28,9 +28,13 @@ type initiator struct {
 }
 
 func (i *initiator) GetAuthenticationRedirect(nonce nonces.Nonce) (AuthenticationRedirectURL, error) {
-	config, err := i.watcher.GetConfig()
+	issuer, err := i.watcher.GetIssuer()
 	if err != nil {
 		return "", err
 	}
-	return AuthenticationRedirectURL(config.AuthCodeURL(string(nonce))), nil
+	redirect, err := issuer.GetAuthenticationRedirectURL(nonce)
+	if err != nil {
+		return "", err
+	}
+	return AuthenticationRedirectURL(redirect), nil
 }
