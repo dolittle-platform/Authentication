@@ -1,4 +1,4 @@
-package config
+package issuer
 
 import (
 	"net/http"
