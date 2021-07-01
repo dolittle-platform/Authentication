@@ -3,6 +3,7 @@ package viper
 import (
 	"net/url"
 
+	"dolittle.io/pascal/openid/config"
 	"github.com/spf13/viper"
 )
 
@@ -11,6 +12,7 @@ const (
 	openidClientIDKey     = "openid.client.id"
 	openidClientSecretKey = "openid.client.secret"
 	openidScopesKey       = "openid.scopes"
+	openidTokenTypeKey    = "openid.token_type"
 	openidRedirectURLKey  = "openid.redirect"
 )
 
@@ -31,6 +33,10 @@ func (c *openidConfiguration) ClientSecret() string {
 
 func (c *openidConfiguration) Scopes() []string {
 	return viper.GetStringSlice(openidScopesKey)
+}
+
+func (c *openidConfiguration) TokenType() config.TokenType {
+	return config.TokenType(viper.GetString(openidTokenTypeKey))
 }
 
 func (c *openidConfiguration) RedirectURL() *url.URL {

@@ -3,11 +3,11 @@ package cookies
 import (
 	"net/http"
 
-	"golang.org/x/oauth2"
+	"dolittle.io/pascal/openid/issuer"
 )
 
 type Writer interface {
-	WriteTokenCookie(token *oauth2.Token, w http.ResponseWriter) error
+	WriteTokenCookie(token *issuer.Token, w http.ResponseWriter) error
 }
 
 func NewWriter(configuration Configuration) Writer {
@@ -20,11 +20,11 @@ type writer struct {
 	configuration Configuration
 }
 
-func (w *writer) WriteTokenCookie(token *oauth2.Token, responseWriter http.ResponseWriter) error {
+func (w *writer) WriteTokenCookie(token *issuer.Token, responseWriter http.ResponseWriter) error {
 	cookie := http.Cookie{
 		Name:     w.configuration.Name(),
-		Value:    token.AccessToken,
-		Expires:  token.Expiry,
+		Value:    token.Value,
+		Expires:  token.Expires,
 		HttpOnly: true,
 		Secure:   w.configuration.Secure(),
 		SameSite: w.configuration.SameSite(),
