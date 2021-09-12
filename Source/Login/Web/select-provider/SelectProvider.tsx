@@ -1,27 +1,41 @@
 // Copyright (c) Dolittle. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import React from 'react';
-import { useLocation } from 'react-router';
+import React, { Suspense } from 'react';
 
-import { IdentityProviderList } from './IdentityProviderList';
+import { makeStyles } from '@material-ui/core/styles';
+import Box from '@material-ui/core/Box';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Typography from '@material-ui/core/Typography';
 
-import './SelectProvider.scss';
-import { SelectProviderViewModel } from './SelectProviderViewModel';
-import { withViewModel } from '../MVVM/withViewModel';
+import { SelectProviderForm } from './SelectProviderForm';
 
-export type SelectProviderProps = {
-    loading: Function;
-    loaded: Function;
-};
-
-export const SelectProvider = withViewModel<SelectProviderViewModel, SelectProviderProps>(SelectProviderViewModel, ({ viewModel, props }) => {
-    return (
-        <IdentityProviderList loaded={props.loaded} loading={props.loading} flow={getFlow()} />
-    );
+const useStyles = makeStyles({
+    root: {
+        padding: '158px 64px 0 64px',
+    },
+    title: {
+        marginBottom: '20px',
+    },
+    subtitle: {
+        marginBottom: '30px',
+    },
+    form: {
+        textAlign: 'center',
+    }
 });
 
-const getFlow = () => {
-    const query = new URLSearchParams(useLocation().search);
-    return query.get('flow');
-}
+export const SelectProvider = (): JSX.Element => {
+    const classes = useStyles();
+    return (
+        <Box className={classes.root}>
+            <Typography variant="h1" className={classes.title}>Welcome to Dolittle Studio!</Typography>
+            <Typography variant="h2" className={classes.subtitle}>Sign in to continue</Typography>
+            <Box className={classes.form}>
+                <Suspense fallback={<CircularProgress />}>
+                    <SelectProviderForm/>
+                </Suspense>
+            </Box>
+        </Box>
+    );
+};

@@ -3,30 +3,33 @@
 
 import React from 'react';
 
-import { withViewModel } from '../MVVM/withViewModel';
+import { makeStyles } from '@material-ui/core/styles';
+import Box from '@material-ui/core/Box';
 
-import { TenantListViewModel } from './TenantListViewModel';
-
+import { Tenant } from './Tenant';
 import { TenantListItem } from './TenantListItem';
+// import { TenantListItem } from './TenantListItem';
 
 export type TenantListProps = {
-    loading: Function;
-    loaded: Function;
-    flow: string | null;
+    tenants: Tenant[];
 };
 
-export const TenantList = withViewModel<TenantListViewModel, TenantListProps>(TenantListViewModel, ({ viewModel, props }) => {
+const useStyles = makeStyles({
+    row: {
+        marginBottom: '28px',
+    },
+});
+
+export const TenantList = (props: TenantListProps): JSX.Element => {const classes = useStyles();
     return (
         <>
-            <h1>Select tenant:</h1>
-            { props.flow !== null ? viewModel.tenants.map(tenant =>
-                <TenantListItem
-                    key={tenant.id}
-                    formAction={viewModel.formAction}
-                    formMethod={viewModel.formMethod}
-                    flowId={props.flow!}
-                    tenant={tenant} />
-            ) : <></> }
+            {
+                props.tenants.map(tenant => (
+                    <Box key={tenant.id} className={classes.row}>
+                        <TenantListItem tenant={tenant} />
+                    </Box>
+                ))
+            }
         </>
     );
-});
+};

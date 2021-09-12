@@ -1,44 +1,53 @@
 // Copyright (c) Dolittle. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import React, { useState } from 'react';
-import { Spinner, SpinnerSize } from 'office-ui-fabric-react';
-import { Route, Switch } from 'react-router-dom';
+import React from 'react';
+import { Switch, Route } from 'react-router-dom';
 
-import { SelectProvider } from '../select-provider/SelectProvider';
-import { SelectTenant } from '../select-tenant/SelectTenant';
-import { Error } from '../error/Error';
+import { makeStyles } from '@material-ui/core/styles';
+import Paper from '@material-ui/core/Paper';
 
-import './Layout.scss';
-import { LayoutViewModel } from './LayoutViewModel';
-import { withViewModel } from '../MVVM/withViewModel';
+import { Headline } from './Headline';
+import { ErrorBoundary } from '../error/ErrorBoundary';
+import { Error } from '../error/Error'
+import { SelectProvider } from '../select-provider/SelectProvider'
+import { SelectTenant } from '../select-tenant/SelectTenant'
 
-export const Layout = withViewModel(LayoutViewModel, ({ viewModel }) => {
-    const [loadingSpinner, setLoadingSpinner] = useState(false);
-    const contentLoading = () => setLoadingSpinner(true);
-    const contentLoaded = () => setLoadingSpinner(false);
-
-    return (
-        <div className='application'>
-            <div className="main">
-                <div className="content">
-                    <div className="spinner">
-                        <Spinner styles={{ root: { display: loadingSpinner ? undefined! : 'none' } }} size={SpinnerSize.large} label="Loading Content" />
-                    </div>
-
-                    <Switch>
-                        <Route path="/.auth/select-provider">
-                            <SelectProvider loading={contentLoading} loaded={contentLoaded} />
-                        </Route>
-                        <Route path="/.auth/select-tenant">
-                            <SelectTenant loading={contentLoading} loaded={contentLoaded} />
-                        </Route>
-                        <Route path="/.auth/error">
-                            <Error />
-                        </Route>
-                    </Switch>
-                </div>
-            </div>
-        </div>
-    );
+const useStyles = makeStyles({
+    root: {
+        position: 'absolute',
+        right: '0',
+        height: '100%',
+        width: '45%',
+        maxWidth: '650px',
+        backgroundColor: '#191A21',
+    },
 });
+
+export const Layout = (): JSX.Element => {
+    const classes = useStyles();
+    return (
+        <>
+            <Headline />
+            <Paper className={classes.root} elevation={24} square={true}>
+                <Switch>
+                    <Route path="/.auth/select-provider">
+                        <ErrorBoundary>
+                            <SelectProvider />
+                        </ErrorBoundary>
+                    </Route>
+                    <Route path="/.auth/select-tenant">
+                        <ErrorBoundary>
+                            <SelectTenant />
+                        </ErrorBoundary>
+                    </Route>
+                    <Route path="/.auth/error">
+                        <Error />
+                    </Route>
+                </Switch>
+            </Paper>
+        </>
+    );
+};
+
+export default Layout;

@@ -3,28 +3,33 @@
 
 import React from 'react';
 
-import { IdentityProviderListViewModel } from './IdentityProviderListViewModel';
-import { withViewModel } from '../MVVM/withViewModel';
+import { makeStyles } from '@material-ui/core/styles';
+import Box from '@material-ui/core/Box';
+
+import { IdentityProvider } from './IdentityProvider';
 import { IdentityProviderListItem } from './IdentityProviderListItem';
 
 export type IdentityProviderListProps = {
-    loading: Function;
-    loaded: Function;
-    flow: string | null;
+    providers: IdentityProvider[];
 };
 
-export const IdentityProviderList = withViewModel<IdentityProviderListViewModel, IdentityProviderListProps>(IdentityProviderListViewModel, ({ viewModel, props }) => {
+const useStyles = makeStyles({
+    row: {
+        marginBottom: '28px',
+    },
+});
+
+export const IdentityProviderList = (props: IdentityProviderListProps): JSX.Element => {
+    const classes = useStyles();
     return (
         <>
-            <h1>Log in with:</h1>
-            {viewModel.providers.map(provider =>
-                <IdentityProviderListItem
-                    key={provider.id}
-                    provider={provider}
-                    formAction={viewModel.formAction}
-                    formMethod={viewModel.formMethod}
-                    formCsrfToken={viewModel.formCsrfToken} />
-            )}
+            {
+                props.providers.map(provider => (
+                    <Box key={provider.id} className={classes.row}>
+                        <IdentityProviderListItem provider={provider} />
+                    </Box>
+                ))
+            }
         </>
     );
-});
+};

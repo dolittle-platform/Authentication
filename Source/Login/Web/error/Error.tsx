@@ -3,19 +3,35 @@
 
 import React from 'react';
 
-import './Error.scss';
+import { makeStyles } from '@material-ui/core/styles';
+import Box from '@material-ui/core/Box';
+import Button from '@material-ui/core/Button';
+import Link from '@material-ui/core/Link';
+import Typography from '@material-ui/core/Typography';
 
-import { ErrorViewModel } from './ErrorViewModel';
-import { withViewModel } from '../MVVM/withViewModel';
-
-
-export type ErrorProps = {
-};
-
-export const Error = withViewModel<ErrorViewModel, ErrorProps>(ErrorViewModel, ({ viewModel, props }) => {
-    return (
-        <div>
-            <h1>Oops, something went wrong...</h1>
-        </div>
-    );
+const useStyles = makeStyles({
+    root: {
+        padding: '158px 64px 0 64px',
+    },
+    subtitle: {
+        marginBottom: '30px',
+    },
+    button: {
+        marginTop: '28px',
+    },
 });
+
+export const Error = (): JSX.Element => {
+    const classes = useStyles();
+    return (
+        <Box className={classes.root}>
+            <Typography variant="h2" className={classes.subtitle}>We're sorry, but something went wrong.</Typography>
+            <Typography>You can log out and try again, or <Link underline="always" color="inherit" href="mailto:support@dolittle.com">email us here.</Link> if it still doesn't work.</Typography>
+            <Button
+                variant="contained"
+                className={classes.button}
+                onClick={() => window.location.href = '/.auth/logout'}
+            >Log out and try again</Button>
+        </Box>
+    );
+};
