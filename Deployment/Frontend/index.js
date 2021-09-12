@@ -3,7 +3,12 @@ const identityProviders = [
         ID: 'sample',
         Display: 'sample',
         ImageURL: 'https://via.placeholder.com/60'
-    }
+    },
+    {
+        ID: 'sample-2',
+        Display: 'sample 2',
+        ImageURL: 'https://via.placeholder.com/60'
+    },
 ];
 
 const availableTenants = [
@@ -20,6 +25,8 @@ const availableTenants = [
         Display: 'tenant-b'
     }
 ];
+
+const responseDelay = 1000;
 
 const app = require('express')();
 const cookieParser = require('cookie-parser');
@@ -40,7 +47,7 @@ app.get('/', (req, res) => {
                 <body>
                     <h1>You are logged in!</h1>
                     <div>
-                        <a href="/restart"/>Click here to do it all again</a>
+                        <a href="/.auth/logout"/>Click here to logout and do it all again</a>
                     </div>
                     <div>
                         <a href="/.auth/error?correlation=error-id"/>Click here to see what an error would look like</a>
@@ -55,25 +62,27 @@ app.get('/', (req, res) => {
 });
 
 app.get('/.auth/self-service/login/flows', (req, res) => {
-    res.send({
-        ID: req.query.id,
-        Forced: false,
-        FormCSRFToken: 'csrf-form-token',
-        FormSubmitAction: {
-            Scheme: 'http',
-            Opaque: '',
-            User: null,
-            Host: 'localhost:8080',
-            Path: '/.auth/self-service/methods/oidc/auth/authentication-id',
-            RawPath: '',
-            ForceQuery: false,
-            RawQuery: '',
-            Fragment: '',
-            RawFragment: ''
-        },
-        FormSubmitMethod: 'POST',
-        Providers: identityProviders,
-    });
+    setTimeout(() => {
+        res.send({
+            ID: req.query.id,
+            Forced: false,
+            FormCSRFToken: 'csrf-form-token',
+            FormSubmitAction: {
+                Scheme: 'http',
+                Opaque: '',
+                User: null,
+                Host: 'localhost:8080',
+                Path: '/.auth/self-service/methods/oidc/auth/authentication-id',
+                RawPath: '',
+                ForceQuery: false,
+                RawQuery: '',
+                Fragment: '',
+                RawFragment: ''
+            },
+            FormSubmitMethod: 'POST',
+            Providers: identityProviders,
+        });
+    }, responseDelay);
 });
 
 app.post('/.auth/self-service/methods/oidc/auth/authentication-id', (req, res) => {
@@ -82,26 +91,28 @@ app.post('/.auth/self-service/methods/oidc/auth/authentication-id', (req, res) =
 });
 
 app.get('/.auth/self-service/tenant/flows', (req, res) => {
-    res.send({
-        ID: req.query.login_challenge,
-        FormSubmitAction: {
-            Scheme: 'http',
-            Opaque: '',
-            User: null,
-            Host: 'localhost:8080',
-            Path: '/.auth/self-service/tenant/select',
-            RawPath: '',
-            ForceQuery: false,
-            RawQuery: '',
-            Fragment: '',
-            RawFragment: ''
-        },
-        FormSubmitMethod: 'POST',
-        User: {
-            Subject: 'subject',
-            Tenants: availableTenants,
-        }
-    });
+    setTimeout(() => {
+        res.send({
+            ID: req.query.login_challenge,
+            FormSubmitAction: {
+                Scheme: 'http',
+                Opaque: '',
+                User: null,
+                Host: 'localhost:8080',
+                Path: '/.auth/self-service/tenant/select',
+                RawPath: '',
+                ForceQuery: false,
+                RawQuery: '',
+                Fragment: '',
+                RawFragment: ''
+            },
+            FormSubmitMethod: 'POST',
+            User: {
+                Subject: 'subject',
+                Tenants: availableTenants,
+            }
+        });
+    }, responseDelay);
 });
 
 app.post('/.auth/self-service/tenant/select', (req, res) => {
@@ -110,7 +121,7 @@ app.post('/.auth/self-service/tenant/select', (req, res) => {
     res.redirect('/');
 });
 
-app.get('/restart', (_, res) => {
+app.get('/.auth/logout', (_, res) => {
     res.cookie('logged_in', 'no', { httpOnly: true, sameSite: 'strict' });
     res.redirect('/');
 });
