@@ -8,6 +8,7 @@ import Box from '@material-ui/core/Box';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
 
+import { configuration } from '../Configuration';
 import { SelectProviderForm } from './SelectProviderForm';
 
 const useStyles = makeStyles({
@@ -27,9 +28,10 @@ const useStyles = makeStyles({
 
 export const SelectProvider = (): JSX.Element => {
     const classes = useStyles();
+    const title = configuration.applicationName ? `Welcome to ${configuration.applicationName}!` : 'Welcome!';
     return (
         <Box className={classes.root}>
-            <Typography variant="h1" className={classes.title}>Welcome to Dolittle Studio!</Typography>
+            <Typography variant="h1" className={classes.title}>{title}</Typography>
             <Typography variant="h2" className={classes.subtitle}>Sign in to continue</Typography>
             <Box className={classes.form}>
                 <Suspense fallback={<CircularProgress />}>

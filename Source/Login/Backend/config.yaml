@@ -4,6 +4,11 @@ serve:
   paths:
     frontend: /
 
+frontend:
+  showDolittleHeadline: true
+  applicationName: Dolittle Studio
+  supportEmail: support@dolittle.com
+
 urls:
   error: http://local.dolittle.studio:8080/.auth/error
 

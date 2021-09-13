@@ -7,21 +7,41 @@ import path from 'node:path'
 import TerserWebpackPlugin from 'terser-webpack-plugin';
 import { Configuration } from 'webpack';
 
-export default (): Configuration => {
+type WebpackArguments = {
+    mode: 'none' | 'production' | 'development',
+}
+
+const globalFrontendConfiguration = (args: WebpackArguments): string => {
+    if (args.mode === 'production') {
+        return `
+            window.configuration = {
+                showDolittleHeadline: {{ .ShowDolittleHeadline }},
+                applicationName: "{{ .ApplicationName }}",
+                supportEmail: "{{ .SupportEmail }}",
+            };
+        `.split('\n').map(_ => _.trim()).join('');
+    } else {
+        return `
+            window.configuration = {
+                showDolittleHeadline: true,
+                applicationName: "Dolittle Studio",
+                supportEmail: "support@dolittle.com",
+            };
+        `.trim();
+    }
+}
+
+export default (_env: any, args: WebpackArguments): Configuration => {
+
     return {
         entry: './index.tsx',
         output: {
-            path: path.join(__dirname, 'wwwroot'),
+            path: args.mode === 'production' ? path.join(__dirname, '..', 'Backend', 'wwwroot') : path.join(__dirname, 'wwwroot'),
             filename: '[name].[chunkhash].bundle.js',
             chunkFilename: '[name].[chunkhash].chunk.js',
         },
         optimization: {
             runtimeChunk: 'single',
-            // moduleIds: 'deterministic',
-            // splitChunks: {
-            //     chunks: 'initial',
-            //     maxSize: 200000,
-            // },
             minimize: true,
             minimizer: [
                 new TerserWebpackPlugin({
@@ -59,6 +79,9 @@ export default (): Configuration => {
         plugins: [
             new HtmlWebpackPlugin({
                 template: 'index.html',
+                templateParameters: {
+                    configuration: globalFrontendConfiguration(args),
+                },
             }),
             new CleanWebpackPlugin(),
         ],

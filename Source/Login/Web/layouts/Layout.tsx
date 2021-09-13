@@ -7,11 +7,12 @@ import { Switch, Route } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 
-import { Headline } from './Headline';
+import { configuration } from '../Configuration';
 import { ErrorBoundary } from '../error/ErrorBoundary';
 import { Error } from '../error/Error'
 import { SelectProvider } from '../select-provider/SelectProvider'
 import { SelectTenant } from '../select-tenant/SelectTenant'
+import { Headline } from './Headline';
 
 const useStyles = makeStyles({
     root: {
@@ -28,7 +29,7 @@ export const Layout = (): JSX.Element => {
     const classes = useStyles();
     return (
         <>
-            <Headline />
+            { configuration.showDolittleHeadline && <Headline /> }
             <Paper className={classes.root} elevation={24} square={true}>
                 <Switch>
                     <Route path="/.auth/select-provider">

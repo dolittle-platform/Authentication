@@ -128,8 +128,12 @@ func NewContainer(configuration Configuration) (*Container, error) {
 	container.ConsentFlowAccepter = consentFlow.NewAccepter(
 		container.HydraClient)
 
-	container.FrontendHandler = public.NewFrontendHandler(
+	frontendHandler, err := public.NewFrontendHandler(
 		configuration.Server())
+	if err != nil {
+		return nil, err
+	}
+	container.FrontendHandler = frontendHandler
 
 	container.LoginGetHandler = login.NewGetHandler(
 		container.LoginFlowGetter)

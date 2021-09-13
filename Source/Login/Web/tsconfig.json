@@ -24,8 +24,5 @@
      "include": [
          "**/*.ts",
          "**/*.tsx",
-     ],
-     "exclude": [
-        "webpack.config.ts"
      ]
 }

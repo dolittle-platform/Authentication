@@ -3,14 +3,18 @@ package viper
 import (
 	"net/url"
 
+	"dolittle.io/login/server/public"
 	"github.com/spf13/viper"
 )
 
 const (
-	servePortKey          = "serve.port"
-	urlsErrorKey          = "urls.error"
+	servePortKey                    = "serve.port"
+	frontendShowDolittleHeadlineKey = "frontend.showDolittleHeadline"
+	frontendApplicationNameKey      = "frontend.applicationName"
+	frontendSupportEmailKey         = "frontend.supportEmail"
+	urlsErrorKey                    = "urls.error"
 
-	defaultServePort         = 8080
+	defaultServePort = 8080
 )
 
 var (
@@ -35,6 +39,14 @@ func (c *serverConfiguration) Port() int {
 
 func (c *serverConfiguration) DevMode() bool {
 	return c.devMode
+}
+
+func (c *serverConfiguration) Frontend() public.FrontendConfiguration {
+	return public.FrontendConfiguration{
+		ShowDolittleHeadline: viper.GetBool(frontendShowDolittleHeadlineKey),
+		ApplicationName:      viper.GetString(frontendApplicationNameKey),
+		SupportEmail:         viper.GetString(frontendSupportEmailKey),
+	}
 }
 
 func (c *serverConfiguration) ErrorRedirect() *url.URL {

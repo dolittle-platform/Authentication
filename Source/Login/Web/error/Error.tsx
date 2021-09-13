@@ -9,6 +9,8 @@ import Button from '@material-ui/core/Button';
 import Link from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';
 
+import { configuration } from '../Configuration';
+
 const useStyles = makeStyles({
     root: {
         padding: '158px 64px 0 64px',
@@ -26,7 +28,11 @@ export const Error = (): JSX.Element => {
     return (
         <Box className={classes.root}>
             <Typography variant="h2" className={classes.subtitle}>We're sorry, but something went wrong.</Typography>
-            <Typography>You can log out and try again, or <Link underline="always" color="inherit" href="mailto:support@dolittle.com">email us here.</Link> if it still doesn't work.</Typography>
+            {
+                configuration.supportEmail
+                    ? <Typography>You can log out and try again, or <Link underline="always" color="inherit" href={'mailto:'+configuration.supportEmail}>email us here.</Link> if it still doesn't work.</Typography>
+                    : <Typography>You can log out and try again by clicking below.</Typography>
+            }
             <Button
                 variant="contained"
                 className={classes.button}

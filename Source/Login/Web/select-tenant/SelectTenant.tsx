@@ -11,6 +11,7 @@ import Link from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';
 import ChevronLeft from '@material-ui/icons/ChevronLeft';
 
+import { configuration } from '../Configuration';
 import { SelectTenantForm } from './SelectTenantForm';
 
 const useStyles = makeStyles({
@@ -41,7 +42,7 @@ export const SelectTenant = (): JSX.Element => {
                     <SelectTenantForm/>
                 </Suspense>
                 <Box className={classes.noTenant}>
-                    <Typography>Don't have a tenant? <Link underline="always" color="inherit" href="mailto:support@dolittle.com">Email us here.</Link></Typography>
+                    { configuration.supportEmail && <Typography>Don't have a tenant? <Link underline="always" color="inherit" href={'mailto:'+configuration.supportEmail}>Email us here.</Link></Typography>}
                 </Box>
             </Box>
             <Button
