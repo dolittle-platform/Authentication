@@ -22,14 +22,11 @@ To test out with different sets of providers or tenants, you can modify the `ide
 > Note: no special handling is required for a case where a single tenant is available for a user, this is handled by the backend which would jump over the select tenant page.
 
 ## 2. Running with Docker Compose
-> NEW NOTES:
-> Chrome allow localhost invalid certs
-
 > The files and scripts referenced in this section is in the `/Deployment/Development` directory in this repository.
 > The setup relies on a self-signed SSL certificate, so you need to accept that for it to work.
 > If you're using Chrome, you need to enable insecure sertificates on localhost by going to [chrome://flags/#allow-insecure-localhost](chrome://flags/#allow-insecure-localhost).
 
-##### Starting up
+#### Starting up
 To build and start up the current code, run:
 ```shell
 docker-compose up -d
@@ -43,7 +40,7 @@ Then to add configuration to Hydra, run:
 ./add-pascal-client-to-hydra.sh
 ```
 
-##### Testing it out
+#### Testing it out
 Navigate to https://studio.localhost:8080/, and log in in with email `do@do.do`, and password `password`.
 
 The first time logging in from a fresh setup, the user will not be assigned to any tenants. To add a tenant to a user run:
@@ -59,11 +56,18 @@ Refresh the select tenant page if you just added another tenant, and select the 
 
 You should then be presented with the amazing Dolittle spinner page - congratulations!
 
-##### Tearing down
+#### Tearing down
 Shut down the containers and the ingress, and run:
 ```shell
 docker-compose down -v
 ```
 This will clean up everything created and clear out databases, so you'll need to add tenants to users again the next time.
+
+#### Rebuilding images from source
+When you've changed the code and want to test the new code in Docker compose, you can run:
+```shell
+docker-compose build
+```
+Take the deployment down and restart it to run with the fresh images.
 
 ## 3. Running in a local Kubernetes cluster
