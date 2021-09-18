@@ -3,7 +3,7 @@
 
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin'
-import path from 'node:path'
+import path from 'path'
 import TerserWebpackPlugin from 'terser-webpack-plugin';
 import { Configuration } from 'webpack';
 
