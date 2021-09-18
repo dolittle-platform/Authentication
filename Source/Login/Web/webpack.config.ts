@@ -36,7 +36,7 @@ export default (_env: any, args: WebpackArguments): Configuration => {
     return {
         entry: './index.tsx',
         output: {
-            path: args.mode === 'production' ? path.join(__dirname, '..', 'Backend', 'wwwroot') : path.join(__dirname, 'wwwroot'),
+            path: path.join(__dirname, 'wwwroot'),
             filename: '[name].[chunkhash].bundle.js',
             chunkFilename: '[name].[chunkhash].chunk.js',
         },
