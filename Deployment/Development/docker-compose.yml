@@ -35,7 +35,7 @@ services:
       - '8081:8081'
 
   authenticator-oathkeeper:
-    image: oryd/oathkeeper:v0.38.5
+    image: oryd/oathkeeper:v0.38.15
     command:
       - "--config"
       - "/etc/oathkeeper/config/oathkeeper.yaml"
@@ -47,7 +47,7 @@ services:
       - '4455:4455'
 
   browser-hydra-init:
-    image: oryd/hydra:v1.8.5
+    image: oryd/hydra:v1.10.6
     restart: on-failure
     command:
       - "--config"
@@ -61,7 +61,7 @@ services:
     logging:
       driver: none
   browser-hydra:
-    image: oryd/hydra:v1.8.5
+    image: oryd/hydra:v1.10.6
     restart: unless-stopped
     depends_on:
       - browser-hydra-init
