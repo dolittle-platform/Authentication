@@ -3,7 +3,7 @@ dsn: postgres://postgres:password@postgres:5432/kratos?sslmode=disable&max_conns
 serve:
   public:
     port: 4433
-    base_url: "http://studio.localhost:8080/.auth/"
+    base_url: "https://studio.localhost:8080/.auth/"
   admin:
     port: 4434
 
@@ -11,33 +11,33 @@ identity:
   default_schema_url: file:///etc/kratos/config/identity.schema.json
 
 selfservice:
-  default_browser_return_url: http://studio.localhost:8080/dashboard
+  default_browser_return_url: https://studio.localhost:8080/
 
   whitelisted_return_urls:
-    - http://studio.localhost:8080/.auth/self-service/tenant/browser
+    - https://studio.localhost:8080/.auth/self-service/tenant/browser
     - /.auth/self-service/tenant/browser
 
   flows:
-    registration:
-          after:
-            oidc:
-              default_browser_return_url: /.auth/self-service/tenant/browser
-              hooks:
-                - hook: session
-
     login:
-      ui_url: http://studio.localhost:8080/.auth/select-provider
+      ui_url: https://studio.localhost:8080/.auth/select-provider
       after:
         oidc:
           default_browser_return_url: /.auth/self-service/tenant/browser
           hooks:
             - hook: revoke_active_sessions
 
+    registration:
+      after:
+        oidc:
+          default_browser_return_url: /.auth/cookies/initiate
+          hooks:
+            - hook: session
+
     verification:
       enabled: false
     
     error:
-      ui_url: http://studio.localhost:8080/.auth/error
+      ui_url: https://studio.localhost:8080/.auth/error
 
   methods:
     profile:
@@ -54,7 +54,7 @@ selfservice:
             provider: generic
             client_id: foo
             client_secret: bar
-            issuer_url: http://local-oidc-provider:9090/
+            issuer_url: https://provider.localhost:8081/
             mapper_url: file:///etc/kratos/config/sample.mapper.jsonnet
             scope:
               - profile
@@ -74,9 +74,9 @@ hashers:
 
 secrets:
   default:
-    - PLEASE-CHANGE-ME-I-AM-VERY-INSECURE-DUH
+    - nQUhGZPZdxZ5RUaUXWG33KOYJmNvEKEf76ujTAJRNtAFyanaCXmgG9883lZlESOf
   cookie:
-    - PLEASE-CHANGE-ME-I-AM-EVEN-MORE-INSECURE-I-WAS-NEVER-LOVED
+    - xeJxf8gDTYVO4X7a8qEQTHpstzoJz10mNPeMMvT8Q1jN8kWq6XMWeKEtsWBKurMg
 
 session:
   cookie:

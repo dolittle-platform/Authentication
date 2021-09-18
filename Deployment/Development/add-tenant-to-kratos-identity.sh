@@ -1,5 +1,5 @@
 #!/bin/bash
-IDENTITIES=$(docker exec dolittle_authentication_login-kratos_1 kratos --endpoint http://localhost:4434 identities list -f=json)
+IDENTITIES=$(curl -s -X GET "http://localhost:4434/identities")
 if [ $? -ne 0 ]; then
     echo "Filed to get identities from Kratos"
     exit 1

@@ -8,15 +8,29 @@ serve:
 
 secrets:
   system:
-    - DgCPtr3IlG0KFMBqHA7LQ4ixMSRqNHrA
+    - m4oeVuJoEiy4C827KqAE58nJPKuTXpbi5BzNqjZMBtZPdDZMNLKxApJhHW56rxIo
+  cookie:
+    - aBAx0oW09wylSiANhGCVcahVJdQmTfVVystUKUo9NTHUo3e9zmF6L6UbmOxlahIR
 
 urls:
   self:
-    issuer: http://studio.localhost:8080/.auth/
-    public: http://studio.localhost:8080/.auth/
+    issuer: https://studio.localhost:8080/.auth/
+    public: https://studio.localhost:8080/.auth/
   
-  login: http://studio.localhost:8080/.auth/self-service/tenant/browser
-  consent: http://studio.localhost:8080/.auth/self-service/consent/browser
+  login: https://studio.localhost:8080/.auth/self-service/tenant/browser
+  consent: https://studio.localhost:8080/.auth/self-service/consent/browser
+
+
+ttl:
+  login_consent_request: 1h
+  auth_code: 1h
+
+  access_token: 2h
+  id_token: 2h
+  refresh_token: 720h
+
+oauth2:
+  expose_internal_errors: true
 
 log:
   level: debug

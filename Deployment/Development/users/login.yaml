@@ -1,0 +1,40 @@
+serve:
+  port: 8080
+  base_url: https://studio.localhost:8080/.auth/
+  paths:
+    frontend: /
+
+frontend:
+  showDolittleHeadline: true
+  applicationName: Dolittle Studio
+  supportEmail: support@dolittle.com
+
+urls:
+  error: https://studio.localhost:8080/.auth/error
+
+
+providers: {}
+
+identities:
+  cookie_name: ory_kratos_session
+  tenants: {}
+
+flows:
+  login:
+    flow_id_query_parameter: id
+    csrf_token_parameter: csrf_token
+    provider_parameter: provider
+  tenant:
+    flow_id_query_parameter: login_challenge
+    flow_id_form_parameter: login_challenge
+    flow_tenant_form_parameter: tenant
+  consent:
+    flow_id_query_parameter: consent_challenge
+
+clients:
+  hydra:
+    endpoints:
+      admin: http://browser-hydra:4445
+  kratos:
+    endpoints:
+      public: http://users-kratos:4433

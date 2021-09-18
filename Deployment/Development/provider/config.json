@@ -1,12 +1,12 @@
 {
-    "idp_name": "http://local-oidc-provider:9090/",
-    "port": 9090,
+    "idp_name": "https://provider.localhost:8081/",
+    "port": 8080,
     "client_config": [
         {
             "client_id": "foo",
             "client_secret": "bar",
             "redirect_uris": [
-                "http://studio.localhost:8080/.auth/self-service/methods/oidc/callback/sample"
+                "https://studio.localhost:8080/.auth/self-service/methods/oidc/callback/sample"
             ]
         }
     ],

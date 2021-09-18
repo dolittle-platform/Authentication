@@ -1,0 +1,10 @@
+- id: decision
+  match:
+    methods: ["GET"]
+    url: http://authenticator-oathkeeper:4456
+  authenticators:
+    - handler: oauth2_introspection
+  authorizer:
+    handler: allow
+  mutators:
+    - handler: header

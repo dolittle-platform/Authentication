@@ -1,0 +1,43 @@
+serve:
+  proxy:
+    port: 4455
+  api:
+    port: 4456
+access_rules:
+  repositories:
+    - file:///etc/oathkeeper/config/rules.yaml
+
+errors:
+  fallback:
+    - json
+  handlers:
+    json:
+      enabled: true
+      config:
+        verbose: true
+
+authenticators:
+  oauth2_introspection:
+    enabled: true
+    config:
+      introspection_url: http://browser-hydra:4445/oauth2/introspect
+      token_from:
+        cookie: .dolittle.pascal.login
+
+authorizers:
+  allow:
+    enabled: true
+
+mutators:
+  noop:
+    enabled: true
+  header:
+    enabled: true
+    config:
+      headers:
+        User-ID: '{{ print .Subject }}'
+        Tenant-ID: '{{ print .Extra.Tenant }}'
+
+log:
+  level: debug
+  format: text
