@@ -1,0 +1,163 @@
+@startuml "Login"
+
+skinparam BackgroundColor #FEFEFE
+skinparam Sequence {
+    BoxBackgroundColor #DDDDDD
+    BoxBorderColor White
+}
+skinparam BoxPadding 20
+skinparam ParticipantPadding 20
+
+actor Browser
+box "Ingress"
+    participant "NGINX" as Nginx
+end box
+box "Authenticator"
+    participant Oathkeeper
+end box
+box "Browser"
+    participant Hydra
+    participant Pascal
+end box
+box "Users"
+    participant Kratos
+    participant Login
+end box
+participant Studio
+
+autonumber "<b>[000]"
+
+== User navigates to /path ==
+
+Browser -> Nginx: GET /path
+Nginx -> Oathkeeper: GET :80/decisions
+Oathkeeper -> Hydra: POST :4445/oauth2/introspect
+Oathkeeper <-- Hydra: Status 401
+Nginx <-- Oathkeeper: Status 401
+Browser <-- Nginx: Status 302\nLocation: /.auth/cookies/initiate\nQuery: rd="/path"
+Browser -> Nginx: GET /.auth/cookies/initiate\nQuery: rd="/path"
+Nginx -> Pascal: GET :8080/initiate\nQuery: rd="/path"
+Nginx <-- Pascal: Status 302\nLocation: /.auth/oauth2/auth\nQuery: redirect_uri="/.auth/cookies/callback"\nQuery: client_id="studio-browser"\nQuery: response_type="code"\nQuery: scope="openid"\nQuery: state="AAA"\nSet-Cookie: .dolittle.pascal.session
+Browser <-- Nginx: Status 302\nLocation: /.auth/oauth2/auth\nQuery: redirect_uri="/.auth/cookies/callback"\nQuery: client_id="studio-browser"\nQuery: response_type="code"\nQuery: scope="openid"\nQuery: state="AAA"\nSet-Cookie: .dolittle.pascal.session
+Browser -> Nginx: GET /.auth/oauth2/auth\nQuery: redirect_uri="/.auth/cookies/callback"\nQuery: client_id="studio-browser"\nQuery: response_type="code"\nQuery: scope="openid"\nQuery: state="AAA"\nCookie: .dolittle.pascal.session
+Nginx -> Hydra: GET :4444/oauth2/auth\nQuery: redirect_uri="/.auth/cookies/callback"\nQuery: client_id="studio-browser"\nQuery: response_type="code"\nQuery: scope="openid"\nQuery: state="AAA"\nCookie: .dolittle.pascal.session
+Nginx <-- Hydra: Status 302\nLocation /.auth/self-service/tenant/browser\nQuery: login_challenge="BBB"\nSet-Cookie: oauth2_authentication_csrf_insecure
+Browser <-- Nginx: Status 302\nLocation /.auth/self-service/tenant/browser\nQuery: login_challenge="BBB"\nSet-Cookie: oauth2_authentication_csrf_insecure
+Browser -> Nginx: GET /.auth/self-service/tenant/browser\nQuery: login_challenge="BBB"\nCookie: .dolittle.pascal.session\nCookie: oauth2_authentication_csrf_insecure
+Nginx -> Login: GET :8080/.auth/self-service/tenant/browser\nQuery: login_challenge="BBB"\nCookie: .dolittle.pascal.session\nCookie: oauth2_authentication_csrf_insecure
+Hydra <- Login: GET :4445/oauth2/auth/requests/login\nQuery: login_challenge="BBB"
+Hydra --> Login: Status 200\n{ login request }
+Kratos <- Login: GET :4433/sessions/whoami
+Kratos --> Login: Status 401
+Nginx <-- Login: Status 302\nLocation: /.auth/self-service/login/browser\nQuery: return_to="/.auth/self-service/tenant/browser?login_challenge=BBB"
+Browser <-- Nginx: Status 302\nLocation: /.auth/self-service/login/browser\nQuery: return_to="/.auth/self-service/tenant/browser?login_challenge=BBB"
+Browser -> Nginx: GET /.auth/self-service/login/browser\nQuery: return_to="/.auth/self-service/tenant/browser?login_challenge=BBB"\nCookie: .dolittle.pascal.session\nCookie: oauth2_authentication_csrf_insecure
+Nginx -> Kratos: GET :4433/self-service/login/browser\nQuery: return_to="/.auth/self-service/tenant/browser?login_challenge=BBB"\nCookie: .dolittle.pascal.session\nCookie: oauth2_authentication_csrf_insecure
+Nginx <-- Kratos: Status 302\nLocation: /.auth/select-provider\nQuery: flow="CCC"\nSet-Cookie: csrf_token
+Browser <-- Nginx: Status 302\nLocation: /.auth/select-provider\nQuery: flow="CCC"\nSet-Cookie: csrf_token
+Browser -> Nginx: GET /.auth/select-provider\nQuery: flow="CCC"\nCookie: .dolittle.pascal.session\nCookie: oauth2_authentication_csrf_insecure\nCookie: csrf_token
+Nginx -> Login: GET :8080/.auth/select-provider\nQuery: flow="CCC"\nCookie: .dolittle.pascal.session\nCookie: oauth2_authentication_csrf_insecure\nCookie: csrf_token
+Nginx <-- Login: Status 200\n<html>Login Frontend</html>
+Browser <-- Nginx: Status 200\n<html>Login Frontend</html>
+
+== Select Identity Provider view is rendered ==
+
+Browser -> Nginx: GET /.auth/self-service/login/flows\nQuery: id="CCC"\nCookie: .dolittle.pascal.session\nCookie: oauth2_authentication_csrf_insecure\nCookie: csrf_token
+Nginx -> Login: GET :8080/.auth/self-service/login/flows\nQuery: id="CCC"\nCookie: .dolittle.pascal.session\nCookie: oauth2_authentication_csrf_insecure\nCookie: csrf_token
+Kratos <- Login: GET :4433/.auth/self-service/login/flows\nQuery: id="CCC"
+Kratos --> Login: Status 200\n { login flow }
+note over Login: Adds Name+Image to providers
+Nginx <-- Login: Status 200\n { extended login flow }
+Browser <-- Nginx: Status 200\n { extended login flow }
+
+== User clicks an Identity Provider (PROVIDER) ==
+
+Browser -> Nginx: POST /.auth/self-service/methods/oidc/auth/CCC\nForm-Data: csrf_token\nForm-Data: provider="PROVIDER"\nCookie: .dolittle.pascal.session\nCookie: oauth2_authentication_csrf_insecure\nCookie: csrf_token
+Nginx -> Kratos: POST :4433/self-service/methods/oidc/auth/CCC\nForm-Data: csrf_token\nForm-Data: provider="PROVIDER"\nCookie: .dolittle.pascal.session\nCookie: oauth2_authentication_csrf_insecure\nCookie: csrf_token
+Nginx <-- Kratos: Status 302\n Location: PROVIDER_SPECIFIC_URL
+Browser <-- Nginx: Status 302\n Location: PROVIDER_SPECIFIC_URL
+
+... User performs Identity Provider login ...
+
+Browser -> Nginx: GET /.auth/self-service/methods/oidc/callback/PROVIDER\nQuery: code="DDD"\nQuery: state="EEE"\nQuery: session_state="FFF"\nCookie: oauth2_authentication_csrf_insecure\nCookie: ory_kratos_continuity\nCookie: csrf_token
+Nginx -> Kratos: GET :4433/.auth/self-service/methods/oidc/callback/PROVIDER\nQuery: code="DDD"\nQuery: state="EEE"\nQuery: session_state="FFF"\nCookie: oauth2_authentication_csrf_insecure\nCookie: ory_kratos_continuity\nCookie: csrf_token
+note over Kratos: Fetches identity from PROVIDER\nand creates user if first login
+Nginx <-- Kratos: Status 302\nLocation: /.auth/self-service/tenant/browser\nQuery: login_challenge="BBB"\nSet-Cookie: ory_kratos_continuity\nSet-Cookie: ory_kratos_session\nSet-Cookie: csrf_token
+Browser <-- Nginx: Status 302\nLocation: /.auth/self-service/tenant/browser\nQuery: login_challenge="BBB"\nSet-Cookie: ory_kratos_continuity\nSet-Cookie: ory_kratos_session\nSet-Cookie: csrf_token
+Browser -> Nginx: GET /.auth/self-service/tenant/browser\nQuery: login_challenge="BBB"\nCookie: oauth2_authentication_csrf_insecure\nCookie: ory_kratos_continuity\nCookie: ory_kratos_session\nCookie: csrf_token
+Nginx -> Login: GET :8080/.auth/self-service/tenant/browser\nQuery: login_challenge="BBB"\nCookie: oauth2_authentication_csrf_insecure\nCookie: ory_kratos_continuity\nCookie: ory_kratos_session\nCookie: csrf_token
+Hydra <- Login: GET :4445/oauth2/auth/requests/login\nQuery: login_challenge="BBB"
+Hydra --> Login: Status 200\n{ login request }
+Kratos <- Login: GET :4433/sessions/whoami\nCookie: ory_kratos_session
+Kratos --> Login: Status 200\n{ user identity }
+alt If more than 1 tenant
+Nginx <-- Login: Status 302\nLocation /.auth/select-tenant\nQuery: login_challenge="BBB"
+Browser <-- Nginx: Status 302\nLocation /.auth/select-tenant\nQuery: login_challenge="BBB"
+Browser -> Nginx: GET /.auth/select-tenant\nQuery: login_challenge="BBB"\nCookie: oauth2_authentication_csrf_insecure\nCookie: ory_kratos_continuity\nCookie: ory_kratos_session\nCookie: csrf_token
+Nginx -> Login: GET :8080/.auth/select-tenant\nQuery: login_challenge="BBB"\nCookie: oauth2_authentication_csrf_insecure\nCookie: ory_kratos_continuity\nCookie: ory_kratos_session\nCookie: csrf_token
+Nginx <-- Login: Status 200\n<html>Login Frontend</html>
+Browser <-- Nginx: Status 200\n<html>Login Frontend</html>
+
+== Select Tenant view is rendered ==
+
+Browser -> Nginx: GET /.auth/self-service/tenant/flows\nQuery: login_challenge="BBB"\nCookie: oauth2_authentication_csrf_insecure\nCookie: ory_kratos_continuity\nCookie: ory_kratos_session\nCookie: csrf_token
+Nginx -> Login: GET :8080/.auth/self-service/tenant/flows\nQuery: login_challenge="BBB"\nCookie: oauth2_authentication_csrf_insecure\nCookie: ory_kratos_continuity\nCookie: ory_kratos_session\nCookie: csrf_token
+Hydra <- Login: GET :4445/oauth2/auth/requests/login\nQuery: login_challenge="BBB"
+Hydra --> Login: Status 200\n{ login request }
+Kratos <- Login: GET :4433/sessions/whoami\nCookie: ory_kratos_session
+Kratos --> Login: Status 200\n{ user identity }
+note over Login: Adds Name to tenants
+Nginx <-- Login: Status 200\n { tenant flow }
+Browser <-- Nginx: Status 200\n { tenant flow }
+
+== User clicks a Tenant (TENANT) ==
+
+Browser -> Nginx: POST /.auth/self-service/tenant/select\nForm-Data: login_challenge="BBB"\nForm-Data: tenant="TENANT"
+Nginx -> Login: POST :8080/.auth/self-service/tenant/select\nForm-Data: login_challenge="BBB"\nForm-Data: tenant="TENANT"
+Hydra <- Login: GET :4445/oauth2/auth/requests/login\nQuery: login_challenge="BBB"
+Hydra --> Login: Status 200\n{ login request }
+Kratos <- Login: GET :4433/sessions/whoami\nCookie: ory_kratos_session
+Kratos --> Login: Status 200\n{ user identity }
+note over Login: Verifies that user has access to TENANT
+end
+Hydra <- Login: PUT :4445/oauth2/auth/requests/login/accept\nQuery: login_challenge="BBB"\n{ subject: UserID, context: { User, SelectedTenant }}
+Hydra --> Login: Status 200\n { redirect_to }
+Nginx <-- Login: Status 302\nLocation: /.auth/oauth2/auth\nQuery: client_id="studio-browser"\nQuery: login_verifier\nQuery: redirect_uri="https%3A%2F%2Fdolittle.studio%2F.auth%2Fcookies%2Fcallback"\nQuery: response_type="code"\nQuery: scope="openid"\nQuery: state="..."
+Browser <-- Nginx: Status 302\nLocation: /.auth/oauth2/auth\nQuery: client_id="studio-browser"\nQuery: login_verifier\nQuery: redirect_uri="https%3A%2F%2Fdolittle.studio%2F.auth%2Fcookies%2Fcallback"\nQuery: response_type="code"\nQuery: scope="openid"\nQuery: state="..."
+Browser -> Nginx: GET /.auth/oauth2/auth\nQuery: client_id="studio-browser"\nQuery: login_verifier\nQuery: redirect_uri="https%3A%2F%2Fdolittle.studio%2F.auth%2Fcookies%2Fcallback"\nQuery: response_type="code"\nQuery: scope="openid"\nQuery: state="..."
+Nginx -> Hydra: GET :4444/oauth2/auth\nQuery: client_id="studio-browser"\nQuery: login_verifier\nQuery: redirect_uri="https%3A%2F%2Fdolittle.studio%2F.auth%2Fcookies%2Fcallback"\nQuery: response_type="code"\nQuery: scope="openid"\nQuery: state="..."
+Nginx <-- Hydra: Status 302\nLocation: /.auth/self-service/consent/browser\nQuery: consent_challenge="GGG"
+Browser <-- Nginx: Status 302\nLocation: /.auth/self-service/consent/browser\nQuery: consent_challenge="GGG"
+Browser -> Nginx: GET /.auth/self-service/consent/browser\nQuery: consent_challenge="GGG"
+Nginx -> Login: GET :8080/.auth/self-service/consent/browser\nQuery: consent_challenge="GGG"
+Hydra <- Login: GET :4445/oauth2/auth/requests/consent\nQuery: consent_challenge="GGG"
+Hydra --> Login: Status 200\n{ subject: UserID, context: { User, SelectedTenant }}
+note over Login: Creates token claims from subject+context
+Hydra <- Login: PUT :4445/oauth2/auth/requests/consent/accept\nQuery: login_challenge="GGG"\n{ idToken, accessToken }
+Hydra --> Login: Status 200\n { redirect_to }
+Nginx <-- Login: Status 302\nLocation: /.auth/oauth2/auth\nQuery: client_id="studio-browser"\nQuery: consent_verifier\nQuery: redirect_uri="https%3A%2F%2Fdolittle.studio%2F.auth%2Fcookies%2Fcallback"\nQuery: response_type="code"\nQuery: scope="openid"\nQuery: state="..."
+Browser <-- Nginx: Status 302\nLocation: /.auth/oauth2/auth\nQuery: client_id="studio-browser"\nQuery: consent_verifier\nQuery: redirect_uri="https%3A%2F%2Fdolittle.studio%2F.auth%2Fcookies%2Fcallback"\nQuery: response_type="code"\nQuery: scope="openid"\nQuery: state="..."
+Browser -> Nginx: GET /.auth/oauth2/auth\nQuery: client_id="studio-browser"\nQuery: consent_verifier\nQuery: redirect_uri="https%3A%2F%2Fdolittle.studio%2F.auth%2Fcookies%2Fcallback"\nQuery: response_type="code"\nQuery: scope="openid"\nQuery: state="..."
+Nginx -> Hydra: GET :4444/oauth2/auth\nQuery: client_id="studio-browser"\nQuery: consent_verifier\nQuery: redirect_uri="https%3A%2F%2Fdolittle.studio%2F.auth%2Fcookies%2Fcallback"\nQuery: response_type="code"\nQuery: scope="openid"\nQuery: state="..."
+Nginx <-- Hydra: Status 302\nLocation: /.auth/cookies/callback\nQuery: code\nQuery: scope=""\nQuery; state
+Browser <-- Nginx: Status 302\nLocation: /.auth/cookies/callback\nQuery: code\nQuery: scope=""\nQuery; state
+Browser -> Nginx: GET /.auth/cookies/callback\nQuery: code\nQuery: scope=""\nQuery; state
+Nginx -> Pascal: GET /.auth/cookies/callback\nQuery: code\nQuery: scope=""\nQuery; state
+Hydra <- Pascal: GETS TOKEN??
+Hydra --> Pascal: RETURNS TOKEN??
+note over Pascal: Stores token in cookie??
+Nginx <-- Pascal: Status 302\nLocation: https://dolittle.studio/selfservice\nDelete-Cookie: .dolittle.pascal.session\nSet-Cookie: .dolittle.pascal.login
+Browser <-- Nginx: Status 302\nLocation: https://dolittle.studio/selfservice\nDelete-Cookie: .dolittle.pascal.session\nSet-Cookie: .dolittle.pascal.login
+
+== Login flow is completed ==
+
+Browser -> Nginx: GET /path\nCookie: .dolittle.pascal.login
+Nginx -> Oathkeeper: GET :80/decisions\nCookie: .dolittle.pascal.login
+Oathkeeper -> Hydra: POST :4445/oauth2/introspect\nForm-Data: token=Cookie[.dolittle.pascal.login]
+Oathkeeper <-- Hydra: Status 200\n{ subject, extra: { tenant }}
+Nginx <-- Oathkeeper: Status 200\nUser-ID: Token[Subject]\nTenant-ID: Token[Extra.Tenant]
+Nginx -> Studio: GET /path\nUser-ID\nTenant-ID
+Nginx <-- Studio: Status 200\n<html>Studio</html>
+Browser <-- Nginx: Status 200\n<html>Studio</html>
+
+@enduml
