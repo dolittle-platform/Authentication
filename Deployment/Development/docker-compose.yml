@@ -1,6 +1,13 @@
 version: '3.8'
 volumes:
   postgres_data:
+networks:
+  authentication:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.64.0.0/16
 services:
   postgres:
     image: postgres:9.6.19
@@ -10,8 +17,8 @@ services:
       - './postgres/init-hydra-browser-db.sql:/docker-entrypoint-initdb.d/init-hydra-browser-db.sql'
       - './postgres/init-kratos-db.sql:/docker-entrypoint-initdb.d/init-kratos-db.sql'
       - 'postgres_data:/var/lib/postgresql/data'
-    logging:
-      driver: none
+    networks:
+      - authentication
   pgadmin:
     image: dpage/pgadmin4:4.27
     environment:
@@ -21,8 +28,8 @@ services:
       - './postgres/servers.json:/pgadmin4/servers.json'
     ports:
       - '9999:80'
-    logging:
-      driver: none
+    networks:
+      - authentication
 
   ingress-nginx:
     image: nginx:1.21.3
@@ -33,6 +40,8 @@ services:
     ports:
       - '8080:8080'
       - '8081:8081'
+    networks:
+      - authentication
 
   authenticator-oathkeeper:
     image: oryd/oathkeeper:v0.38.15
@@ -45,6 +54,8 @@ services:
       - './authenticator/rules.yaml:/etc/oathkeeper/config/rules.yaml'
     ports:
       - '4455:4455'
+    networks:
+      - authentication
 
   browser-hydra-init:
     image: oryd/hydra:v1.10.6
@@ -58,8 +69,8 @@ services:
       - "--yes"
     volumes:
       - './browser/hydra.yaml:/etc/hydra/config/hydra.yaml'
-    logging:
-      driver: none
+    networks:
+      - authentication
   browser-hydra:
     image: oryd/hydra:v1.10.6
     restart: unless-stopped
@@ -70,12 +81,13 @@ services:
       - "/etc/hydra/config/hydra.yaml"
       - "serve"
       - "all"
-      - "--dangerous-force-http"
     volumes:
       - './browser/hydra.yaml:/etc/hydra/config/hydra.yaml'
     ports:
       - '4444:4444'
       - '4445:4445'
+    networks:
+      - authentication
   browser-pascal:
     image: dolittle/pascal:local
     build:
@@ -93,6 +105,8 @@ services:
       - "ingress-nginx:studio.localhost"
     ports:
       - "9080:8080"
+    networks:
+      - authentication
 
   users-kratos-init:
     image: oryd/kratos:v0.7.6
@@ -106,8 +120,8 @@ services:
       - "--yes"
     volumes:
       - './users/kratos.yaml:/etc/kratos/config/kratos.yaml'
-    logging:
-      driver: none
+    networks:
+      - authentication
   users-kratos:
     image: oryd/kratos:v0.7.6
     restart: unless-stopped
@@ -128,6 +142,8 @@ services:
     ports:
       - '4433:4433'
       - '4434:4434'
+    networks:
+      - authentication
   users-login:
     image: dolittle/login:local
     build:
@@ -140,6 +156,8 @@ services:
       - "serve"
     volumes:
       - './users/login.yaml:/etc/login/config/login.yaml'
+    networks:
+      - authentication
 
   provider:
     image: qlik/simple-oidc-provider
@@ -151,8 +169,12 @@ services:
       - './provider/users.json:/etc/simple-oidc-provider/config/users.json'
     ports:
       - '9082:8080'
+    networks:
+      - authentication
 
   studio:
     image: dolittle/spinner:0.0.0
     ports:
       - '8765:80'
+    networks:
+      - authentication

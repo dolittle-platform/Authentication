@@ -23,6 +23,8 @@ authenticators:
       introspection_url: http://browser-hydra:4445/oauth2/introspect
       token_from:
         cookie: .dolittle.pascal.login
+      introspection_request_headers:
+        X-Forwarded-Proto: https
 
 authorizers:
   allow:

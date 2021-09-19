@@ -5,6 +5,11 @@ serve:
     port: 4444
   admin:
     port: 4445
+  tls:
+    allow_termination_from:
+      - 172.64.0.0/16
+  cookies:
+    same_site_mode: Lax
 
 secrets:
   system:

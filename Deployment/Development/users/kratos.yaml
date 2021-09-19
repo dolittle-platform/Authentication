@@ -88,10 +88,13 @@ secrets:
   cookie:
     - xeJxf8gDTYVO4X7a8qEQTHpstzoJz10mNPeMMvT8Q1jN8kWq6XMWeKEtsWBKurMg
 
+cookies:
+  path: /.auth/
+  same_site: Lax
+
 session:
   cookie:
     persistent: true
-    same_site: Lax
   lifespan: 24h
 
 courier:

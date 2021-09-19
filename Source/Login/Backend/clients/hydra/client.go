@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"dolittle.io/login/configuration/changes"
+	runtime "github.com/go-openapi/runtime/client"
 	ory "github.com/ory/hydra-client-go/client"
 	"github.com/ory/hydra-client-go/client/admin"
 	"github.com/ory/hydra-client-go/models"
@@ -75,6 +76,11 @@ func (c *client) handleConfigurationChanged() error {
 
 func getORYClient(configuration Configuration) *ory.OryHydra {
 	url := configuration.AdminEndpoint()
-	config := ory.DefaultTransportConfig().WithSchemes([]string{url.Scheme}).WithHost(url.Host).WithBasePath(url.Path)
-	return ory.NewHTTPClientWithConfig(nil, config)
+
+	http := newClientWithDefaultHeaders()
+	http.Header.Add("X-Forwarded-Proto", "https")
+
+	client := runtime.NewWithClient(url.Host, url.Path, []string{url.Scheme}, http.Client)
+
+	return ory.New(client, nil)
 }

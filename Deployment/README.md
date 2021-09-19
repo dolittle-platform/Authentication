@@ -72,11 +72,9 @@ Take the deployment down and restart it to run with the fresh images.
 
 
 #### To check the contents of the created session cookie
-Find the cookie named `.dolittle.pascal.login` in your browser after logging in, and run the command:
+Find the cookie named `.dolittle.pascal.login` in your browser after logging in, and run:
 ```shell
-curl -X POST 'http://localhost:4445/oauth2/introspect' \
-     -H 'Content-Type: application/x-www-form-urlencoded' \
-     --data-urlencode 'token=COOKIE_VALUE' | jq
+./check-pascal-cookie-contents.sh "COOKIE_VALUE"
 ```
 
 ## 3. Running in a local Kubernetes cluster
