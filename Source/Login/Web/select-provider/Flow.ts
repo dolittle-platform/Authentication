@@ -1,30 +1,29 @@
 // Copyright (c) Dolittle. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import { FormDescriptor, asFormDescriptor } from '../forms/FormDescriptor';
-import { asIdentityProvider, IdentityProvider } from './IdentityProvider';
-import { InvalidFlowProperty } from './InvalidFlowProperty';
+import { FormDescriptor, isFormDescriptor } from '../forms/FormDescriptor';
+import { IdentityProvider, isIdentityProvider } from './IdentityProvider';
 
 export type Flow = {
     id: string;
     forced: boolean;
-    formCSRFToken: string;
+    form: FormDescriptor;
     providers: IdentityProvider[];
-} & FormDescriptor;
+};
 
-export const asFlow = (obj: any): Flow => {
-    if (typeof obj.ID !== 'string') throw new InvalidFlowProperty('ID');
-    if (typeof obj.Forced !== 'boolean') throw new InvalidFlowProperty('Forced');
-    if (typeof obj.FormCSRFToken !== 'string') throw new InvalidFlowProperty('FormCSRFToken');
-    if (!Array.isArray(obj.Providers)) throw new InvalidFlowProperty('Providers');
+export const isFlow = (obj: any): obj is Flow => {
+    if (typeof obj.id !== 'string') return false;
+    if (typeof obj.forced !== 'boolean') return false;
 
-    const formDescriptor = asFormDescriptor(obj);
+    if (typeof obj.form !== 'object') return false;
+    if (!isFormDescriptor(obj.form)) return false;
 
-    return {
-        id: obj.ID,
-        forced: obj.Forced,
-        formCSRFToken: obj.FormCSRFToken,
-        providers: obj.Providers.map((obj: any) => asIdentityProvider(obj)),
-        ...formDescriptor,
-    };
+    if (!Array.isArray(obj.providers)) return false;
+    for (const provider of obj.providers) {
+        if (!isIdentityProvider(provider)) {
+            return false;
+        }
+    }
+
+    return true;
 };

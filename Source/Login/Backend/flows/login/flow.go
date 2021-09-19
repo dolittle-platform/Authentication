@@ -1,19 +1,15 @@
 package login
 
 import (
-	"net/url"
-
+	"dolittle.io/login/flows/forms"
 	"dolittle.io/login/providers"
 )
 
 type FlowID string
 
 type Flow struct {
-	ID               FlowID
-	Forced           bool
-	FormCSRFToken    string
-	FormSubmitAction *url.URL
-	FormSubmitMethod string
-
-	Providers []providers.Provider
+	ID        FlowID               `json:"id"`
+	Forced    bool                 `json:"forced"`
+	Form      forms.Form           `json:"form"`
+	Providers []providers.Provider `json:"providers"`
 }

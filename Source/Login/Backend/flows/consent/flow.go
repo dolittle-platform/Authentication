@@ -8,7 +8,7 @@ import (
 type FlowID string
 
 type Flow struct {
-	ID             FlowID
-	User           *users.User
-	SelectedTenant tenants.TenantID
+	ID             FlowID           `json:"id"`
+	User           *users.User      `json:"user"`
+	SelectedTenant tenants.TenantID `json:"selectedTenant"`
 }

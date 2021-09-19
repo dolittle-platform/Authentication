@@ -4,6 +4,7 @@ import (
 	"errors"
 	"net/url"
 
+	"dolittle.io/login/flows/forms"
 	"dolittle.io/login/providers"
 	ory "github.com/ory/kratos-client-go"
 )
@@ -54,7 +55,7 @@ func (p *parser) ParseLoginFlowFrom(response *ory.SelfServiceLoginFlow) (*Flow, 
 	if !ok {
 		return nil, errors.New("form submit action not set")
 	}
-	submitActionURL, err := url.Parse(*submitAction)
+	_, err = url.Parse(*submitAction)
 	if err != nil {
 		return nil, err
 	}
@@ -79,12 +80,14 @@ func (p *parser) ParseLoginFlowFrom(response *ory.SelfServiceLoginFlow) (*Flow, 
 	}
 
 	return &Flow{
-		ID:               FlowID(*flowID),
-		Forced:           *forced,
-		FormCSRFToken:    csrfToken,
-		FormSubmitAction: submitActionURL,
-		FormSubmitMethod: *submitMethod,
-		Providers:        providers,
+		ID:     FlowID(*flowID),
+		Forced: *forced,
+		Form: forms.Form{
+			SubmitMethod: *submitMethod,
+			SubmitAction: *submitAction,
+			CSRFToken:    csrfToken,
+		},
+		Providers: providers,
 	}, nil
 }
 

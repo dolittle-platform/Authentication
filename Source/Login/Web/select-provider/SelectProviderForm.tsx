@@ -24,8 +24,7 @@ export const SelectProviderForm = (): JSX.Element => {
     if (flow === null || flow === undefined) throw new FlowNotFound(flowID);
 
     return (
-        <Form form={flow}>
-            <input type="hidden" name="csrf_token" value={flow.formCSRFToken} />
+        <Form form={flow.form}>
             <IdentityProviderList providers={flow.providers} />
         </Form>
     );

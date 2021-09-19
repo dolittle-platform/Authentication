@@ -3,7 +3,8 @@
 
 import { Endpoint } from '@rest-hooks/endpoint';
 
-import { Flow, asFlow } from './Flow';
+import { Flow, isFlow } from './Flow';
+import { InvalidFlow } from './InvalidFlow';
 
 const fetchFlow = async (flowID: string | null): Promise<Flow | null> => {
     if (flowID === null) return null;
@@ -11,7 +12,11 @@ const fetchFlow = async (flowID: string | null): Promise<Flow | null> => {
     const response = await fetch(`/.auth/self-service/login/flows?id=${flowID}`);
     const data = await response.json();
 
-    return asFlow(data);
+    if (!isFlow(data)) {
+        throw new InvalidFlow(data);
+    }
+
+    return data;
 };
 
 export const Flows = new Endpoint(fetchFlow);

@@ -11,13 +11,12 @@ export type FormProps = {
 };
 
 export const Form = (props: FormProps): JSX.Element => {
-    const action = props.form.formSubmitAction;
-    let URL = `${action.scheme}://${action.host}${action.path}`;
-    if (action.rawQuery !== '') {
-        URL += `?${action.rawQuery}`;
-    }
     return (
-        <form method={props.form.formSubmitMethod} action={URL}>
+        <form method={props.form.submitMethod} action={props.form.submitAction}>
+            {
+                props.form.csrfToken !== undefined && props.form.csrfToken !== '' &&
+                    <input type="hidden" name="csrf_token" value={props.form.csrfToken} />
+            }
             { props.children }
         </form>
     );

@@ -24,7 +24,7 @@ export const SelectTenantForm = (): JSX.Element => {
     if (challenge === null || challenge === undefined) throw new ChallengeNotFound(challengeID);
 
     return (
-        <Form form={challenge}>
+        <Form form={challenge.form}>
             <input type="hidden" name="login_challenge" value={challenge.id} />
             <TenantList tenants={challenge.user.tenants} />
         </Form>

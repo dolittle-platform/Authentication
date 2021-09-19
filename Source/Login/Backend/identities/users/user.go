@@ -3,8 +3,8 @@ package users
 import "dolittle.io/login/identities/tenants"
 
 type User struct {
-	Subject string
-	Tenants []tenants.Tenant
+	Subject string           `json:"subject"`
+	Tenants []tenants.Tenant `json:"tenants"`
 }
 
 func (u *User) HasAccessToTenant(givenID tenants.TenantID) bool {

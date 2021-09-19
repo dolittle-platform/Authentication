@@ -3,7 +3,8 @@
 
 import { Endpoint } from '@rest-hooks/endpoint';
 
-import { asChallenge, Challenge } from './Challenge';
+import { Challenge, isChallenge } from './Challenge';
+import { InvalidChallenge } from './InvalidChallenge';
 
 const fetchChallenge = async (challengeID: string | null): Promise<Challenge | null> => {
     if (challengeID === null) return null;
@@ -11,7 +12,11 @@ const fetchChallenge = async (challengeID: string | null): Promise<Challenge | n
     const response = await fetch(`/.auth/self-service/tenant/flows?login_challenge=${challengeID}`);
     const data = await response.json();
 
-    return asChallenge(data);
+    if (!isChallenge(data)) {
+        throw new InvalidChallenge(data);
+    }
+
+    return data;
 };
 
 export const Challenges = new Endpoint(fetchChallenge);

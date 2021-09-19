@@ -1,17 +1,14 @@
 package tenant
 
 import (
-	"net/url"
-
+	"dolittle.io/login/flows/forms"
 	"dolittle.io/login/identities/users"
 )
 
 type FlowID string
 
 type Flow struct {
-	ID               FlowID
-	FormSubmitAction *url.URL
-	FormSubmitMethod string
-
-	User *users.User
+	ID   FlowID      `json:"id"`
+	Form forms.Form  `json:"form"`
+	User *users.User `json:"user"`
 }

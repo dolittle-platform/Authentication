@@ -1,25 +1,23 @@
 // Copyright (c) Dolittle. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import { asFormDescriptor, FormDescriptor } from '../forms/FormDescriptor';
-import { InvalidChallengeProperty } from './InvalidChallengeProperty';
-import { asUser, User } from './User';
+import { FormDescriptor, isFormDescriptor } from '../forms/FormDescriptor';
+import { isUser, User } from './User';
 
 export type Challenge = {
     id: string;
+    form: FormDescriptor;
     user: User;
-} & FormDescriptor;
+};
 
-export const asChallenge = (obj: any): Challenge => {
-    if (typeof obj.ID !== 'string') throw new InvalidChallengeProperty('ID');
-    if (typeof obj.User !== 'object') throw new InvalidChallengeProperty('User');
+export const isChallenge = (obj: any): obj is Challenge => {
+    if (typeof obj.id !== 'string') return false;
 
-    const user = asUser(obj.User);
-    const formDescriptor = asFormDescriptor(obj);
+    if (typeof obj.form !== 'object') return false;
+    if (!isFormDescriptor(obj.form)) return false;
 
-    return {
-        id: obj.ID,
-        user,
-        ...formDescriptor,
-    };
+    if (typeof obj.user !== 'object') return false;
+    if (!isUser(obj.user)) return false;
+
+    return true;
 };

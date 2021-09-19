@@ -8,8 +8,8 @@ import (
 )
 
 type Context struct {
-	SelectedTenant tenants.TenantID
-	User           *users.User
+	User           *users.User      `json:"user"`
+	SelectedTenant tenants.TenantID `json:"selectedTenant"`
 }
 
 func StoreIn(request *models.AcceptLoginRequest, context *Context) {
