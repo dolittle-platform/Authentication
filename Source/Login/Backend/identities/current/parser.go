@@ -3,11 +3,11 @@ package current
 import (
 	"dolittle.io/login/identities/tenants"
 	"dolittle.io/login/identities/users"
-	"github.com/ory/kratos-client-go/models"
+	ory "github.com/ory/kratos-client-go"
 )
 
 type Parser interface {
-	ParseUserFrom(session *models.Session) (*users.User, error)
+	ParseUserFrom(session *ory.Session) (*users.User, error)
 }
 
 func NewParser(tenants tenants.Getter) Parser {
@@ -20,19 +20,19 @@ type parser struct {
 	tenants tenants.Getter
 }
 
-func (p *parser) ParseUserFrom(session *models.Session) (*users.User, error) {
+func (p *parser) ParseUserFrom(session *ory.Session) (*users.User, error) {
 	tenants, err := p.getTenantsFromTraits(session.Identity.Traits)
 	if err != nil {
 		return nil, err
 	}
 
 	return &users.User{
-		Subject: string(session.Identity.ID),
+		Subject: session.Identity.Id,
 		Tenants: tenants,
 	}, nil
 }
 
-func (p *parser) getTenantsFromTraits(traits models.Traits) ([]tenants.Tenant, error) {
+func (p *parser) getTenantsFromTraits(traits interface{}) ([]tenants.Tenant, error) {
 	traitsMap, ok := traits.(map[string]interface{})
 	if !ok {
 		return nil, ErrKratosTraitsWasNotStringMap

@@ -20,11 +20,17 @@ selfservice:
   flows:
     login:
       ui_url: https://studio.localhost:8080/.auth/select-provider
+      lifespan: 1h
       after:
         oidc:
           default_browser_return_url: /.auth/self-service/tenant/browser
           hooks:
             - hook: revoke_active_sessions
+
+    settings:
+      ui_url: https://studio.localhost:8080/.auth/settings
+      lifespan: 1h
+      privileged_session_max_age: 15m
 
     registration:
       after:
@@ -33,18 +39,25 @@ selfservice:
           hooks:
             - hook: session
 
+    logout:
+      after:
+        default_browser_return_url: /.auth/logged-out
+
     verification:
+      enabled: false
+
+    recovery:
       enabled: false
     
     error:
       ui_url: https://studio.localhost:8080/.auth/error
 
   methods:
-    profile:
+    password:
       enabled: false
     link:
       enabled: false
-    password:
+    profile:
       enabled: false
     oidc:
       enabled: true
@@ -65,12 +78,9 @@ selfservice:
                   essential: true
 
 hashers:
-  argon2:
-    parallelism: 1
-    memory: 131072
-    iterations: 2
-    salt_length: 16
-    key_length: 16
+  bcrypt:
+    cost: 12
+  algorithm: bcrypt
 
 secrets:
   default:

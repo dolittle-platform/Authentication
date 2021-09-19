@@ -3,6 +3,7 @@ package login
 import (
 	"errors"
 	"net/http"
+	"strings"
 
 	"dolittle.io/login/clients/kratos"
 )
@@ -31,10 +32,26 @@ func (g *getter) GetLoginFlowFrom(r *http.Request) (*Flow, error) {
 		return nil, errors.New("no flow id set in request")
 	}
 
-	flow, err := g.kratos.GetLoginFlow(r.Context(), id)
+	csrfCookie, err := g.getCSRFCookie(r)
+	if err != nil {
+		return nil, err
+	}
+
+	flow, err := g.kratos.GetLoginFlow(r.Context(), id, csrfCookie)
 	if err != nil {
 		return nil, err
 	}
 
 	return g.parser.ParseLoginFlowFrom(flow)
+}
+
+func (g *getter) getCSRFCookie(r *http.Request) (*http.Cookie, error) {
+	cookieNamePrefix := g.configuration.CookiePrefix()
+	for _, cookie := range r.Cookies() {
+		cookieName := cookie.Name
+		if strings.HasPrefix(cookieName, cookieNamePrefix) {
+			return cookie, nil
+		}
+	}
+	return nil, errors.New("CSRF token cookie was not found")
 }

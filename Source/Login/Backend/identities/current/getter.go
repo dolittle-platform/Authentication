@@ -5,7 +5,6 @@ import (
 
 	"dolittle.io/login/clients/kratos"
 	"dolittle.io/login/identities/users"
-	"github.com/ory/kratos-client-go/client/public"
 )
 
 type Getter interface {
@@ -35,7 +34,7 @@ func (g *getter) GetCurrentUser(r *http.Request) (*users.User, error) {
 		return nil, err
 	}
 	session, err := g.kratos.GetCurrentUser(r.Context(), cookie)
-	if _, unauthorized := err.(*public.WhoamiUnauthorized); unauthorized {
+	if err == kratos.ErrKratosUnauthorized {
 		return nil, ErrNoUserLoggedIn
 	}
 	if err != nil {

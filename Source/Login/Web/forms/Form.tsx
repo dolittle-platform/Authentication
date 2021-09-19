@@ -12,7 +12,10 @@ export type FormProps = {
 
 export const Form = (props: FormProps): JSX.Element => {
     const action = props.form.formSubmitAction;
-    const URL = `${action.scheme}://${action.host}${action.path}`;
+    let URL = `${action.scheme}://${action.host}${action.path}`;
+    if (action.rawQuery !== '') {
+        URL += `?${action.rawQuery}`;
+    }
     return (
         <form method={props.form.formSubmitMethod} action={URL}>
             { props.children }

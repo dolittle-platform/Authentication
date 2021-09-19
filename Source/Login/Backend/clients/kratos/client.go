@@ -5,21 +5,20 @@ import (
 	"net/http"
 
 	"dolittle.io/login/configuration/changes"
-	openapi "github.com/go-openapi/runtime/client"
-	ory "github.com/ory/kratos-client-go/client"
-	"github.com/ory/kratos-client-go/client/public"
-	"github.com/ory/kratos-client-go/models"
+	ory "github.com/ory/kratos-client-go"
 )
 
 type Client interface {
-	GetCurrentUser(ctx context.Context, cookie *http.Cookie) (*models.Session, error)
-	GetLoginFlow(ctx context.Context, flowID string) (*models.LoginFlow, error)
+	GetCurrentUser(ctx context.Context, cookie *http.Cookie) (*ory.Session, error)
+	GetLoginFlow(ctx context.Context, flowID string, cookie *http.Cookie) (*ory.SelfServiceLoginFlow, error)
 }
 
 func NewClient(configuration Configuration, notifier changes.ConfigurationChangeNotifier) (Client, error) {
+	apiClient := getORYClient(configuration)
 	client := &client{
 		configuration: configuration,
-		client:        getORYClient(configuration),
+		client:        apiClient,
+		api:           apiClient.V0alpha1Api,
 	}
 	if err := notifier.RegisterCallback("kratos-client", client.handleConfigurationChanged); err != nil {
 		return nil, err
@@ -29,35 +28,44 @@ func NewClient(configuration Configuration, notifier changes.ConfigurationChange
 
 type client struct {
 	configuration Configuration
-	client        *ory.OryKratos
+	client        *ory.APIClient
+	api           ory.V0alpha1Api
 }
 
-func (c *client) GetCurrentUser(ctx context.Context, cookie *http.Cookie) (*models.Session, error) {
+func (c *client) GetCurrentUser(ctx context.Context, cookie *http.Cookie) (*ory.Session, error) {
 	cookieHeaderValue := cookie.String()
-	params := public.NewWhoamiParams().WithCookie(&cookieHeaderValue).WithContext(ctx)
-	response, err := c.client.Public.Whoami(params, openapi.PassThroughAuth)
+	session, response, err := c.api.ToSession(ctx).Cookie(cookieHeaderValue).Execute()
+	if response.StatusCode == http.StatusUnauthorized {
+		return nil, ErrKratosUnauthorized
+	}
 	if err != nil {
 		return nil, err
 	}
-	return response.Payload, nil
+	return session, nil
 }
 
-func (c *client) GetLoginFlow(ctx context.Context, flowID string) (*models.LoginFlow, error) {
-	params := public.NewGetSelfServiceLoginFlowParams().WithID(flowID).WithContext(ctx)
-	response, err := c.client.Public.GetSelfServiceLoginFlow(params)
+func (c *client) GetLoginFlow(ctx context.Context, flowID string, cookie *http.Cookie) (*ory.SelfServiceLoginFlow, error) {
+	cookieHeaderValue := cookie.String()
+	flow, _, err := c.api.GetSelfServiceLoginFlow(ctx).Id(flowID).Cookie(cookieHeaderValue).Execute()
 	if err != nil {
 		return nil, err
 	}
-	return response.Payload, nil
+	return flow, nil
 }
 
 func (c *client) handleConfigurationChanged() error {
-	c.client = getORYClient(c.configuration)
+	apiClient := getORYClient(c.configuration)
+	c.client = apiClient
+	c.api = apiClient.V0alpha1Api
 	return nil
 }
 
-func getORYClient(configuration Configuration) *ory.OryKratos {
+func getORYClient(configuration Configuration) *ory.APIClient {
 	url := configuration.PublicEndpoint()
-	config := ory.DefaultTransportConfig().WithSchemes([]string{url.Scheme}).WithHost(url.Host).WithBasePath(url.Path)
-	return ory.NewHTTPClientWithConfig(nil, config)
+
+	config := ory.NewConfiguration()
+	config.Scheme = url.Scheme
+	config.Host = url.Host
+
+	return ory.NewAPIClient(config)
 }

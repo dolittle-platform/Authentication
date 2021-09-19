@@ -23,6 +23,7 @@ flows:
   login:
     flow_id_query_parameter: id
     csrf_token_parameter: csrf_token
+    csrf_cookie_prefix: csrf_token_
     provider_parameter: provider
   tenant:
     flow_id_query_parameter: login_challenge
