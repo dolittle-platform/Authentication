@@ -1,28 +1,28 @@
 const identityProviders = [
     {
-        ID: 'sample',
-        Display: 'sample',
-        ImageURL: 'https://via.placeholder.com/60'
+        id: 'sample',
+        display: 'sample',
+        imageURL: 'https://via.placeholder.com/60'
     },
     {
-        ID: 'sample-2',
-        Display: 'sample 2',
-        ImageURL: 'https://via.placeholder.com/60'
+        id: 'sample-2',
+        display: 'sample 2',
+        imageURL: 'https://via.placeholder.com/60'
     },
 ];
 
 const availableTenants = [
     {
-        ID: 'dolittle',
-        Display: 'dolittle'
+        id: 'dolittle',
+        display: 'dolittle'
     },
     {
-        ID: 'tenant-a',
-        Display: 'tenant-a'
+        id: 'tenant-a',
+        display: 'tenant-a'
     },
     {
-        ID: 'tenant-b',
-        Display: 'tenant-b'
+        id: 'tenant-b',
+        display: 'tenant-b'
     }
 ];
 
@@ -64,23 +64,14 @@ app.get('/', (req, res) => {
 app.get('/.auth/self-service/login/flows', (req, res) => {
     setTimeout(() => {
         res.send({
-            ID: req.query.id,
-            Forced: false,
-            FormCSRFToken: 'csrf-form-token',
-            FormSubmitAction: {
-                Scheme: 'http',
-                Opaque: '',
-                User: null,
-                Host: 'localhost:8080',
-                Path: '/.auth/self-service/methods/oidc/auth/authentication-id',
-                RawPath: '',
-                ForceQuery: false,
-                RawQuery: '',
-                Fragment: '',
-                RawFragment: ''
+            id: req.query.id,
+            forced: false,
+            form: {
+                csrfToken: 'csrf-form-token',
+                submitAction: 'http://localhost:8080/.auth/self-service/methods/oidc/auth/authentication-id',
+                submitMethod: 'POST',
             },
-            FormSubmitMethod: 'POST',
-            Providers: identityProviders,
+            providers: identityProviders,
         });
     }, responseDelay);
 });
@@ -93,23 +84,14 @@ app.post('/.auth/self-service/methods/oidc/auth/authentication-id', (req, res) =
 app.get('/.auth/self-service/tenant/flows', (req, res) => {
     setTimeout(() => {
         res.send({
-            ID: req.query.login_challenge,
-            FormSubmitAction: {
-                Scheme: 'http',
-                Opaque: '',
-                User: null,
-                Host: 'localhost:8080',
-                Path: '/.auth/self-service/tenant/select',
-                RawPath: '',
-                ForceQuery: false,
-                RawQuery: '',
-                Fragment: '',
-                RawFragment: ''
+            id: req.query.login_challenge,
+            form: {
+                submitAction: 'http://localhost:8080/.auth/self-service/tenant/select',
+                submitMethod: 'POST',
             },
-            FormSubmitMethod: 'POST',
-            User: {
-                Subject: 'subject',
-                Tenants: availableTenants,
+            user: {
+                subject: 'subject',
+                tenants: availableTenants,
             }
         });
     }, responseDelay);
