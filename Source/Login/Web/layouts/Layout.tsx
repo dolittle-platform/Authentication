@@ -1,11 +1,9 @@
 // Copyright (c) Dolittle. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import React from 'react';
-import { Switch, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 
-import { makeStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
+import Paper from '@mui/material/Paper';
 
 import { configuration } from '../Configuration';
 import { ErrorBoundary } from '../error/ErrorBoundary';
@@ -14,38 +12,29 @@ import { SelectProvider } from '../select-provider/SelectProvider'
 import { SelectTenant } from '../select-tenant/SelectTenant'
 import { Headline } from './Headline';
 
-const useStyles = makeStyles({
-    root: {
-        position: 'absolute',
-        right: '0',
-        height: '100%',
-        width: '45%',
-        maxWidth: '650px',
-        backgroundColor: '#191A21',
-    },
-});
-
 export const Layout = (): JSX.Element => {
-    const classes = useStyles();
     return (
         <>
             { configuration.showDolittleHeadline && <Headline /> }
-            <Paper className={classes.root} elevation={24} square={true}>
-                <Switch>
-                    <Route path="/.auth/select-provider">
+            <Paper
+                elevation={24}
+                square={true}
+                css={{ position: 'absolute', right: '0', height: '100%', width: '45%', maxWidth: '650px', backgroundColor: '#191A21' }}>
+                <Routes>
+                    <Route path="/.auth/select-provider" element={
                         <ErrorBoundary>
                             <SelectProvider />
                         </ErrorBoundary>
-                    </Route>
-                    <Route path="/.auth/select-tenant">
+                    }/>
+                    <Route path="/.auth/select-tenant" element={
                         <ErrorBoundary>
                             <SelectTenant />
                         </ErrorBoundary>
-                    </Route>
-                    <Route path="/.auth/error">
+                    }/>
+                    <Route path="/.auth/error" element={
                         <Error />
-                    </Route>
-                </Switch>
+                    }/>
+                </Routes>
             </Paper>
         </>
     );

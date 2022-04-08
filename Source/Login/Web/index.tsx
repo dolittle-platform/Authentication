@@ -1,13 +1,13 @@
 // Copyright (c) Dolittle. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import React, { lazy, Suspense } from 'react';
-import ReactDOM from 'react-dom';
+import { lazy, Suspense } from 'react';
+import ReactDOM from 'react-dom/client';
 import { BrowserRouter as Router } from 'react-router-dom';
 
 import { CacheProvider } from 'rest-hooks';
-import { ThemeProvider } from '@material-ui/core/styles';
-import CssBaseline from '@material-ui/core/CssBaseline'
+import { ThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline'
 
 import { Theme } from './styles/Theme';
 const Layout = lazy(() => import('./layouts/Layout'));
@@ -27,4 +27,6 @@ export default function App(this: any) {
     );
 }
 
-ReactDOM.render(<App />, document.getElementById('root'));
+ReactDOM
+    .createRoot(document.getElementById('root')!)
+    .render(<App />);

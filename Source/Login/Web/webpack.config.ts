@@ -6,6 +6,7 @@ import HtmlWebpackPlugin from 'html-webpack-plugin'
 import path from 'path'
 import TerserWebpackPlugin from 'terser-webpack-plugin';
 import { Configuration } from 'webpack';
+import 'webpack-dev-server';
 
 type WebpackArguments = {
     mode: 'none' | 'production' | 'development',

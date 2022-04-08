@@ -1,31 +1,21 @@
 // Copyright (c) Dolittle. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import React from 'react';
-
-import { makeStyles } from '@material-ui/core/styles';
-import Box from '@material-ui/core/Box';
+import Box from '@mui/material/Box';
 
 import { Tenant } from './Tenant';
 import { TenantListItem } from './TenantListItem';
-// import { TenantListItem } from './TenantListItem';
 
 export type TenantListProps = {
     tenants: Tenant[];
 };
 
-const useStyles = makeStyles({
-    row: {
-        marginBottom: '28px',
-    },
-});
-
-export const TenantList = (props: TenantListProps): JSX.Element => {const classes = useStyles();
+export const TenantList = (props: TenantListProps): JSX.Element => {
     return (
         <>
             {
                 props.tenants.map(tenant => (
-                    <Box key={tenant.id} className={classes.row}>
+                    <Box key={tenant.id} css={{ marginBottom: '28px' }}>
                         <TenantListItem tenant={tenant} />
                     </Box>
                 ))

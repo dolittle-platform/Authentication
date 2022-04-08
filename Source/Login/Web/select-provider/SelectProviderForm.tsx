@@ -1,7 +1,6 @@
 // Copyright (c) Dolittle. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import React from 'react';
 import { useLocation } from 'react-router';
 
 import { useResource } from 'rest-hooks';

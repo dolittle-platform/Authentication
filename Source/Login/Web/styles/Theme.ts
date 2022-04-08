@@ -1,7 +1,7 @@
 // Copyright (c) Dolittle. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import { createTheme } from '@material-ui/core/styles';
+import { createTheme } from '@mui/material/styles';
 
 import { Rubik } from './fonts/Rubik';
 import BackgroundImage from './images/background.jpg';
@@ -20,7 +20,7 @@ export const Theme = createTheme({
       letterSpacing: '-0.22px',
     },
     body1: {
-      fontFamily: 'Rubik-Regular',
+      fontFamily: 'Rubik',
       fontSize: '18px',
       letterSpacing: '0.18px',
     },
@@ -38,10 +38,14 @@ export const Theme = createTheme({
       primary: '#FAFAFA'
     }
   },
-  overrides: {
+  components: {
     MuiCssBaseline: {
-      '@global': {
-        '@font-face': [ Rubik.Regular, Rubik.Bold, Rubik.Medium ],
+      styleOverrides: {
+        '@font-face': Rubik.Regular,
+        fallbacks: [
+          { '@font-face': Rubik.Bold },
+          { '@font-face': Rubik.Medium },
+        ],
         html: {
           height: '100%',
         },
@@ -52,7 +56,7 @@ export const Theme = createTheme({
           backgroundRepeat: 'no-repeat',
           backgroundSize: 'auto 100%',
         },
-      },
+      }
     },
   },
 });
