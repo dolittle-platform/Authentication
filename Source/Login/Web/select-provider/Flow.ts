@@ -6,14 +6,14 @@ import { IdentityProvider, isIdentityProvider } from './IdentityProvider';
 
 export type Flow = {
     id: string;
-    forced: boolean;
+    refresh: boolean;
     form: FormDescriptor;
     providers: IdentityProvider[];
 };
 
 export const isFlow = (obj: any): obj is Flow => {
     if (typeof obj.id !== 'string') return false;
-    if (typeof obj.forced !== 'boolean') return false;
+    if (typeof obj.refresh !== 'boolean') return false;
 
     if (typeof obj.form !== 'object') return false;
     if (!isFormDescriptor(obj.form)) return false;

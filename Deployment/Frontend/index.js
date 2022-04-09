@@ -65,7 +65,7 @@ app.get('/.auth/self-service/login/flows', (req, res) => {
     setTimeout(() => {
         res.send({
             id: req.query.id,
-            forced: false,
+            refresh: false,
             form: {
                 csrfToken: 'csrf-form-token',
                 submitAction: 'http://localhost:8080/.auth/self-service/methods/oidc/auth/authentication-id',

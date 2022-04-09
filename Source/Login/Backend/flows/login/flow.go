@@ -9,7 +9,7 @@ type FlowID string
 
 type Flow struct {
 	ID        FlowID               `json:"id"`
-	Forced    bool                 `json:"forced"`
+	Refresh   bool                 `json:"refresh"`
 	Form      forms.Form           `json:"form"`
 	Providers []providers.Provider `json:"providers"`
 }

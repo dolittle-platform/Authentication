@@ -32,9 +32,9 @@ func (p *parser) ParseLoginFlowFrom(response *ory.SelfServiceLoginFlow) (*Flow, 
 		return nil, errors.New("flow id not set")
 	}
 
-	forced, ok := response.GetForcedOk()
+	refresh, ok := response.GetRefreshOk()
 	if !ok {
-		return nil, errors.New("flow id not set")
+		return nil, errors.New("flow refresh not set")
 	}
 
 	formUI, ok := response.GetUiOk()
@@ -80,8 +80,8 @@ func (p *parser) ParseLoginFlowFrom(response *ory.SelfServiceLoginFlow) (*Flow, 
 	}
 
 	return &Flow{
-		ID:     FlowID(*flowID),
-		Forced: *forced,
+		ID:      FlowID(*flowID),
+		Refresh: *refresh,
 		Form: forms.Form{
 			SubmitMethod: *submitMethod,
 			SubmitAction: *submitAction,

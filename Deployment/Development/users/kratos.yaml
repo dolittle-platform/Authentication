@@ -8,12 +8,15 @@ serve:
     port: 4434
 
 identity:
-  default_schema_url: file:///etc/kratos/config/identity.schema.json
+  default_schema_id: default
+  schemas:
+    - id: default
+      url: file:///etc/kratos/config/identity.schema.json
 
 selfservice:
   default_browser_return_url: https://studio.localhost:8080/
 
-  whitelisted_return_urls:
+  allowed_return_urls:
     - https://studio.localhost:8080/.auth/self-service/tenant/browser
     - /.auth/self-service/tenant/browser
 

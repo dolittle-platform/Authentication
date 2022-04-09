@@ -18,7 +18,7 @@ func NewClient(configuration Configuration, notifier changes.ConfigurationChange
 	client := &client{
 		configuration: configuration,
 		client:        apiClient,
-		api:           apiClient.V0alpha1Api,
+		api:           apiClient.V0alpha2Api,
 	}
 	if err := notifier.RegisterCallback("kratos-client", client.handleConfigurationChanged); err != nil {
 		return nil, err
@@ -29,7 +29,7 @@ func NewClient(configuration Configuration, notifier changes.ConfigurationChange
 type client struct {
 	configuration Configuration
 	client        *ory.APIClient
-	api           ory.V0alpha1Api
+	api           ory.V0alpha2Api
 }
 
 func (c *client) GetCurrentUser(ctx context.Context, cookie *http.Cookie) (*ory.Session, error) {
@@ -56,7 +56,7 @@ func (c *client) GetLoginFlow(ctx context.Context, flowID string, cookie *http.C
 func (c *client) handleConfigurationChanged() error {
 	apiClient := getORYClient(c.configuration)
 	c.client = apiClient
-	c.api = apiClient.V0alpha1Api
+	c.api = apiClient.V0alpha2Api
 	return nil
 }
 
