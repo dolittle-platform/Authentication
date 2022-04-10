@@ -6,6 +6,7 @@ serve:
 
 frontend:
   showDolittleHeadline: true
+  animateBackground: true
   applicationName: Dolittle Studio
   supportEmail: support@dolittle.com
 

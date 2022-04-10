@@ -3,6 +3,8 @@
 
 import React from 'react';
 
+import { configuration } from '../Configuration';
+
 const Hexagon = (props: React.SVGProps<SVGPathElement>): JSX.Element =>
     <g transform={props.transform}>
         <path 
@@ -46,19 +48,70 @@ export const Background = (): JSX.Element => {
                     <feGaussianBlur stdDeviation='18' />
                 </filter>
             </defs>
-            <Logo filter='url(#blur-8)' transform='translate(540, 992) scale(-731.4,-731.4)' fill='#76E8DB4D'/>
+            <g>
+                <Logo filter='url(#blur-8)' transform='translate(540, 992) scale(-731.4,-731.4)' fill='#76E8DB4D'/>
+                <Hexagon filter='url(#blur-12)' transform='translate(413,228) scale(330,330)' fill='#FF936666' />
+                { configuration.animateBackground && <>
+                    <animateTransform
+                        attributeName='transform' attributeType='XML' type='translate'
+                        values='0 0; -800 -800'
+                        keyTimes='0; 1'
+                        keySplines='0.5 0 1 0.5'
+                        dur='60s'
+                        calcMode='spline' repeatCount='1' fill='freeze' />
+                    <animateTransform
+                        attributeName='transform' attributeType='XML' type='scale'
+                        values='1 1; 2 2'
+                        keyTimes='0; 1'
+                        keySplines='0.5 0 1 0.5'
+                        dur='60s'
+                        calcMode='spline' repeatCount='1' fill='freeze' additive='sum' />
+                </>}
+            </g>
             <g transform='translate(-85,1242.43)'>
                 <Logo filter='url(#blur-8)' transform='scale(731.4,731.4)' fill='#FFB79966'/>
                 <Hexagon filter='url(#blur-8)' transform='translate(60,230) scale(254,254)' fill='#FFB799'/>
             </g>
             <Hexagon filter='url(#blur-18)' transform='translate(153,530) scale(330,330)' fill='#48E0CF' />
             <g>
-                <Hexagon filter='url(#blur-12)' transform='translate(413,228) scale(330,330)' fill='#FF936666' />
-                {/* <animateTransform attributeName='transform' attributeType='XML' type='translate' from='0 0' to='0 1000' dur='10s' repeatCount='1' /> */}
+                <Hexagon filter='url(#blur-12)' transform='translate(718,1084) scale(228,228)' fill='#6678F6' />
+                <Hexagon filter='url(#blur-12)' transform='translate(720,1452) scale(228,228)' fill='#6678F680' />
+                <Hexagon filter='url(#blur-14)' transform='translate(897,1231) scale(329,329)' fill='#76E8DB' />
+                { configuration.animateBackground && <>
+                    <animateTransform
+                        attributeName='transform' attributeType='XML' type='translate'
+                        values='0 0; 3000 0'
+                        keyTimes='0; 1'
+                        keySplines='0.5 0 1 0.5'
+                        dur='300s'
+                        calcMode='spline' repeatCount='1' fill='freeze' />
+                    <animateTransform
+                        attributeName='transform' attributeType='XML' type='scale'
+                        values='1 1; 2 2'
+                        keyTimes='0; 1'
+                        keySplines='0.5 0 1 0.5'
+                        dur='300s'
+                        calcMode='spline' repeatCount='1' fill='freeze' additive='sum' />
+                </>}
             </g>
-            <Hexagon filter='url(#blur-12)' transform='translate(718,1084) scale(228,228)' fill='#6678F6' />
-            <Hexagon filter='url(#blur-12)' transform='translate(720,1452) scale(228,228)' fill='#6678F680' />
-            <Hexagon filter='url(#blur-14)' transform='translate(897,1231) scale(329,329)' fill='#76E8DB' />
+            <g>
+                <Hexagon filter='url(#blur-8)' transform='translate(1418,-600) scale(330,330)' fill='#6678F6' />
+                <Hexagon filter='url(#blur-12)' transform='translate(1518,-1000) scale(570,570)' fill='#76E8DB' />
+                { configuration.animateBackground && <>
+                    <animateTransform
+                        attributeName='transform' attributeType='XML' type='translate'
+                        values='0 0; 0 0; -800 4000'
+                        keyTimes='0; 0.5; 1'
+                        dur='300s'
+                        repeatCount='indefinite'/>
+                    <animateTransform
+                        attributeName='transform' attributeType='XML' type='scale'
+                        values='1 1; 0.6 0.6'
+                        keyTimes='0; 1'
+                        dur='300s'
+                        repeatCount='indefinite' additive='sum' />
+                </>}
+            </g>
         </svg>
     );
 };

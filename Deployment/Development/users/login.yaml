@@ -6,12 +6,12 @@ serve:
 
 frontend:
   showDolittleHeadline: true
+  animateBackground: true
   applicationName: Dolittle Studio
   supportEmail: support@dolittle.com
 
 urls:
   error: https://studio.localhost:8080/.auth/error
-
 
 providers: {}
 

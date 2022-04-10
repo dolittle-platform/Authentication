@@ -17,16 +17,26 @@ const globalFrontendConfiguration = (args: WebpackArguments): string => {
         return `
             window.configuration = {
                 showDolittleHeadline: {{ .ShowDolittleHeadline }},
+                animateBackground: {{ .AnimateBackground }},
                 applicationName: "{{ .ApplicationName }}",
                 supportEmail: "{{ .SupportEmail }}",
             };
         `.split('\n').map(_ => _.trim()).join('');
     } else {
+        // return `
+        //     window.configuration = {
+        //         showDolittleHeadline: true,
+        //         animateBackground: true,
+        //         applicationName: "Dolittle Studio",
+        //         supportEmail: "support@dolittle.com",
+        //     };
+        // `.trim();
         return `
             window.configuration = {
-                showDolittleHeadline: true,
-                applicationName: "Dolittle Studio",
-                supportEmail: "support@dolittle.com",
+                showDolittleHeadline: false,
+                animateBackground: true,
+                applicationName: "Flokk Shepherd",
+                supportEmail: "",
             };
         `.trim();
     }

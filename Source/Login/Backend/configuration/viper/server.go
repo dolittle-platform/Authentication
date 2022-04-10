@@ -10,6 +10,7 @@ import (
 const (
 	servePortKey                    = "serve.port"
 	frontendShowDolittleHeadlineKey = "frontend.showDolittleHeadline"
+	frontendAnimateBackgroundKey    = "frontend.animateBackground"
 	frontendApplicationNameKey      = "frontend.applicationName"
 	frontendSupportEmailKey         = "frontend.supportEmail"
 	urlsErrorKey                    = "urls.error"
@@ -44,6 +45,7 @@ func (c *serverConfiguration) DevMode() bool {
 func (c *serverConfiguration) Frontend() public.FrontendConfiguration {
 	return public.FrontendConfiguration{
 		ShowDolittleHeadline: viper.GetBool(frontendShowDolittleHeadlineKey),
+		AnimateBackground:    viper.GetBool(frontendAnimateBackgroundKey),
 		ApplicationName:      viper.GetString(frontendApplicationNameKey),
 		SupportEmail:         viper.GetString(frontendSupportEmailKey),
 	}
