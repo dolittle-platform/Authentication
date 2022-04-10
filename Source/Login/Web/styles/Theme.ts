@@ -4,7 +4,6 @@
 import { createTheme } from '@mui/material/styles';
 
 import { Rubik } from './fonts/Rubik';
-import BackgroundImage from './images/background.jpg';
 
 export const Theme = createTheme({
   typography: {
@@ -50,12 +49,15 @@ export const Theme = createTheme({
           height: '100%',
         },
         body: {
+          height: '100%',
           backgroundColor: '#242331',
-          backgroundImage: `url(${BackgroundImage})`,
           backgroundPosition: 'top left',
           backgroundRepeat: 'no-repeat',
           backgroundSize: 'auto 100%',
         },
+        '#root': {
+          height: '100%',
+        }
       }
     },
   },
