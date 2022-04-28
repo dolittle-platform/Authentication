@@ -9,14 +9,12 @@ declare global {
 
 export type Configuration = {
     showDolittleHeadline: boolean | undefined,
-    animateBackground: boolean | undefined,
     applicationName: string | undefined,
     supportEmail: string | undefined,
 };
 
 export const configuration: Configuration = window.configuration ?? {
     showDolittleHeadline: true,
-    animateBackground: true,
     applicationName: 'Dolittle Studio',
     supportEmail: 'support@dolittle.com',
 };

@@ -10,13 +10,11 @@ import { ErrorBoundary } from '../error/ErrorBoundary';
 import { Error } from '../error/Error'
 import { SelectProvider } from '../select-provider/SelectProvider'
 import { SelectTenant } from '../select-tenant/SelectTenant'
-import { Background } from './Background';
 import { Headline } from './Headline';
 
 export const Layout = (): JSX.Element => {
     return (
         <>
-            <Background />
             { configuration.showDolittleHeadline && <Headline /> }
             <Paper
                 elevation={24}
