@@ -4,6 +4,7 @@ serve:
   paths:
     initiate: /.auth/cookies/initiate
     complete: /.auth/cookies/callback
+    logout: /.auth/cookies/logout
 
 urls:
   error: https://studio.localhost:8080/.auth/error

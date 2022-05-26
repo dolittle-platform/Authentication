@@ -16,12 +16,13 @@ type Server interface {
 	Run() error
 }
 
-func NewServer(configuration Configuration, notifier changes.ConfigurationChangeNotifier, initiate public.InitiateHandler, complete public.CompleteHandler, logger *zap.Logger) Server {
+func NewServer(configuration Configuration, notifier changes.ConfigurationChangeNotifier, initiate public.InitiateHandler, complete public.CompleteHandler, logout public.LogoutHandler, logger *zap.Logger) Server {
 	return &server{
 		configuration:    configuration,
 		notifier:         notifier,
 		initiateHandler:  initiate,
 		completeHandler:  complete,
+		logoutHandler:    logout,
 		logger:           logger,
 		shutdownComplete: make(chan struct{}),
 	}
@@ -32,6 +33,7 @@ type server struct {
 	notifier         changes.ConfigurationChangeNotifier
 	initiateHandler  public.InitiateHandler
 	completeHandler  public.CompleteHandler
+	logoutHandler    public.LogoutHandler
 	logger           *zap.Logger
 	httpServer       *http.Server
 	shutdownComplete chan struct{}
@@ -60,12 +62,14 @@ func (s *server) loop() error {
 func (s *server) run() error {
 	s.httpServer = &http.Server{}
 
-	s.logger.Info("Exposing initate endpoint on", zap.String("path", s.configuration.InitiatePath()))
+	s.logger.Info("Exposing initiate endpoint on", zap.String("path", s.configuration.InitiatePath()))
 	s.logger.Info("Exposing complete endpoint on", zap.String("path", s.configuration.CompletePath()))
+	s.logger.Info("Exposing logout endpoint on", zap.String("path", s.configuration.LogoutPath()))
 
 	router := handling.NewRouter(s.configuration, s.logger)
 	router.Handle(s.configuration.InitiatePath(), s.initiateHandler)
 	router.Handle(s.configuration.CompletePath(), s.completeHandler)
+	router.Handle(s.configuration.LogoutPath(), s.logoutHandler)
 
 	s.logger.Info("Starting server", zap.Int("port", s.configuration.Port()))
 	s.httpServer.Addr = fmt.Sprintf(":%d", s.configuration.Port())

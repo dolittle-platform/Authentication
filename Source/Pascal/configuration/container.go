@@ -38,6 +38,7 @@ type Container struct {
 
 	CompleteHandler public.CompleteHandler
 	InitiateHandler public.InitiateHandler
+	LogoutHandler   public.LogoutHandler
 	Server          server.Server
 }
 
@@ -125,11 +126,13 @@ func NewContainer(config Configuration) (*Container, error) {
 		container.SessionsDestroyer,
 		container.CompletionCompleter,
 		container.CookiesWriter)
+	container.LogoutHandler = public.NewLogoutHandler()
 	container.Server = server.NewServer(
 		config.Server(),
 		container.Notifier,
 		container.InitiateHandler,
 		container.CompleteHandler,
+		container.LogoutHandler,
 		logger)
 
 	return &container, nil

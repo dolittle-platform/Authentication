@@ -4,6 +4,7 @@ serve:
   paths:
     initiate: /initiate
     complete: /callback
+    logout: /logout
 
 urls:
   error: http://localhost:80/error
