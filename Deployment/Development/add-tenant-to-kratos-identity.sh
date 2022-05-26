@@ -1,5 +1,5 @@
 #!/bin/bash
-IDENTITIES=$(curl -s -X GET "http://localhost:4434/identities")
+IDENTITIES=$(curl -s -X GET "http://localhost:4434/admin/identities")
 if [ $? -ne 0 ]; then
     echo "Filed to get identities from Kratos"
     exit 1
@@ -20,7 +20,7 @@ fi
 IDENTITY_ID=$(jq '.id' <<< "$IDENTITY")
 KRATOS_UPDATE=$(jq '{ schema_id, traits }' <<< "$UPDATED_IDENTITY")
 
-curl -f -s -X PUT "http://localhost:4434/identities/$IDENTITY_ID"       \
+curl -f -s -X PUT "http://localhost:4434/admin/identities/$IDENTITY_ID"       \
     -H 'Content-Type: application/json'                                 \
     -H 'Accept: application/json' --data @- <<< "$KRATOS_UPDATE" | jq
 if [ $? -ne 0 ]; then
