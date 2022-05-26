@@ -173,7 +173,7 @@ services:
       - authentication
 
   studio:
-    image: dolittle/spinner:0.0.0
+    image: mendhak/http-https-echo:latest
     ports:
       - '8765:80'
     networks:

@@ -54,7 +54,7 @@ The first time logging in from a fresh setup, the user will not be assigned to a
 
 Refresh the select tenant page if you just added another tenant, and select the tenant.
 
-You should then be presented with the amazing Dolittle spinner page - congratulations!
+You should then be presented with a JSON output of the request sent to the underlying service - which should include the "tenant-id" and "user-id" headers based on your user and selected tenant - congratulations!
 
 #### Tearing down
 Shut down the containers and the ingress, and run:
