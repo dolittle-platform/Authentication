@@ -15,12 +15,15 @@ type Issuer interface {
 	GetAuthenticationRedirectURL(nonce nonces.Nonce) (string, error)
 	ExchangeCodeForAccessToken(code string) (*Token, error)
 	ExchangeCodeForIDToken(code string) (*Token, error)
+	RevocationIsSupported() bool
+	RevokeToken(*Token) error
 }
 
 type issuer struct {
-	provider *oidc.Provider
-	verifier *oidc.IDTokenVerifier
-	config   *oauth2.Config
+	provider   *oidc.Provider
+	verifier   *oidc.IDTokenVerifier
+	config     *oauth2.Config
+	extensions *issuerExtensions
 }
 
 func NewIssuer(issuerURL *url.URL, clientId, clientSecret string, scopes []string, redirectUrl *url.URL) (Issuer, error) {
@@ -49,10 +52,16 @@ func NewIssuer(issuerURL *url.URL, clientId, clientSecret string, scopes []strin
 		ClientID: clientId,
 	})
 
+	extensions, err := getIssuerExtensionsFrom(provider)
+	if err != nil {
+		return nil, err
+	}
+
 	return &issuer{
-		provider: provider,
-		verifier: verifier,
-		config:   config,
+		provider:   provider,
+		verifier:   verifier,
+		config:     config,
+		extensions: extensions,
 	}, nil
 }
 
@@ -92,6 +101,18 @@ func (i *issuer) ExchangeCodeForIDToken(code string) (*Token, error) {
 		Value:   idTokenValue,
 		Expires: idToken.Expiry,
 	}, nil
+}
+
+func (i *issuer) RevocationIsSupported() bool {
+	return i.extensions.supportsRevocation
+}
+
+func (i *issuer) RevokeToken(token *Token) error {
+	if !i.RevocationIsSupported() {
+		return ErrRevocationIsNotSupported
+	}
+
+	return revokeToken(token.Value, i.extensions.revocationEndpoint, i.config.ClientID, i.config.ClientSecret, i.extensions.endpointAuthStyle)
 }
 
 func splitIssuerUrlAndQuery(issuerUrl *url.URL) (*url.URL, url.Values) {

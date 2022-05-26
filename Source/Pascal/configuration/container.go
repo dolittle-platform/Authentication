@@ -24,9 +24,11 @@ type Container struct {
 	SessionsWriter    sessions.Writer
 
 	CookiesWriter cookies.Writer
+	CookiesReader cookies.Reader
 
 	OpenidInitiator openid.AuthenticationInitiator
 	OpenidExchanger openid.TokenExchanger
+	OpenidRevoker   openid.TokenRevoker
 
 	InitiationParser    initiation.Parser
 	InitiationValidator initiation.Validator
@@ -77,6 +79,8 @@ func NewContainer(config Configuration) (*Container, error) {
 
 	container.CookiesWriter = cookies.NewWriter(
 		config.Cookies())
+	container.CookiesReader = cookies.NewReader(
+		config.Cookies())
 
 	initiator, err := openid.NewAuthenticationInitiator(
 		config.OpenID(),
@@ -94,6 +98,14 @@ func NewContainer(config Configuration) (*Container, error) {
 		return nil, err
 	}
 	container.OpenidExchanger = exchanger
+	revoker, err := openid.NewTokenRevoker(
+		config.OpenID(),
+		container.Notifier,
+		logger)
+	if err != nil {
+		return nil, err
+	}
+	container.OpenidRevoker = revoker
 
 	container.InitiationParser = initiation.NewParser(
 		config.Initiation(),
@@ -126,7 +138,10 @@ func NewContainer(config Configuration) (*Container, error) {
 		container.SessionsDestroyer,
 		container.CompletionCompleter,
 		container.CookiesWriter)
-	container.LogoutHandler = public.NewLogoutHandler()
+	container.LogoutHandler = public.NewLogoutHandler(
+		container.CookiesReader,
+		container.OpenidRevoker,
+		logger)
 	container.Server = server.NewServer(
 		config.Server(),
 		container.Notifier,
