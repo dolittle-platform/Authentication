@@ -1,3 +1,25 @@
+# [2.0.0] - 2022-5-29 [PR: #21](https://github.com/dolittle-platform/Authentication/pull/21)
+## Summary
+
+A rather large rewrite of multiple components in the authentication system to bring:
+- New design and UX improvements (thanks Liz!)
+- The ability to log out properly
+- Make the UI configurable at runtime to make it easier to whitelabel
+
+### Added
+
+- Configuration of the Login frontend at runtime
+- Pascal and Login now supports logging out (ending the users browser session and revoking tokens properly)
+
+### Changed
+
+- New design and UX in the Login frontend
+- Upgraded to React 18 and MUI 5
+- Upgraded Hydra, Oathkeeper and Kratos to newer versions
+- Hardening of cookie configuration, and enabling Hydra to run with terminated TLS (see Docker-Compose sample setup)
+- New Docker-Compose local development setup that requires less hacks to get going
+
+
 # [1.7.0] - 2021-7-1 [PR: #20](https://github.com/dolittle-platform/Authentication/pull/20)
 ## Summary
 
