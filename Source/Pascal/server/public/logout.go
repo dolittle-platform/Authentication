@@ -43,6 +43,6 @@ func (h *logoutHandler) Handle(w http.ResponseWriter, r *http.Request, ctx conte
 		return err
 	}
 
-	http.Redirect(w, r, redirect.String(), http.StatusFound)
+	http.Redirect(w, r, string(redirect), http.StatusFound)
 	return nil
 }

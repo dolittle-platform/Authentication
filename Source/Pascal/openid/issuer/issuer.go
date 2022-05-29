@@ -17,6 +17,8 @@ type Issuer interface {
 	ExchangeCodeForIDToken(code string) (*Token, error)
 	RevocationIsSupported() bool
 	RevokeToken(*Token) error
+	LogoutIsSupported() bool
+	GetLogoutRedirectURL(idTokenHint, state, returnTo string) (string, error)
 }
 
 type issuer struct {
@@ -113,6 +115,34 @@ func (i *issuer) RevokeToken(token *Token) error {
 	}
 
 	return revokeToken(token.Value, i.extensions.revocationEndpoint, i.config.ClientID, i.config.ClientSecret, i.extensions.endpointAuthStyle)
+}
+
+func (i *issuer) LogoutIsSupported() bool {
+	return i.extensions.supportsLogout
+}
+
+func (i *issuer) GetLogoutRedirectURL(idTokenHint, state, returnTo string) (string, error) {
+	if !i.LogoutIsSupported() {
+		return "", ErrLogoutIsNotSupported
+	}
+
+	v := url.Values{}
+	if idTokenHint != "" {
+		v.Set("id_token_hint", idTokenHint)
+	}
+	if state != "" {
+		v.Set("state", state)
+	}
+	if returnTo != "" {
+		v.Set("post_logout_uri", returnTo)
+	}
+
+	if len(v) == 0 {
+		return i.extensions.logoutEndpoint, nil
+	}
+
+	return i.extensions.logoutEndpoint + "?" + v.Encode(), nil
+
 }
 
 func splitIssuerUrlAndQuery(issuerUrl *url.URL) (*url.URL, url.Values) {

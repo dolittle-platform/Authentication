@@ -141,6 +141,7 @@ func NewContainer(config Configuration) (*Container, error) {
 		logger)
 	container.LogoutInitiator = logout.NewInitiator(
 		container.OpenidRevoker,
+		container.OpenidInitiator,
 		logger)
 
 	container.InitiateHandler = public.NewInitiateHandler(
