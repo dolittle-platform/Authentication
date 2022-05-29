@@ -1,11 +1,11 @@
 package viper
 
 import (
+	"dolittle.io/pascal/redirects"
 	"strings"
 
 	config "dolittle.io/pascal/configuration"
 	"dolittle.io/pascal/cookies"
-	"dolittle.io/pascal/initiation"
 	openid "dolittle.io/pascal/openid/config"
 	"dolittle.io/pascal/server"
 	"dolittle.io/pascal/sessions"
@@ -36,8 +36,8 @@ func NewViperConfiguration(configPath string) (config.Configuration, error) {
 	viper.WatchConfig()
 
 	return &configuration{
-		server:     &serverConfiguration{},
-		initiation: &initiationConfiguration{},
+		server:    &serverConfiguration{},
+		redirects: &redirectsConfiguration{},
 		sessions: &sessionsConfiguration{
 			nonce: &nonceConfiguration{},
 			cookies: &cookiesConfiguration{
@@ -58,11 +58,11 @@ func NewViperConfiguration(configPath string) (config.Configuration, error) {
 }
 
 type configuration struct {
-	server     *serverConfiguration
-	initiation *initiationConfiguration
-	sessions   *sessionsConfiguration
-	cookies    *cookiesConfiguration
-	openid     *openidConfiguration
+	server    *serverConfiguration
+	redirects *redirectsConfiguration
+	sessions  *sessionsConfiguration
+	cookies   *cookiesConfiguration
+	openid    *openidConfiguration
 }
 
 func (c *configuration) OnChange(callback func()) {
@@ -75,8 +75,8 @@ func (c *configuration) Server() server.Configuration {
 	return c.server
 }
 
-func (c *configuration) Initiation() initiation.Configuration {
-	return c.initiation
+func (c *configuration) Redirects() redirects.Configuration {
+	return c.redirects
 }
 
 func (c *configuration) Sessions() sessions.Configuration {

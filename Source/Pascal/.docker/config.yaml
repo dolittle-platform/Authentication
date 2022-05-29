@@ -10,7 +10,9 @@ urls:
   error: http://localhost:80/error
   return:
     query_parameter: return_to
-    default: http://localhost:80/return
+    default:
+      login: http://localhost:80/return
+      logout: http://localhost:80/return
     allowed:
       - http://localhost:80/return
     mode: strict

@@ -33,7 +33,7 @@ docker-compose up -d
 ```
 
 > It takes a litle while to boot up, so give it a few seconds.
-> You can run `docker logs development_browser-pascal_1 -f` and wait for the message "OpenID Connect issuer ready" to appear.
+> You can run `docker logs development-browser-pascal-1 -f` and wait for the message "OpenID Connect issuer ready" to appear.
 
 Then to add configuration to Hydra, run:
 ```shell

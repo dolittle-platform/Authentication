@@ -1,6 +1,7 @@
 package initiation
 
 import (
+	"dolittle.io/pascal/redirects"
 	"net/url"
 	"strings"
 
@@ -12,7 +13,7 @@ type Validator interface {
 	Validate(r *Request) (bool, error)
 }
 
-func NewValidator(configuration Configuration, logger *zap.Logger) Validator {
+func NewValidator(configuration redirects.Configuration, logger *zap.Logger) Validator {
 	return &validator{
 		configuration: configuration,
 		logger:        logger,
@@ -20,7 +21,7 @@ func NewValidator(configuration Configuration, logger *zap.Logger) Validator {
 }
 
 type validator struct {
-	configuration Configuration
+	configuration redirects.Configuration
 	logger        *zap.Logger
 }
 
@@ -28,7 +29,7 @@ func (v *validator) Validate(r *Request) (bool, error) {
 	if !v.returnToURLIsAllowed(r.ReturnTo) {
 		returnTo := url.URL(*r.ReturnTo)
 		v.logger.Warn("the requested return to URL is not allowed", zap.String("requested", returnTo.String()))
-		return false, ErrRequestedReturnToIsNotAllowed
+		return false, redirects.ErrRequestedReturnToIsNotAllowed
 	}
 
 	return true, nil
@@ -43,15 +44,15 @@ func (v *validator) returnToURLIsAllowed(requested sessions.ReturnToURL) bool {
 	return false
 }
 
-func urlEqualsSchemeHostPath(requested, allowed *url.URL, mode MatchMode) bool {
+func urlEqualsSchemeHostPath(requested, allowed *url.URL, mode redirects.MatchMode) bool {
 	if requested.Scheme != allowed.Scheme || requested.Host != allowed.Host {
 		return false
 	}
 
 	switch mode {
-	case MatchModePrefix:
+	case redirects.MatchModePrefix:
 		return strings.HasPrefix(requested.Path, allowed.Path)
-	case MatchModeStrict:
+	case redirects.MatchModeStrict:
 		fallthrough
 	default:
 		return requested.Path == allowed.Path

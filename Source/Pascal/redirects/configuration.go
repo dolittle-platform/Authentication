@@ -1,4 +1,4 @@
-package initiation
+package redirects
 
 import "net/url"
 
@@ -11,7 +11,8 @@ const (
 
 type Configuration interface {
 	ReturnToParameter() string
-	DefaultReturnTo() *url.URL
+	DefaultLoginReturnTo() *url.URL
+	DefaultLogoutReturnTo() *url.URL
 	AllowedReturnTo() []*url.URL
 	ReturnToMatchMode() MatchMode
 }

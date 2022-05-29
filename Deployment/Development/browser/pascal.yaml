@@ -10,7 +10,9 @@ urls:
   error: https://studio.localhost:8080/.auth/error
   return:
     query_parameter: rd
-    default: https://studio.localhost:8080/
+    default:
+      login: https://studio.localhost:8080/
+      logout: https://studio.localhost:8080/logged-out
     allowed:
         - /
     mode: prefix
