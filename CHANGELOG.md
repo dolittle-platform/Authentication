@@ -1,3 +1,13 @@
+# [2.0.1] - 2022-5-29 [PR: #22](https://github.com/dolittle-platform/Authentication/pull/22)
+## Summary
+
+Fixes Docker build of _Login_.
+
+### Fixed
+
+- A typo in the _Login_ `Dockerfile` that caused the previous release to fail.
+
+
 # [2.0.0] - 2022-5-29 [PR: #21](https://github.com/dolittle-platform/Authentication/pull/21)
 ## Summary
 
