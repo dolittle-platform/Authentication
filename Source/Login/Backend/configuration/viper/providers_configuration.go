@@ -13,11 +13,6 @@ const (
 	providersImageURLKey = "image_url"
 )
 
-var (
-	defaultProviderName     = "UNKNOWN PROVIDER"
-	defaultProviderImageURL = ""
-)
-
 type providersConfiguration struct{}
 
 func (c *providersConfiguration) Providers() providers.Providers {

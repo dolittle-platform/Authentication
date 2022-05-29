@@ -8,16 +8,25 @@ frontend:
   showDolittleHeadline: true
   applicationName: Dolittle Studio
   supportEmail: support@dolittle.com
+  paths:
+    start: /
+    logout: /.auth/cookies/logout
 
 urls:
   error: https://studio.localhost:8080/.auth/error
 
 
-providers: {}
+providers:
+  sample:
+    name: Sample
+    image_url: https://picsum.photos/20
 
 identities:
   cookie_name: ory_kratos_session
-  tenants: {}
+  tenants:
+    dolittle: Dolittle
+    1234: Customer A
+    5678: Customer B
 
 flows:
   login:
