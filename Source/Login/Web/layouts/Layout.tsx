@@ -10,6 +10,7 @@ import { ErrorBoundary } from '../error/ErrorBoundary';
 import { Error } from '../error/Error'
 import { SelectProvider } from '../select-provider/SelectProvider'
 import { SelectTenant } from '../select-tenant/SelectTenant'
+import { LoggedOut } from '../logged-out/LoggedOut'
 import { Headline } from './Headline';
 
 export const Layout = (): JSX.Element => {
@@ -29,6 +30,11 @@ export const Layout = (): JSX.Element => {
                     <Route path="/.auth/select-tenant" element={
                         <ErrorBoundary>
                             <SelectTenant />
+                        </ErrorBoundary>
+                    }/>
+                    <Route path="/.auth/logged-out" element={
+                        <ErrorBoundary>
+                            <LoggedOut />
                         </ErrorBoundary>
                     }/>
                     <Route path="/.auth/error" element={

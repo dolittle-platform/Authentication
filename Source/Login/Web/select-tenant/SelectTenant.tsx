@@ -25,11 +25,7 @@ export const SelectTenant = (): JSX.Element => {
                     { configuration.supportEmail && <Typography>Don't have a tenant? <Link underline="always" color="inherit" href={'mailto:'+configuration.supportEmail}>Email us here.</Link></Typography>}
                 </Box>
             </Box>
-            <Button
-                startIcon={<ChevronLeft/>}
-                onClick={() => window.location.href = '/.auth/logout'}
-                css={{ position: 'absolute', left: '20px', bottom: '20px' }}
-            >Go back</Button>
+            <Button startIcon={<ChevronLeft/>} href={configuration.logoutPath} css={{ position: 'absolute', left: '20px', bottom: '20px' }}>Log out</Button>
         </>
     );
 };

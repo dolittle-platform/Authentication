@@ -47,7 +47,7 @@ app.get('/', (req, res) => {
                 <body>
                     <h1>You are logged in!</h1>
                     <div>
-                        <a href="/.auth/logout"/>Click here to logout and do it all again</a>
+                        <a href="/.auth/cookies/logout"/>Click here to logout and do it all again</a>
                     </div>
                     <div>
                         <a href="/.auth/error?correlation=error-id"/>Click here to see what an error would look like</a>
@@ -103,9 +103,9 @@ app.post('/.auth/self-service/tenant/select', (req, res) => {
     res.redirect('/');
 });
 
-app.get('/.auth/logout', (_, res) => {
+app.get('/.auth/cookies/logout', (_, res) => {
     res.cookie('logged_in', 'no', { httpOnly: true, sameSite: 'strict' });
-    res.redirect('/');
+    res.redirect('/.auth/logged-out');
 });
 
 app.use('/', proxy('http://localhost:8091'));
