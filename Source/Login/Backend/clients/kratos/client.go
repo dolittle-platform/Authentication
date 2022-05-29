@@ -3,6 +3,7 @@ package kratos
 import (
 	"context"
 	"net/http"
+	"strings"
 
 	"dolittle.io/login/configuration/changes"
 	ory "github.com/ory/kratos-client-go"
@@ -11,6 +12,7 @@ import (
 type Client interface {
 	GetCurrentUser(ctx context.Context, cookie *http.Cookie) (*ory.Session, error)
 	GetLoginFlow(ctx context.Context, flowID string, cookie *http.Cookie) (*ory.SelfServiceLoginFlow, error)
+	GetLogoutURL(ctx context.Context, cookies []*http.Cookie) (*ory.SelfServiceLogoutUrl, error)
 }
 
 func NewClient(configuration Configuration, notifier changes.ConfigurationChangeNotifier) (Client, error) {
@@ -51,6 +53,21 @@ func (c *client) GetLoginFlow(ctx context.Context, flowID string, cookie *http.C
 		return nil, err
 	}
 	return flow, nil
+}
+
+func (c *client) GetLogoutURL(ctx context.Context, cookies []*http.Cookie) (*ory.SelfServiceLogoutUrl, error) {
+	cookieStrings := make([]string, 0)
+	for _, cookie := range cookies {
+		if cookieString := cookie.String(); cookieString != "" {
+			cookieStrings = append(cookieStrings, cookieString)
+		}
+	}
+	cookieHeaderValue := strings.Join(cookieStrings, ";")
+	url, _, err := c.api.CreateSelfServiceLogoutFlowUrlForBrowsers(ctx).Cookie(cookieHeaderValue).Execute()
+	if err != nil {
+		return nil, err
+	}
+	return url, nil
 }
 
 func (c *client) handleConfigurationChanged() error {

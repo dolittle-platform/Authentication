@@ -21,6 +21,8 @@ flows:
     flow_tenant_form_parameter: tenant
   consent:
     flow_id_query_parameter: consent_challenge
+  logout:
+    flow_id_query_parameter: logout_challenge
 
 clients:
   hydra:

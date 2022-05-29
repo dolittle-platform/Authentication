@@ -13,8 +13,10 @@ import (
 type Client interface {
 	GetLoginFlow(ctx context.Context, flowID string) (*models.LoginRequest, error)
 	GetConsentFlow(ctx context.Context, flowID string) (*models.ConsentRequest, error)
+	GetLogoutFlow(ctx context.Context, flowID string) (*models.LogoutRequest, error)
 	AcceptLoginRequest(ctx context.Context, flowID string, body *models.AcceptLoginRequest) (*models.CompletedRequest, error)
 	AcceptConsentRequest(ctx context.Context, flowID string, body *models.AcceptConsentRequest) (*models.CompletedRequest, error)
+	AcceptLogoutRequest(ctx context.Context, flowID string) (*models.CompletedRequest, error)
 }
 
 func NewClient(configuration Configuration, notifier changes.ConfigurationChangeNotifier) (Client, error) {
@@ -51,6 +53,15 @@ func (c *client) GetConsentFlow(ctx context.Context, flowID string) (*models.Con
 	return response.Payload, nil
 }
 
+func (c *client) GetLogoutFlow(ctx context.Context, flowID string) (*models.LogoutRequest, error) {
+	params := admin.NewGetLogoutRequestParams().WithLogoutChallenge(flowID).WithContext(ctx)
+	response, err := c.client.Admin.GetLogoutRequest(params)
+	if err != nil {
+		return nil, err
+	}
+	return response.Payload, nil
+}
+
 func (c *client) AcceptLoginRequest(ctx context.Context, flowID string, body *models.AcceptLoginRequest) (*models.CompletedRequest, error) {
 	params := admin.NewAcceptLoginRequestParams().WithLoginChallenge(flowID).WithBody(body).WithContext(ctx)
 	response, err := c.client.Admin.AcceptLoginRequest(params)
@@ -63,6 +74,15 @@ func (c *client) AcceptLoginRequest(ctx context.Context, flowID string, body *mo
 func (c *client) AcceptConsentRequest(ctx context.Context, flowID string, body *models.AcceptConsentRequest) (*models.CompletedRequest, error) {
 	params := admin.NewAcceptConsentRequestParams().WithConsentChallenge(flowID).WithBody(body).WithContext(ctx)
 	response, err := c.client.Admin.AcceptConsentRequest(params)
+	if err != nil {
+		return nil, err
+	}
+	return response.Payload, nil
+}
+
+func (c *client) AcceptLogoutRequest(ctx context.Context, flowID string) (*models.CompletedRequest, error) {
+	params := admin.NewAcceptLogoutRequestParams().WithLogoutChallenge(flowID).WithContext(ctx)
+	response, err := c.client.Admin.AcceptLogoutRequest(params)
 	if err != nil {
 		return nil, err
 	}

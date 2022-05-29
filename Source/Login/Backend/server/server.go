@@ -1,6 +1,7 @@
 package server
 
 import (
+	"dolittle.io/login/server/public/logout"
 	"fmt"
 	"net/http"
 
@@ -24,6 +25,7 @@ func NewServer(
 	tenantGet tenant.GetHandler,
 	tenantSelect tenant.SelectHandler,
 	consentInitiate consent.InitiateHandler,
+	logoutInitiate logout.InitiateHandler,
 	logger *zap.Logger) Server {
 	return &server{
 		configuration:   configuration,
@@ -33,6 +35,7 @@ func NewServer(
 		tenantGet:       tenantGet,
 		tenantSelect:    tenantSelect,
 		consentInitiate: consentInitiate,
+		logoutInitiate:  logoutInitiate,
 		logger:          logger,
 	}
 }
@@ -50,6 +53,8 @@ type server struct {
 
 	consentInitiate consent.InitiateHandler
 
+	logoutInitiate logout.InitiateHandler
+
 	logger *zap.Logger
 }
 
@@ -65,6 +70,8 @@ func (s *server) Run() error {
 	router.Handle("/.auth/self-service/tenant/select", s.tenantSelect)
 
 	router.Handle("/.auth/self-service/consent/browser", s.consentInitiate)
+
+	router.Handle("/.auth/self-service/logout/browser", s.logoutInitiate)
 
 	server := http.Server{
 		Addr:    fmt.Sprintf(":%d", s.configuration.Port()),
