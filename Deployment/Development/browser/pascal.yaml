@@ -12,7 +12,7 @@ urls:
     query_parameter: rd
     default:
       login: https://studio.localhost:8080/
-      logout: https://studio.localhost:8080/logged-out
+      logout: https://studio.localhost:8080/.auth/self-service/logout/browser
     allowed:
         - /
     mode: prefix

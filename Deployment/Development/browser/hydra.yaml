@@ -24,6 +24,8 @@ urls:
   
   login: https://studio.localhost:8080/.auth/self-service/tenant/browser
   consent: https://studio.localhost:8080/.auth/self-service/consent/browser
+  logout: https://studio.localhost:8080/.auth/self-service/logout/browser
+  post_logout_redirect: https://studio.localhost:8080/.auth/self-service/logout/browser
 
 
 ttl:
