@@ -1,6 +1,13 @@
 version: '3.8'
 volumes:
   postgres_data:
+networks:
+  authentication:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.64.0.0/16
 services:
   postgres:
     image: postgres:9.6.19
@@ -10,8 +17,8 @@ services:
       - './postgres/init-hydra-browser-db.sql:/docker-entrypoint-initdb.d/init-hydra-browser-db.sql'
       - './postgres/init-kratos-db.sql:/docker-entrypoint-initdb.d/init-kratos-db.sql'
       - 'postgres_data:/var/lib/postgresql/data'
-    logging:
-      driver: none
+    networks:
+      - authentication
   pgadmin:
     image: dpage/pgadmin4:4.27
     environment:
@@ -21,11 +28,37 @@ services:
       - './postgres/servers.json:/pgadmin4/servers.json'
     ports:
       - '9999:80'
-    logging:
-      driver: none
+    networks:
+      - authentication
+
+  ingress-nginx:
+    image: nginx:1.21.6
+    volumes:
+      - './ingress/nginx.conf:/etc/nginx/nginx.conf'
+      - './ingress/certificate.crt:/etc/nginx/certificate.crt'
+      - './ingress/certificate.key:/etc/nginx/certificate.key'
+    ports:
+      - '8080:8080'
+      - '8081:8081'
+    networks:
+      - authentication
+
+  authenticator-oathkeeper:
+    image: oryd/oathkeeper:v0.38.24
+    command:
+      - "--config"
+      - "/etc/oathkeeper/config/oathkeeper.yaml"
+      - "serve"
+    volumes:
+      - './authenticator/oathkeeper.yaml:/etc/oathkeeper/config/oathkeeper.yaml'
+      - './authenticator/rules.yaml:/etc/oathkeeper/config/rules.yaml'
+    ports:
+      - '4455:4455'
+    networks:
+      - authentication
 
   browser-hydra-init:
-    image: oryd/hydra:v1.8.5
+    image: oryd/hydra:v1.11.7
     restart: on-failure
     command:
       - "--config"
@@ -36,10 +69,10 @@ services:
       - "--yes"
     volumes:
       - './browser/hydra.yaml:/etc/hydra/config/hydra.yaml'
-    logging:
-      driver: none
+    networks:
+      - authentication
   browser-hydra:
-    image: oryd/hydra:v1.8.5
+    image: oryd/hydra:v1.11.7
     restart: unless-stopped
     depends_on:
       - browser-hydra-init
@@ -48,42 +81,35 @@ services:
       - "/etc/hydra/config/hydra.yaml"
       - "serve"
       - "all"
-      - "--dangerous-force-http"
-      - "--dangerous-allow-insecure-redirect-urls"
-      - "http://studio.localhost/.auth/cookies/callback"
     volumes:
       - './browser/hydra.yaml:/etc/hydra/config/hydra.yaml'
     ports:
       - '4444:4444'
       - '4445:4445'
-  browser-oathkeeper:
-    image: oryd/oathkeeper:v0.38.4-beta.1
-    command:
-      - "--config"
-      - "/etc/oathkeeper/config/oathkeeper.yaml"
-      - "serve"
-    volumes:
-      - './browser/oathkeeper.yaml:/etc/oathkeeper/config/oathkeeper.yaml'
-      - './browser/rules.yaml:/etc/oathkeeper/config/rules.yaml'
-    ports:
-      - '8001:4455'
+    networks:
+      - authentication
   browser-pascal:
     image: dolittle/pascal:local
     build:
       context: ../../Source/Pascal
+    depends_on:
+      - ingress-nginx
     command:
       - "--config"
       - "/etc/pascal/config/pascal.yaml"
       - "serve"
     volumes:
       - './browser/pascal.yaml:/etc/pascal/config/pascal.yaml'
-    extra_hosts:
-      - "studio.localhost:${HOST_IP}"
+      - './ingress/certificate.crt:/etc/ssl/certs/ca-certificates.crt'
+    links:
+      - "ingress-nginx:studio.localhost"
     ports:
-      - '8002:8080'
+      - "9080:8080"
+    networks:
+      - authentication
 
-  login-kratos-init:
-    image: oryd/kratos:v0.5.4
+  users-kratos-init:
+    image: oryd/kratos:v0.9.0
     restart: on-failure
     command:
       - "--config"
@@ -93,56 +119,62 @@ services:
       - "-e"
       - "--yes"
     volumes:
-      - './login/kratos.yaml:/etc/kratos/config/kratos.yaml'
-    logging:
-      driver: none
-  login-kratos:
-    image: oryd/kratos:v0.5.4
+      - './users/kratos.yaml:/etc/kratos/config/kratos.yaml'
+    networks:
+      - authentication
+  users-kratos:
+    image: oryd/kratos:v0.9.0
     restart: unless-stopped
     depends_on:
-      - login-kratos-init
+      - users-kratos-init
+      - ingress-nginx
     command:
       - "--config"
       - "/etc/kratos/config/kratos.yaml"
       - "serve"
-      - "--dev"
     volumes:
-      - './login/kratos.yaml:/etc/kratos/config/kratos.yaml'
-      - './login/identity.schema.json:/etc/kratos/config/identity.schema.json'
-      - './login/sample.mapper.jsonnet:/etc/kratos/config/sample.mapper.jsonnet'
+      - './users/kratos.yaml:/etc/kratos/config/kratos.yaml'
+      - './users/identity.schema.json:/etc/kratos/config/identity.schema.json'
+      - './users/sample.mapper.jsonnet:/etc/kratos/config/sample.mapper.jsonnet'
+      - './ingress/certificate.crt:/etc/ssl/certs/ca-certificates.crt'
+    links:
+      - "ingress-nginx:provider.localhost"
     ports:
       - '4433:4433'
       - '4434:4434'
-  login-login:
+    networks:
+      - authentication
+  users-login:
     image: dolittle/login:local
     build:
       context: ../../Source/Login
     ports:
-      - '8090:8090'
+      - '9081:8080'
     command:
       - "--config"
       - "/etc/login/config/login.yaml"
       - "serve"
     volumes:
-      - './login/login.yaml:/etc/login/config/login.yaml'
+      - './users/login.yaml:/etc/login/config/login.yaml'
+    networks:
+      - authentication
 
-  
-  apiserver-proxy:
-    image: dolittle/impersonator:local
-    build:
-      context: ../../Source/Impersonator
-
-  local-oidc-provider:
+  provider:
     image: qlik/simple-oidc-provider
     environment:
       CONFIG_FILE: /etc/simple-oidc-provider/config/config.json
       USERS_FILE: /etc/simple-oidc-provider/config/users.json
     volumes:
-      - './oidc-provider/config.json:/etc/simple-oidc-provider/config/config.json'
-      - './oidc-provider/users.json:/etc/simple-oidc-provider/config/users.json'
+      - './provider/config.json:/etc/simple-oidc-provider/config/config.json'
+      - './provider/users.json:/etc/simple-oidc-provider/config/users.json'
     ports:
-      - '9090:9090'
-
+      - '9082:8080'
+    networks:
+      - authentication
 
   studio:
-    image: dolittle/spinner:0.0.0
+    image: mendhak/http-https-echo:latest
+    ports:
+      - '8765:80'
+    networks:
+      - authentication

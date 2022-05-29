@@ -5,6 +5,7 @@ import (
 	"dolittle.io/pascal/configuration/changes"
 	"dolittle.io/pascal/cookies"
 	"dolittle.io/pascal/initiation"
+	"dolittle.io/pascal/logout"
 	"dolittle.io/pascal/openid"
 	"dolittle.io/pascal/server"
 	"dolittle.io/pascal/server/public"
@@ -23,10 +24,13 @@ type Container struct {
 	SessionsReader    sessions.Reader
 	SessionsWriter    sessions.Writer
 
-	CookiesWriter cookies.Writer
+	CookiesWriter   cookies.Writer
+	CookiesReader   cookies.Reader
+	CookiesCrumbler cookies.Crumbler
 
 	OpenidInitiator openid.AuthenticationInitiator
 	OpenidExchanger openid.TokenExchanger
+	OpenidRevoker   openid.TokenRevoker
 
 	InitiationParser    initiation.Parser
 	InitiationValidator initiation.Validator
@@ -36,8 +40,12 @@ type Container struct {
 	CompletionValidator completion.Validator
 	CompletionCompleter completion.Completer
 
+	LogoutParser    logout.Parser
+	LogoutInitiator logout.Initiator
+
 	CompleteHandler public.CompleteHandler
 	InitiateHandler public.InitiateHandler
+	LogoutHandler   public.LogoutHandler
 	Server          server.Server
 }
 
@@ -76,6 +84,10 @@ func NewContainer(config Configuration) (*Container, error) {
 
 	container.CookiesWriter = cookies.NewWriter(
 		config.Cookies())
+	container.CookiesReader = cookies.NewReader(
+		config.Cookies())
+	container.CookiesCrumbler = cookies.NewCrumbler(
+		config.Cookies())
 
 	initiator, err := openid.NewAuthenticationInitiator(
 		config.OpenID(),
@@ -93,12 +105,20 @@ func NewContainer(config Configuration) (*Container, error) {
 		return nil, err
 	}
 	container.OpenidExchanger = exchanger
+	revoker, err := openid.NewTokenRevoker(
+		config.OpenID(),
+		container.Notifier,
+		logger)
+	if err != nil {
+		return nil, err
+	}
+	container.OpenidRevoker = revoker
 
 	container.InitiationParser = initiation.NewParser(
-		config.Initiation(),
+		config.Redirects(),
 		logger)
 	container.InitiationValidator = initiation.NewValidator(
-		config.Initiation(),
+		config.Redirects(),
 		logger)
 	container.InitiationInitiator = initiation.NewInitiator(
 		container.InitiationValidator,
@@ -115,6 +135,15 @@ func NewContainer(config Configuration) (*Container, error) {
 		container.OpenidExchanger,
 		logger)
 
+	container.LogoutParser = logout.NewParser(
+		config.Redirects(),
+		container.CookiesReader,
+		logger)
+	container.LogoutInitiator = logout.NewInitiator(
+		container.OpenidRevoker,
+		container.OpenidInitiator,
+		logger)
+
 	container.InitiateHandler = public.NewInitiateHandler(
 		container.InitiationParser,
 		container.InitiationInitiator,
@@ -125,11 +154,17 @@ func NewContainer(config Configuration) (*Container, error) {
 		container.SessionsDestroyer,
 		container.CompletionCompleter,
 		container.CookiesWriter)
+	container.LogoutHandler = public.NewLogoutHandler(
+		container.CookiesCrumbler,
+		container.LogoutParser,
+		container.LogoutInitiator,
+		logger)
 	container.Server = server.NewServer(
 		config.Server(),
 		container.Notifier,
 		container.InitiateHandler,
 		container.CompleteHandler,
+		container.LogoutHandler,
 		logger)
 
 	return &container, nil

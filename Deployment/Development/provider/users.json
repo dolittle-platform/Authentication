@@ -1,0 +1,14 @@
+[
+  {
+    "id": "SIMPLE_OIDC_USER_HARLEY",
+    "email": "do@do.do",
+    "email_verified": true,
+    "name": "Harley Kiffe",
+    "nickname": "harley",
+    "password": "password",
+    "groups": [
+      "Everyone",
+      "Sales"
+    ]
+  }
+]

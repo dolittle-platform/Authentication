@@ -6,3 +6,10 @@ export type IdentityProvider = {
     display: string;
     imageURL: string;
 };
+
+export const isIdentityProvider = (obj: any): obj is IdentityProvider => {
+    if (typeof obj.id !== 'string') return false;
+    if (typeof obj.display !== 'string') return false;
+    if (typeof obj.imageURL !== 'string') return false;
+    return true;
+};

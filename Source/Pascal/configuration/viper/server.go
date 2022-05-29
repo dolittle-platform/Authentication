@@ -10,11 +10,13 @@ const (
 	servePortKey          = "serve.port"
 	servePathsInitiateKey = "serve.paths.initiate"
 	servePathsCompleteKey = "serve.paths.complete"
+	servePathsLogoutKey   = "serve.paths.logout"
 	urlsErrorKey          = "urls.error"
 
 	defaultServePort         = 8080
 	defaultServeInitiatePath = "/initiate"
 	defaultServeCompletePath = "/callback"
+	defaultServeLogoutPath   = "/logout"
 )
 
 var (
@@ -47,6 +49,13 @@ func (c *serverConfiguration) CompletePath() string {
 		return path
 	}
 	return defaultServeCompletePath
+}
+
+func (c *serverConfiguration) LogoutPath() string {
+	if path := viper.GetString(servePathsLogoutKey); path != "" {
+		return path
+	}
+	return defaultServeLogoutPath
 }
 
 func (c *serverConfiguration) ErrorRedirect() *url.URL {

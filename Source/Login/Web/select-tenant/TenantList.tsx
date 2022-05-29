@@ -1,32 +1,25 @@
 // Copyright (c) Dolittle. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import React from 'react';
+import Box from '@mui/material/Box';
 
-import { withViewModel } from '../MVVM/withViewModel';
-
-import { TenantListViewModel } from './TenantListViewModel';
-
+import { Tenant } from './Tenant';
 import { TenantListItem } from './TenantListItem';
 
 export type TenantListProps = {
-    loading: Function;
-    loaded: Function;
-    flow: string | null;
+    tenants: Tenant[];
 };
 
-export const TenantList = withViewModel<TenantListViewModel, TenantListProps>(TenantListViewModel, ({ viewModel, props }) => {
+export const TenantList = (props: TenantListProps): JSX.Element => {
     return (
         <>
-            <h1>Select tenant:</h1>
-            { props.flow !== null ? viewModel.tenants.map(tenant =>
-                <TenantListItem
-                    key={tenant.id}
-                    formAction={viewModel.formAction}
-                    formMethod={viewModel.formMethod}
-                    flowId={props.flow!}
-                    tenant={tenant} />
-            ) : <></> }
+            {
+                props.tenants.map(tenant => (
+                    <Box key={tenant.id} css={{ marginBottom: '28px' }}>
+                        <TenantListItem tenant={tenant} />
+                    </Box>
+                ))
+            }
         </>
     );
-});
+};

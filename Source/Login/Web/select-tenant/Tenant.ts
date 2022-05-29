@@ -5,3 +5,9 @@ export type Tenant = {
     id: string;
     display: string;
 };
+
+export const isTenant = (obj: any): obj is Tenant => {
+    if (typeof obj.id !== 'string') return false;
+    if (typeof obj.display !== 'string') return false;
+    return true;
+};

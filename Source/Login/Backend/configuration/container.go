@@ -6,6 +6,7 @@ import (
 	"dolittle.io/login/configuration/changes"
 	consentFlow "dolittle.io/login/flows/consent"
 	loginFlow "dolittle.io/login/flows/login"
+	logoutFlow "dolittle.io/login/flows/logout"
 	tenantFlow "dolittle.io/login/flows/tenant"
 	"dolittle.io/login/identities/current"
 	"dolittle.io/login/identities/tenants"
@@ -14,6 +15,7 @@ import (
 	"dolittle.io/login/server/public"
 	"dolittle.io/login/server/public/consent"
 	"dolittle.io/login/server/public/login"
+	"dolittle.io/login/server/public/logout"
 	"dolittle.io/login/server/public/tenant"
 	"go.uber.org/zap"
 )
@@ -42,6 +44,11 @@ type Container struct {
 	ConsentFlowGetter   consentFlow.Getter
 	ConsentFlowAccepter consentFlow.Accepter
 
+	LogoutFlowParser    logoutFlow.Parser
+	LogoutFlowGetter    logoutFlow.Getter
+	LogoutFlowAccepter  logoutFlow.Accepter
+	LogoutFlowInitiator logoutFlow.Initiator
+
 	FrontendHandler public.FrontendHandler
 
 	LoginGetHandler login.GetHandler
@@ -51,6 +58,8 @@ type Container struct {
 	TenantSelectHandler   tenant.SelectHandler
 
 	ConsentInitiateHandler consent.InitiateHandler
+
+	LogoutInitiateHandler logout.InitiateHandler
 
 	Server server.Server
 }
@@ -128,8 +137,25 @@ func NewContainer(configuration Configuration) (*Container, error) {
 	container.ConsentFlowAccepter = consentFlow.NewAccepter(
 		container.HydraClient)
 
-	container.FrontendHandler = public.NewFrontendHandler(
+	container.LogoutFlowParser = logoutFlow.NewParser()
+
+	container.LogoutFlowGetter = logoutFlow.NewGetter(
+		configuration.Flows().Logout(),
+		container.HydraClient,
+		container.LogoutFlowParser)
+
+	container.LogoutFlowAccepter = logoutFlow.NewAccepter(
+		container.HydraClient)
+
+	container.LogoutFlowInitiator = logoutFlow.NewInitiator(
+		container.KratosClient)
+
+	frontendHandler, err := public.NewFrontendHandler(
 		configuration.Server())
+	if err != nil {
+		return nil, err
+	}
+	container.FrontendHandler = frontendHandler
 
 	container.LoginGetHandler = login.NewGetHandler(
 		container.LoginFlowGetter)
@@ -149,6 +175,11 @@ func NewContainer(configuration Configuration) (*Container, error) {
 		container.ConsentFlowGetter,
 		container.ConsentFlowAccepter)
 
+	container.LogoutInitiateHandler = logout.NewInitiateHandler(
+		container.LogoutFlowGetter,
+		container.LogoutFlowAccepter,
+		container.LogoutFlowInitiator)
+
 	container.Server = server.NewServer(
 		configuration.Server(),
 		container.FrontendHandler,
@@ -157,6 +188,7 @@ func NewContainer(configuration Configuration) (*Container, error) {
 		container.TenantGetHandler,
 		container.TenantSelectHandler,
 		container.ConsentInitiateHandler,
+		container.LogoutInitiateHandler,
 		logger)
 
 	return container, nil

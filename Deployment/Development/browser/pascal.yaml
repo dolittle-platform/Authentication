@@ -4,37 +4,43 @@ serve:
   paths:
     initiate: /.auth/cookies/initiate
     complete: /.auth/cookies/callback
+    logout: /.auth/cookies/logout
 
 urls:
-  error: http://studio.localhost:8080/.auth/error
+  error: https://studio.localhost:8080/.auth/error
   return:
-    query_parameter: return_to
-    default: http://studio.localhost:8080/
-    allowed: []
+    query_parameter: rd
+    default:
+      login: https://studio.localhost:8080/
+      logout: https://studio.localhost:8080/.auth/self-service/logout/browser
+    allowed:
+        - /
+    mode: prefix
 
 sessions:
   nonce_length: 80
-  lifetime: 5m
+  lifetime: 1h
   cookies:
     name: .dolittle.pascal.session
-    secure: false
+    secure: true
     samesite: lax
     path: /
   keys:
-    - hash: KEY-USED-TO-SIGN-SESSION-COOKIES-SHOULD-BE-64-BYTES-LONG--------
-      block: ENCRYPTION-KEY-SHOULD-BE-32-BYTS
+    - hash: qCO94UT3lEGniz7kuqd6CrzHkQOdJ1rU17yVzeXGSAaHxbZHv7x51GZk6V8UbpDq
+      block: Kf2LyuvZU5mEV9grdrONPII4DoLqA0Kr
 
 openid:
-  issuer: http://studio.localhost:8080/.auth/
+  issuer: https://studio.localhost:8080/.auth/
   client:
     id: client-id
     secret: client-secret
   scopes:
     - openid
-  redirect: http://studio.localhost:8080/.auth/cookies/callback
+  token_type: access_token
+  redirect: https://studio.localhost:8080/.auth/cookies/callback
 
 cookies:
   name: .dolittle.pascal.login
-  secure: false
+  secure: true
   samesite: lax
   path: /

@@ -1,4 +1,4 @@
-FROM golang:latest as build
+FROM golang:1.18 as build
 WORKDIR /build
 COPY . /build
 ENV CGO_ENABLED=0

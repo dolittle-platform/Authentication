@@ -4,12 +4,13 @@ import (
 	"errors"
 	"net/url"
 
+	"dolittle.io/login/flows/forms"
 	"dolittle.io/login/providers"
-	"github.com/ory/kratos-client-go/models"
+	ory "github.com/ory/kratos-client-go"
 )
 
 type Parser interface {
-	ParseLoginFlowFrom(response *models.LoginFlow) (*Flow, error)
+	ParseLoginFlowFrom(response *ory.SelfServiceLoginFlow) (*Flow, error)
 }
 
 func NewParser(configuration Configuration, providers providers.Getter) Parser {
@@ -24,30 +25,47 @@ type parser struct {
 	providers     providers.Getter
 }
 
-func (p *parser) ParseLoginFlowFrom(response *models.LoginFlow) (*Flow, error) {
-	method, ok := response.Methods["oidc"]
+func (p *parser) ParseLoginFlowFrom(response *ory.SelfServiceLoginFlow) (*Flow, error) {
+
+	flowID, ok := response.GetIdOk()
 	if !ok {
-		return nil, errors.New("response does not have oidc method")
+		return nil, errors.New("flow id not set")
 	}
 
-	if method.Config.Action == nil {
-		return nil, errors.New("form submit action not set")
+	refresh, ok := response.GetRefreshOk()
+	if !ok {
+		return nil, errors.New("flow refresh not set")
 	}
-	submitAction, err := url.Parse(*method.Config.Action)
+
+	formUI, ok := response.GetUiOk()
+	if !ok {
+		return nil, errors.New("flow form not set")
+	}
+	uiNodes, ok := formUI.GetNodesOk()
+	if !ok {
+		return nil, errors.New("form nodes not set")
+	}
+
+	csrfToken, err := p.getCSRFToken(uiNodes)
 	if err != nil {
 		return nil, err
 	}
 
-	if method.Config.Method == nil {
+	submitAction, ok := formUI.GetActionOk()
+	if !ok {
+		return nil, errors.New("form submit action not set")
+	}
+	_, err = url.Parse(*submitAction)
+	if err != nil {
+		return nil, err
+	}
+
+	submitMethod, ok := formUI.GetMethodOk()
+	if !ok {
 		return nil, errors.New("form submit method not set")
 	}
 
-	csrfToken, err := p.getCSRFToken(method.Config.Fields)
-	if err != nil {
-		return nil, err
-	}
-
-	providerIDs, err := p.getProviderIDs(method.Config.Fields)
+	providerIDs, err := p.getProviderIDs(uiNodes)
 	if err != nil {
 		return nil, err
 	}
@@ -62,17 +80,19 @@ func (p *parser) ParseLoginFlowFrom(response *models.LoginFlow) (*Flow, error) {
 	}
 
 	return &Flow{
-		ID:               FlowID(response.ID),
-		Forced:           response.Forced,
-		FormCSRFToken:    csrfToken,
-		FormSubmitAction: submitAction,
-		FormSubmitMethod: *method.Config.Method,
-		Providers:        providers,
+		ID:      FlowID(*flowID),
+		Refresh: *refresh,
+		Form: forms.Form{
+			SubmitMethod: *submitMethod,
+			SubmitAction: *submitAction,
+			CSRFToken:    csrfToken,
+		},
+		Providers: providers,
 	}, nil
 }
 
-func (p *parser) getCSRFToken(fields models.FormFields) (string, error) {
-	tokens, err := p.getFormFieldStringValues(p.configuration.CSRFTokenFieldName(), fields)
+func (p *parser) getCSRFToken(nodes []ory.UiNode) (string, error) {
+	tokens, err := p.getFormFieldStringValues(p.configuration.CSRFTokenFieldName(), nodes)
 	if err != nil {
 		return "", err
 	}
@@ -85,21 +105,29 @@ func (p *parser) getCSRFToken(fields models.FormFields) (string, error) {
 	return tokens[0], nil
 }
 
-func (p *parser) getProviderIDs(fields models.FormFields) ([]string, error) {
-	return p.getFormFieldStringValues(p.configuration.ProviderFieldName(), fields)
+func (p *parser) getProviderIDs(nodes []ory.UiNode) ([]string, error) {
+	return p.getFormFieldStringValues(p.configuration.ProviderFieldName(), nodes)
 }
 
-func (p *parser) getFormFieldStringValues(fieldName string, fields models.FormFields) ([]string, error) {
+func (p *parser) getFormFieldStringValues(fieldName string, nodes []ory.UiNode) ([]string, error) {
 	values := []string{}
-	for _, field := range fields {
-		if *field.Name != fieldName {
+	for _, node := range nodes {
+		attributes, ok := node.GetAttributesOk()
+		if !ok {
 			continue
 		}
-		value, isString := field.Value.(string)
-		if !isString {
+		if name, ok := attributes.UiNodeInputAttributes.GetNameOk(); !ok || *name != fieldName {
+			continue
+		}
+		value, ok := attributes.UiNodeInputAttributes.GetValueOk()
+		if !ok {
+			return nil, errors.New("form value was not set")
+		}
+		stringValue, ok := (*value).(string)
+		if !ok {
 			return nil, errors.New("form value was not string")
 		}
-		values = append(values, value)
+		values = append(values, stringValue)
 	}
 	return values, nil
 }

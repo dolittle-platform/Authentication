@@ -1,0 +1,109 @@
+dsn: postgres://postgres:password@postgres:5432/kratos?sslmode=disable&max_conns=20&max_idle_conns=4
+
+serve:
+  public:
+    port: 4433
+    base_url: "https://studio.localhost:8080/.auth/"
+  admin:
+    port: 4434
+
+identity:
+  default_schema_id: default
+  schemas:
+    - id: default
+      url: file:///etc/kratos/config/identity.schema.json
+
+selfservice:
+  default_browser_return_url: https://studio.localhost:8080/
+
+  allowed_return_urls:
+    - https://studio.localhost:8080/.auth/self-service/tenant/browser
+    - /.auth/self-service/tenant/browser
+
+  flows:
+    login:
+      ui_url: https://studio.localhost:8080/.auth/select-provider
+      lifespan: 1h
+      after:
+        oidc:
+          default_browser_return_url: /.auth/self-service/tenant/browser
+          hooks:
+            - hook: revoke_active_sessions
+
+    settings:
+      ui_url: https://studio.localhost:8080/.auth/settings
+      lifespan: 1h
+      privileged_session_max_age: 15m
+
+    registration:
+      after:
+        oidc:
+          default_browser_return_url: /.auth/cookies/initiate
+          hooks:
+            - hook: session
+
+    logout:
+      after:
+        default_browser_return_url: /.auth/logged-out
+
+    verification:
+      enabled: false
+
+    recovery:
+      enabled: false
+    
+    error:
+      ui_url: https://studio.localhost:8080/.auth/error
+
+  methods:
+    password:
+      enabled: false
+    link:
+      enabled: false
+    profile:
+      enabled: false
+    oidc:
+      enabled: true
+      config:
+        providers:
+          - id: sample
+            provider: generic
+            client_id: foo
+            client_secret: bar
+            issuer_url: https://provider.localhost:8081/
+            mapper_url: file:///etc/kratos/config/sample.mapper.jsonnet
+            scope:
+              - profile
+              - email
+            requested_claims:
+              userinfo:
+                email:
+                  essential: true
+
+hashers:
+  bcrypt:
+    cost: 12
+  algorithm: bcrypt
+
+secrets:
+  default:
+    - nQUhGZPZdxZ5RUaUXWG33KOYJmNvEKEf76ujTAJRNtAFyanaCXmgG9883lZlESOf
+  cookie:
+    - xeJxf8gDTYVO4X7a8qEQTHpstzoJz10mNPeMMvT8Q1jN8kWq6XMWeKEtsWBKurMg
+
+cookies:
+  path: /.auth/
+  same_site: Lax
+
+session:
+  cookie:
+    persistent: true
+  lifespan: 24h
+
+courier:
+  smtp:
+    connection_uri: "smtps://test:test@mailslurper:1025/?skip_ssl_verify=true"
+
+log:
+  level: debug
+  format: text

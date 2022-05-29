@@ -7,6 +7,7 @@ type Configuration interface {
 
 	InitiatePath() string
 	CompletePath() string
+	LogoutPath() string
 
 	handling.Configuration
 }

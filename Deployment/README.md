@@ -23,53 +23,58 @@ To test out with different sets of providers or tenants, you can modify the `ide
 
 ## 2. Running with Docker Compose
 > The files and scripts referenced in this section is in the `/Deployment/Development` directory in this repository.
-> It also requires a local installation of Go.
+> The setup relies on a self-signed SSL certificate, so you need to accept that for it to work.
+> If you're using Chrome, you need to enable insecure sertificates on localhost by going to [chrome://flags/#allow-insecure-localhost](chrome://flags/#allow-insecure-localhost).
 
-##### Configuring the network
-First, set the IP of your host machine (reachable from a Docker container) to the `HOST_IP` in the `.env` file.
-
-> If you're on a Linux host, you can find the IP from the `inet` field of the `docker0` interface using `ip addr show docker0`
-
-Then, append to your `/etc/hosts` file the following:
-```
-127.0.0.1 studio.localhost
-127.0.0.1 local-oidc-provider
-```
-
-##### Starting up
+#### Starting up
 To build and start up the current code, run:
 ```shell
-docker-compose up
+docker-compose up -d
 ```
 
-In another terminal, run:
+> It takes a litle while to boot up, so give it a few seconds.
+> You can run `docker logs development-browser-pascal-1 -f` and wait for the message "OpenID Connect issuer ready" to appear.
+
+Then to add configuration to Hydra, run:
 ```shell
 ./add-pascal-client-to-hydra.sh
 ```
-And then lastly, run:
-```shell
-go run ingress.go
-```
 
-##### Testing it out
-Navigate to http://studio.localhost:8080/, and log in in with email `do@do.do`, and password `password`.
+#### Testing it out
+Navigate to https://studio.localhost:8080/, and log in in with email `do@do.do`, and password `password`.
 
 The first time logging in from a fresh setup, the user will not be assigned to any tenants. To add a tenant to a user run:
 ```shell
 ./add-tenant-to-kratos-identity.sh <email> <tenant-id>
 ```
 > The default config is set up with with a tenant mapping for `dolittle` and `tenant-a`, so try out:
-> ./add-tenant-to-kratos-identity.sh do@do.do dolittle
+```shell
+./add-tenant-to-kratos-identity.sh do@do.do dolittle
+```
 
 Refresh the select tenant page if you just added another tenant, and select the tenant.
 
-You should then be presented with the amazing Dolittle spinner page - congratulations!
+You should then be presented with a JSON output of the request sent to the underlying service - which should include the "tenant-id" and "user-id" headers based on your user and selected tenant - congratulations!
 
-##### Tearing down
+#### Tearing down
 Shut down the containers and the ingress, and run:
 ```shell
-docker-compose down
+docker-compose down -v
 ```
 This will clean up everything created and clear out databases, so you'll need to add tenants to users again the next time.
+
+#### Rebuilding images from source
+When you've changed the code and want to test the new code in Docker compose, you can run:
+```shell
+docker-compose build
+```
+Take the deployment down and restart it to run with the fresh images.
+
+
+#### To check the contents of the created session cookie
+Find the cookie named `.dolittle.pascal.login` in your browser after logging in, and run:
+```shell
+./check-pascal-cookie-contents.sh "COOKIE_VALUE"
+```
 
 ## 3. Running in a local Kubernetes cluster

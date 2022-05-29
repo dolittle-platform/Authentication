@@ -3,7 +3,7 @@ package providers
 type ProviderID = string
 
 type Provider struct {
-	ID       ProviderID
-	Display  string
-	ImageURL string
+	ID       ProviderID `json:"id"`
+	Display  string     `json:"display"`
+	ImageURL string     `json:"imageURL"`
 }

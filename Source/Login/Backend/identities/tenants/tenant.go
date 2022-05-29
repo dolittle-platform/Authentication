@@ -3,6 +3,6 @@ package tenants
 type TenantID string
 
 type Tenant struct {
-	ID      TenantID
-	Display string
+	ID      TenantID `json:"id"`
+	Display string   `json:"display"`
 }

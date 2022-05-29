@@ -1,7 +1,9 @@
 package public
 
 import (
+	"bytes"
 	"context"
+	"html/template"
 	"net/http"
 	"net/http/httputil"
 
@@ -10,15 +12,16 @@ import (
 
 type FrontendHandler handling.Handler
 
-func NewFrontendHandler(configuration Configuration) FrontendHandler {
+func NewFrontendHandler(configuration Configuration) (FrontendHandler, error) {
 	if configuration.DevMode() {
 		return &frontend{
 			handler: createLocalhostProxyHandler(),
-		}
+		}, nil
 	}
-	return &frontend{
-		handler: createStaticFileHandler(),
-	}
+
+	handler, err := createStaticFileHandler(configuration)
+
+	return &frontend{handler}, err
 }
 
 type frontend struct {
@@ -30,13 +33,35 @@ func (f *frontend) Handle(w http.ResponseWriter, r *http.Request, ctx context.Co
 	return nil
 }
 
-func createStaticFileHandler() http.Handler {
+func renderIndexTemplateWithConfiguration(configuration FrontendConfiguration) ([]byte, error) {
+	indexTemplate, err := template.ParseFiles("wwwroot/index.html")
+	if err != nil {
+		return nil, err
+	}
+
+	indexRendered := bytes.Buffer{}
+
+	if err := indexTemplate.Execute(&indexRendered, configuration); err != nil {
+		return nil, err
+	}
+
+	return indexRendered.Bytes(), nil
+}
+
+func createStaticFileHandler(configuration Configuration) (http.Handler, error) {
 	mux := http.NewServeMux()
+
+	index, err := renderIndexTemplateWithConfiguration(configuration.Frontend())
+	if err != nil {
+		return nil, err
+	}
+
 	mux.HandleFunc("/.auth/", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "wwwroot/index.html")
+		w.WriteHeader(http.StatusOK)
+		w.Write(index)
 	})
 	mux.Handle("/.auth/assets/", http.StripPrefix("/.auth/assets/", http.FileServer(http.Dir("wwwroot"))))
-	return mux
+	return mux, nil
 }
 
 func createLocalhostProxyHandler() http.Handler {

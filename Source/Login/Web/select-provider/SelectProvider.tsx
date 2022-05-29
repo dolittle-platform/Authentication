@@ -1,27 +1,26 @@
 // Copyright (c) Dolittle. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import React from 'react';
-import { useLocation } from 'react-router';
+import { Suspense } from 'react';
 
-import { IdentityProviderList } from './IdentityProviderList';
+import Box from '@mui/material/Box';
+import CircularProgress from '@mui/material/CircularProgress';
+import Typography from '@mui/material/Typography';
 
-import './SelectProvider.scss';
-import { SelectProviderViewModel } from './SelectProviderViewModel';
-import { withViewModel } from '../MVVM/withViewModel';
+import { configuration } from '../Configuration';
+import { SelectProviderForm } from './SelectProviderForm';
 
-export type SelectProviderProps = {
-    loading: Function;
-    loaded: Function;
-};
-
-export const SelectProvider = withViewModel<SelectProviderViewModel, SelectProviderProps>(SelectProviderViewModel, ({ viewModel, props }) => {
+export const SelectProvider = (): JSX.Element => {
+    const title = configuration.applicationName ? `Welcome to ${configuration.applicationName}!` : 'Welcome!';
     return (
-        <IdentityProviderList loaded={props.loaded} loading={props.loading} flow={getFlow()} />
+        <Box css={{ padding: '158px 64px 0 64px' }}>
+            <Typography variant="h1" css={{ marginBottom: '20px' }}>{title}</Typography>
+            <Typography variant="h2" css={{ marginBottom: '30px' }}>Sign in to continue</Typography>
+            <Box css={{ textAlign: 'center' }}>
+                <Suspense fallback={<CircularProgress />}>
+                    <SelectProviderForm/>
+                </Suspense>
+            </Box>
+        </Box>
     );
-});
-
-const getFlow = () => {
-    const query = new URLSearchParams(useLocation().search);
-    return query.get('flow');
-}
+};
