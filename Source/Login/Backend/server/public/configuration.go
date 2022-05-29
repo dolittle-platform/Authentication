@@ -4,6 +4,8 @@ type FrontendConfiguration struct {
 	ShowDolittleHeadline bool
 	ApplicationName      string
 	SupportEmail         string
+	StartPath            string
+	LogoutPath           string
 }
 
 type Configuration interface {

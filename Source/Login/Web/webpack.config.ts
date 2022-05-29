@@ -19,6 +19,8 @@ const globalFrontendConfiguration = (args: WebpackArguments): string => {
                 showDolittleHeadline: {{ .ShowDolittleHeadline }},
                 applicationName: "{{ .ApplicationName }}",
                 supportEmail: "{{ .SupportEmail }}",
+                startPath: "{{ .StartPath }}",
+                logoutPath: "{{ .LogoutPath }}",
             };
         `.split('\n').map(_ => _.trim()).join('');
     } else {
@@ -27,6 +29,8 @@ const globalFrontendConfiguration = (args: WebpackArguments): string => {
                 showDolittleHeadline: true,
                 applicationName: "Dolittle Studio",
                 supportEmail: "support@dolittle.com",
+                startPath: "/",
+                logoutPath: "/.auth/cookies/logout",
             };
         `.trim();
     }

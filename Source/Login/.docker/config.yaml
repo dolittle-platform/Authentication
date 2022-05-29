@@ -1,6 +1,14 @@
 serve:
   port: 8080
 
+frontend:
+  showDolittleHeadline: true
+  applicationName: Dolittle Studio
+  supportEmail: support@dolittle.com
+  paths:
+    start: /
+    logout: /.auth/cookies/logout
+
 urls:
   error: http://localhost:8080/error
 

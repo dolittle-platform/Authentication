@@ -12,6 +12,8 @@ const (
 	frontendShowDolittleHeadlineKey = "frontend.showDolittleHeadline"
 	frontendApplicationNameKey      = "frontend.applicationName"
 	frontendSupportEmailKey         = "frontend.supportEmail"
+	frontendStartPathKey            = "frontend.paths.start"
+	frontendLogoutPathKey           = "frontend.paths.logout"
 	urlsErrorKey                    = "urls.error"
 
 	defaultServePort = 8080
@@ -46,6 +48,8 @@ func (c *serverConfiguration) Frontend() public.FrontendConfiguration {
 		ShowDolittleHeadline: viper.GetBool(frontendShowDolittleHeadlineKey),
 		ApplicationName:      viper.GetString(frontendApplicationNameKey),
 		SupportEmail:         viper.GetString(frontendSupportEmailKey),
+		StartPath:            viper.GetString(frontendStartPathKey),
+		LogoutPath:           viper.GetString(frontendLogoutPathKey),
 	}
 }
 
