@@ -51,6 +51,7 @@ export const Theme = createTheme({
           height: '100%',
         },
         body: {
+          height: '100%',
           backgroundColor: '#0f1014',
           backgroundImage: `url(${Symbol})`,
           backgroundRepeat: 'no-repeat',
@@ -60,6 +61,9 @@ export const Theme = createTheme({
             backgroundSize: 'auto 124vh',
             backgroundPosition: '-42vh -18vh',
           },
+        },
+        '#root': {
+          height: '100%',
         },
       }
     },

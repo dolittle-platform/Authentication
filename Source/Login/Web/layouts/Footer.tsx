@@ -11,11 +11,8 @@ export const Footer = (): JSX.Element => {
     return (<>{
         configuration.showDolittleHeadline &&
             <Box css={{
-                position: 'absolute',
-                bottom: '40px',
-                left: 0,
-                right: 0,
                 textAlign: 'center',
+                paddingBottom: '40px',
             }}>
                 <Logo css={{
                     display: 'block',
