@@ -11,32 +11,32 @@ export const Theme = createTheme({
     fontFamily: 'Rubik',
     h1: {
       fontFamily: 'Rubik-Bold',
-      fontSize: '30px',
-      letterSpacing: '0.3px',
+      fontSize: '26px',
     },
     h2: {
       fontFamily: 'Rubik-Medium',
-      fontSize: '22px',
-      letterSpacing: '-0.22px',
+      fontSize: '24px',
+    },
+    h5: {
+      fontFamily: 'Rubik-Light',
+      fontSize: '20px',
     },
     body1: {
       fontFamily: 'Rubik',
       fontSize: '18px',
-      letterSpacing: '0.18px',
     },
     button: {
       fontFamily: 'Rubik-Medium',
       fontSize: '14px',
-      letterSpacing: '0.84px',
     }
   },
   palette: {
     primary: {
-      main: '#FAFAFA',
+      main: '#8C9AF8',
     },
     text: {
-      primary: '#FAFAFA'
-    }
+      primary: '#fafafa',
+    },
   },
   components: {
     MuiCssBaseline: {
@@ -45,6 +45,7 @@ export const Theme = createTheme({
         fallbacks: [
           { '@font-face': Rubik.Bold },
           { '@font-face': Rubik.Medium },
+          { '@font-face': Rubik.Light },
         ],
         html: {
           height: '100%',

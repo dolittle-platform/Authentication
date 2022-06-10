@@ -12,10 +12,10 @@ export type IdentityProviderListItemProps = {
 export const IdentityProviderListItem = (props: IdentityProviderListItemProps): JSX.Element => {
     return (
         <Button
-            variant="contained"
-            name="provider"
+            variant='outlined'
+            name='provider'
             value={props.provider.id}
-            type="submit"
+            type='submit'
             startIcon={
                 <img
                     src={props.provider.imageURL}
