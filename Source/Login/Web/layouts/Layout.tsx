@@ -6,19 +6,17 @@ import { Routes, Route } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 
-import { configuration } from '../Configuration';
 import { ErrorBoundary } from '../error/ErrorBoundary';
 import { Error } from '../error/Error'
 import { Theme } from '../styles/Theme';
 import { SelectProvider } from '../select-provider/SelectProvider'
 import { SelectTenant } from '../select-tenant/SelectTenant'
 import { LoggedOut } from '../logged-out/LoggedOut'
-import { Headline } from './Headline';
+import { Footer } from './Footer';
 
 export const Layout = (): JSX.Element => {
     return (
         <>
-            {/* { configuration.showDolittleHeadline && <Headline /> } */}
             <Grid container>
                 <Grid item xs={0} sm={6} />
                 <Grid item xs={12} sm={6}>
@@ -53,6 +51,7 @@ export const Layout = (): JSX.Element => {
                     </Box>
                 </Grid>
             </Grid>
+            <Footer />
         </>
     );
 };
