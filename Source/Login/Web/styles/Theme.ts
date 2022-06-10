@@ -4,7 +4,7 @@
 import { createTheme } from '@mui/material/styles';
 
 import { Rubik } from './fonts/Rubik';
-import BackgroundImage from './images/background.jpg';
+import Symbol from './images/symbol.svg?url';
 
 export const Theme = createTheme({
   typography: {
@@ -50,11 +50,15 @@ export const Theme = createTheme({
           height: '100%',
         },
         body: {
-          backgroundColor: '#242331',
-          backgroundImage: `url(${BackgroundImage})`,
-          backgroundPosition: 'top left',
+          backgroundColor: '#0f1014',
+          backgroundImage: `url(${Symbol})`,
           backgroundRepeat: 'no-repeat',
-          backgroundSize: 'auto 100%',
+          backgroundSize: 'auto 142vh',
+          backgroundPosition: '70% -25vh',
+          '@media (min-width: 600px)': {
+            backgroundSize: 'auto 124vh',
+            backgroundPosition: '-42vh -18vh',
+          },
         },
       }
     },
