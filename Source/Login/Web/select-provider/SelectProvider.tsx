@@ -3,24 +3,23 @@
 
 import { Suspense } from 'react';
 
-import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
 
 import { configuration } from '../Configuration';
+import { Theme } from '../styles/Theme';
 import { SelectProviderForm } from './SelectProviderForm';
 
 export const SelectProvider = (): JSX.Element => {
-    const title = configuration.applicationName ? `Welcome to ${configuration.applicationName}!` : 'Welcome!';
+    const title = configuration.applicationName ? `Welcome to ${configuration.applicationName}` : 'Welcome';
+    const subtitle = configuration.showDolittleHeadline ? 'Transforming your business with real time events.' : 'Sign in to continue.';
     return (
-        <Box css={{ padding: '158px 64px 0 64px' }}>
-            <Typography variant="h1" css={{ marginBottom: '20px' }}>{title}</Typography>
-            <Typography variant="h2" css={{ marginBottom: '30px' }}>Sign in to continue</Typography>
-            <Box css={{ textAlign: 'center' }}>
-                <Suspense fallback={<CircularProgress />}>
-                    <SelectProviderForm/>
-                </Suspense>
-            </Box>
-        </Box>
+        <>
+            <Typography variant='h1' css={{ marginBottom: '32px' }}>{title}</Typography>
+            <Typography variant='h5' css={{ margin: '0 16vw 80px 16vw', [Theme.breakpoints.up('sm')]: { margin: '0 0 60px 0' } }}>{subtitle}</Typography>
+            <Suspense fallback={<CircularProgress />}>
+                <SelectProviderForm/>
+            </Suspense>
+        </>
     );
 };

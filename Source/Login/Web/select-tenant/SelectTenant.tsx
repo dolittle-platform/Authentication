@@ -8,24 +8,22 @@ import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
-import ChevronLeft from '@mui/icons-material/ChevronLeft';
 
 import { configuration } from '../Configuration';
+import { Theme } from '../styles/Theme';
 import { SelectTenantForm } from './SelectTenantForm';
 
 export const SelectTenant = (): JSX.Element => {
     return (
         <>
-            <Box css={{ paddingTop: '212px', textAlign: 'center' }}>
-                <Typography variant="h2" css={{ marginBottom: '30px' }}>Select your tenant</Typography>
-                <Suspense fallback={<CircularProgress />}>
-                    <SelectTenantForm/>
-                </Suspense>
-                <Box css={{ marginTop: '3px' }}>
-                    { configuration.supportEmail && <Typography>Don't have a tenant? <Link underline="always" color="inherit" href={'mailto:'+configuration.supportEmail}>Email us here.</Link></Typography>}
-                </Box>
+            <Typography variant='h2' css={{ marginBottom: '66px' }}>Select your tenant</Typography>
+            <Suspense fallback={<CircularProgress />}>
+                <SelectTenantForm/>
+            </Suspense>
+            <Box css={{ margin: '18px 16vw 0 16vw', [Theme.breakpoints.up('sm')]: { margin: '75px 0 0 0' } }}>
+                { configuration.supportEmail && <Typography>Don't have access to a tenant? <Link href={'mailto:'+configuration.supportEmail}>Contact us</Link> to get started.</Typography>}
             </Box>
-            <Button startIcon={<ChevronLeft/>} href={configuration.logoutPath} css={{ position: 'absolute', left: '20px', bottom: '20px' }}>Log out</Button>
+            <Button size='large' color='inherit' href={configuration.logoutPath} css={{ marginTop: '128px', [Theme.breakpoints.up('sm')]: { marginTop: '25px' } }}>Log out</Button>
         </>
     );
 };

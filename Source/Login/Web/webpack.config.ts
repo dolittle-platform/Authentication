@@ -67,17 +67,25 @@ export default (_env: any, args: WebpackArguments): Configuration => {
                 {
                     test: /\.woff2?$/,
                     exclude: /node_modules/,
-                    loader: 'file-loader',
+                    type: 'asset/resource',
                 },
                 {
                     test: /\.(png|jpg)$/,
                     exclude: /node_modules/,
-                    loader: 'file-loader',
+                    type: 'asset/resource',
                 },
                 {
                     test: /\.svg$/,
                     exclude: /node_modules/,
+                    issuer: /\.tsx?$/,
+                    resourceQuery: { not: /url/ },
                     loader: '@svgr/webpack',
+                },
+                {
+                    test: /\.svg$/,
+                    exclude: /node_modules/,
+                    resourceQuery: /url/,
+                    type: 'asset/resource',
                 },
             ],
         },
