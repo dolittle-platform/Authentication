@@ -1,3 +1,9 @@
+# [2.1.0] - 2022-6-15 [PR: #23](https://github.com/dolittle-platform/Authentication/pull/23)
+## Summary
+
+Implements even newer design for the Login frontend. Simplified dark theme and more responsive.
+
+
 # [2.0.1] - 2022-5-29 [PR: #22](https://github.com/dolittle-platform/Authentication/pull/22)
 ## Summary
 
