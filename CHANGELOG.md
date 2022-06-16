@@ -1,3 +1,13 @@
+# [2.2.0] - 2022-6-16 [PR: #24](https://github.com/dolittle-platform/Authentication/pull/24)
+## Summary
+
+Introduces a new `dolittle/login-provider-icons` Docker image. This is an NGINX server which serves baked Login Provider icons to be used in the Login Web frontend. This way we have a little more control of the icon URLs, and we don't have to go cross-domain to fetch the images.
+
+### Added
+
+- A new Login Provider Icons NGINX server that can be used to serve the correct provider icons for the Login Web frontend.
+
+
 # [2.1.0] - 2022-6-15 [PR: #23](https://github.com/dolittle-platform/Authentication/pull/23)
 ## Summary
 
