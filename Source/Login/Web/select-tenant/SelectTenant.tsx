@@ -3,27 +3,45 @@
 
 import { Suspense } from 'react';
 
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import CircularProgress from '@mui/material/CircularProgress';
-import Link from '@mui/material/Link';
-import Typography from '@mui/material/Typography';
+import { Box, Button, CircularProgress, Link, Typography } from '@mui/material';
 
 import { configuration } from '../Configuration';
-import { Theme } from '../styles/Theme';
 import { SelectTenantForm } from './SelectTenantForm';
+import { LoginWrapper } from '../layouts/LoginWrapper';
+
+const unicodeSpaceChar = '\u0020';
 
 export const SelectTenant = (): JSX.Element => {
+    const { logoutPath, supportEmail } = configuration;
+
     return (
-        <>
-            <Typography variant='h2' css={{ marginBottom: '66px' }}>Select your tenant</Typography>
+        <LoginWrapper>
+            <Typography
+                variant='h2'
+                sx={{ marginBlockEnd: '32px' }}>
+                Select your customer
+            </Typography>
+
             <Suspense fallback={<CircularProgress />}>
-                <SelectTenantForm/>
+                <SelectTenantForm />
             </Suspense>
-            <Box css={{ margin: '18px 16vw 0 16vw', [Theme.breakpoints.up('sm')]: { margin: '75px 0 0 0' } }}>
-                { configuration.supportEmail && <Typography>Don't have access to a tenant? <Link href={'mailto:'+configuration.supportEmail}>Contact us</Link> to get started.</Typography>}
+
+            <Box mt={12.5} mb={5}>
+                {supportEmail &&
+                    <Typography variant='subtitle2'>Don't have access to a tenant?{unicodeSpaceChar}
+                        <Link href={'mailto:' + supportEmail}>Contact us</Link>
+                        {unicodeSpaceChar}to get started.
+                    </Typography>}
             </Box>
-            <Button size='large' color='inherit' href={configuration.logoutPath} css={{ marginTop: '128px', [Theme.breakpoints.up('sm')]: { marginTop: '25px' } }}>Log out</Button>
-        </>
+
+            <Box>
+                <Button
+                    size='large'
+                    color='inherit'
+                    href={logoutPath}>
+                    Log out
+                </Button>
+            </Box>
+        </LoginWrapper>
     );
 };

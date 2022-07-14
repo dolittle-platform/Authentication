@@ -5,6 +5,8 @@ import { useLocation } from 'react-router';
 
 import { useResource } from 'rest-hooks';
 
+import { Box } from '@mui/material';
+
 import { Form } from '../forms/Form';
 import { IdentityProviderList } from './IdentityProviderList';
 import { Flows } from './Flows';
@@ -24,7 +26,9 @@ export const SelectProviderForm = (): JSX.Element => {
 
     return (
         <Form form={flow.form}>
-            <IdentityProviderList providers={flow.providers} />
+            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                <IdentityProviderList providers={flow.providers} />
+            </Box>
         </Form>
     );
 };
