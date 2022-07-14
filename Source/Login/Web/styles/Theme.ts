@@ -58,9 +58,15 @@ export const Theme = createTheme({
   palette: {
     primary: {
       main: '#8C9AF8',
+      light: '#b3bbfb',
+      dark: '#6678f6',
+      contrastText: '#191A21',
     },
     text: {
+      disabled: '#93959f',
+      // hint: '#CECFD0',
       primary: '#fafafa',
+      secondary: '#cecfd0',
     },
   },
   components: {
