@@ -13,7 +13,6 @@ export const Form = (props: FormProps): JSX.Element => {
 
     return (
         <form
-            style={{ display: 'flex', justifyContent: 'space-between' }}
             method={submitMethod}
             action={submitAction}>
             {
