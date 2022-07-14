@@ -4,22 +4,34 @@
 import { Suspense } from 'react';
 
 import CircularProgress from '@mui/material/CircularProgress';
-import Typography from '@mui/material/Typography';
+import { Box, Link, Typography } from '@mui/material';
 
-import { configuration } from '../Configuration';
-import { Theme } from '../styles/Theme';
 import { SelectProviderForm } from './SelectProviderForm';
+import { LoginWrapper } from '../layouts/LoginWrapper'
+
+const unicodeSpaceChar = '\u0020'
 
 export const SelectProvider = (): JSX.Element => {
-    const title = configuration.applicationName ? `Welcome to ${configuration.applicationName}` : 'Welcome';
-    const subtitle = configuration.showDolittleHeadline ? 'Transforming your business with real time events.' : 'Sign in to continue.';
     return (
-        <>
-            <Typography variant='h1' css={{ marginBottom: '32px' }}>{title}</Typography>
-            <Typography variant='h5' css={{ margin: '0 16vw 80px 16vw', [Theme.breakpoints.up('sm')]: { margin: '0 0 60px 0' } }}>{subtitle}</Typography>
+        <LoginWrapper>
+            <Box mb={12.25} ml='auto' mr='auto' sx={{ maxInlineSize: '369px' }}>
+                <Typography variant='h1' sx={{ marginBlockEnd: '32px' }}>
+                    Welcome to Dolittle Studio
+                </Typography>
+                <Typography variant='h5'>
+                    Transform your business by leveraging real time events.
+                </Typography>
+            </Box>
+
             <Suspense fallback={<CircularProgress />}>
-                <SelectProviderForm/>
+                <SelectProviderForm />
             </Suspense>
-        </>
+
+            <Typography variant='subtitle2' sx={{ marginBlockStart: '40px' }}>
+                Don't have an account?{unicodeSpaceChar}
+                <Link href='mailto: support@dolittle.com'>Contact us</Link>
+                {unicodeSpaceChar}to get started
+            </Typography>
+        </LoginWrapper>
     );
 };

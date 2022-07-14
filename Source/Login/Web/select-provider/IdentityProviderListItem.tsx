@@ -19,10 +19,11 @@ export const IdentityProviderListItem = (props: IdentityProviderListItemProps): 
             startIcon={
                 <img
                     src={props.provider.imageURL}
-                    css={{ maxWidth: '20px', maxHeight: '20px' }}
+                    css={{ maxInlineSize: '20px', maxBlockSize: '20px' }}
                 />
             }
-            css={{ width: '250px' }}
-        >Sign in with {props.provider.display}</Button>
+        >
+            Sign in with {props.provider.display}
+        </Button>
     );
 }
