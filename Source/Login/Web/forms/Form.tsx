@@ -10,7 +10,10 @@ export type FormProps = {
 
 export const Form = (props: FormProps): JSX.Element => {
     return (
-        <form method={props.form.submitMethod} action={props.form.submitAction}>
+        <form
+            style={{ display: 'flex', justifyContent: 'space-between' }}
+            method={props.form.submitMethod}
+            action={props.form.submitAction}>
             {
                 props.form.csrfToken !== undefined && props.form.csrfToken !== '' &&
                     <input type="hidden" name="csrf_token" value={props.form.csrfToken} />
