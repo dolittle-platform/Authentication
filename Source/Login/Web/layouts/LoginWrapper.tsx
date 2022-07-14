@@ -13,7 +13,7 @@ interface Props {
 const styles = {
     backgroundLogoContainer: {
         maxInlineSize: '793px',
-        blockSize: '100vh'
+        minBlockSize: '100vh'
     },
     mainContainer: {
         inlineSize: '100%',
