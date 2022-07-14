@@ -2,28 +2,53 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 import { createTheme } from '@mui/material/styles';
-
 import { Rubik } from './fonts/Rubik';
-import Symbol from './images/symbol.svg?url';
 
 export const Theme = createTheme({
   typography: {
-    fontFamily: 'Rubik',
+    fontFamily: '"Rubik", "Open sans", "Arial", sans- serif',
     h1: {
       fontFamily: 'Rubik-Bold',
-      fontSize: '26px',
+      fontSize: '1.625rem', //26px
+      fontWeight: 500,
     },
     h2: {
       fontFamily: 'Rubik-Medium',
-      fontSize: '24px',
+      fontSize: '1.5rem', //24px
+      fontWeight: 500,
+    },
+    h3: {
+      fontSize: '1.375rem', //22px
+      fontWeight: 500,
+    },
+    h4: {
+      fontSize: '1.25rem', //20px
+      fontWeight: 500,
     },
     h5: {
       fontFamily: 'Rubik-Light',
-      fontSize: '20px',
+      fontSize: '1.25rem', //20px
+      fontWeight: 300,
+    },
+    h6: {
+      fontSize: '1rem', //16px
+      fontWeight: 300,
+      textTransform: 'uppercase',
+    },
+    subtitle1: {
+      fontSize: '1.25rem', //20px
+      fontWeight: 500,
+    },
+    subtitle2: {
+      fontSize: '1.125rem', //18px
+      fontWeight: 500,
     },
     body1: {
       fontFamily: 'Rubik',
-      fontSize: '18px',
+      fontSize: '1rem', //16px
+    },
+    body2: {
+      fontSize: '0.875rem', //14px
     },
     button: {
       fontFamily: 'Rubik-Medium',
@@ -47,23 +72,8 @@ export const Theme = createTheme({
           { '@font-face': Rubik.Medium },
           { '@font-face': Rubik.Light },
         ],
-        html: {
-          height: '100%',
-        },
         body: {
-          height: '100%',
           backgroundColor: '#0f1014',
-          backgroundImage: `url(${Symbol})`,
-          backgroundRepeat: 'no-repeat',
-          backgroundSize: 'auto 142vh',
-          backgroundPosition: '70% -25vh',
-          '@media (min-width: 600px)': {
-            backgroundSize: 'auto 124vh',
-            backgroundPosition: '-42vh -18vh',
-          },
-        },
-        '#root': {
-          height: '100%',
         },
       }
     },
