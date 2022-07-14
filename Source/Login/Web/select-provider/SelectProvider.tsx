@@ -3,13 +3,13 @@
 
 import { Suspense } from 'react';
 
-import CircularProgress from '@mui/material/CircularProgress';
-import { Box, Link, Typography } from '@mui/material';
+import { Box, CircularProgress, Link, Typography } from '@mui/material';
 
 import { SelectProviderForm } from './SelectProviderForm';
 import { LoginWrapper } from '../layouts/LoginWrapper'
+import { configuration } from '../Configuration';
 
-const unicodeSpaceChar = '\u0020'
+const unicodeSpaceChar = '\u0020';
 
 export const SelectProvider = (): JSX.Element => {
     return (
@@ -29,8 +29,8 @@ export const SelectProvider = (): JSX.Element => {
 
             <Typography variant='subtitle2' sx={{ marginBlockStart: '40px' }}>
                 Don't have an account?{unicodeSpaceChar}
-                <Link href='mailto: support@dolittle.com'>Contact us</Link>
-                {unicodeSpaceChar}to get started
+                <Link href={'mailto:' + configuration.supportEmail}>Contact us</Link>
+                {unicodeSpaceChar}to get started.
             </Typography>
         </LoginWrapper>
     );
