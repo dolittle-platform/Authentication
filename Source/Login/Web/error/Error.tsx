@@ -1,24 +1,45 @@
 // Copyright (c) Dolittle. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Link from '@mui/material/Link';
-import Typography from '@mui/material/Typography';
-
-import { configuration } from '../Configuration';
+import { Box, Button, Link, Typography } from '@mui/material';
 import { Theme } from '../styles/Theme';
 
+import { configuration } from '../Configuration';
+import { LoginWrapper } from '../layouts/LoginWrapper';
+
+const unicodeSpaceChar = '\u0020';
+
+const styles = {
+    transition: 'all .3s',
+    '&:hover': { color: Theme.palette.primary.light }
+}
+
 export const Error = (): JSX.Element => {
+    const { logoutPath, supportEmail } = configuration;
+
     return (
-        <>
-            <Typography variant="h2" css={{ marginBottom: '30px' }}>We're sorry, but something went wrong.</Typography>
-            <Box css={{ margin: '0 16vw', [Theme.breakpoints.up('sm')]: { margin: '0 0' } }}>{
-                configuration.supportEmail
-                    ? <Typography>You can log out and try again, or <Link href={'mailto:'+configuration.supportEmail}>contact us</Link> if it still doesn't work.</Typography>
-                    : <Typography>You can log out and try again by clicking below.</Typography>
-            }</Box>
-            <Button size='large' color='inherit' href={configuration.logoutPath} css={{ marginTop: '128px', [Theme.breakpoints.up('sm')]: { marginTop: '25px' } }}>Log out and try again</Button>
-        </>
+        <LoginWrapper>
+            <Typography variant="h2" sx={{ marginBottom: '30px', letterSpacing: '-0.5px' }}>
+                Oops, something went wrong.
+            </Typography>
+
+            <Typography variant='subtitle2'>
+                Please log out and try again, or
+                {unicodeSpaceChar}
+                <Link href={'mailto:' + supportEmail} sx={{ ...styles, textDecoration: 'underline' }}>contact us</Link>
+                {unicodeSpaceChar}
+                if the issue persists.
+            </Typography>
+
+            <Box mt={8}>
+                <Button
+                    size='large'
+                    color='inherit'
+                    sx={{ ...styles, fontSize: '14px' }}
+                    href={logoutPath}>
+                    Log out
+                </Button>
+            </Box>
+        </LoginWrapper>
     );
 };
