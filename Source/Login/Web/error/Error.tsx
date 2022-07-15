@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 import { Box, Button, Link, Typography } from '@mui/material';
-import { Theme } from '../styles/Theme';
 
 import { configuration } from '../Configuration';
 import { LoginWrapper } from '../layouts/LoginWrapper';
