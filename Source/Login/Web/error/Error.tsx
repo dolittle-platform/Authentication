@@ -9,11 +9,6 @@ import { LoginWrapper } from '../layouts/LoginWrapper';
 
 const unicodeSpaceChar = '\u0020';
 
-const styles = {
-    transition: 'all .3s',
-    '&:hover': { color: Theme.palette.primary.light }
-}
-
 export const Error = (): JSX.Element => {
     const { logoutPath, supportEmail } = configuration;
 
@@ -26,7 +21,7 @@ export const Error = (): JSX.Element => {
             <Typography variant='subtitle2'>
                 Please log out and try again, or
                 {unicodeSpaceChar}
-                <Link href={'mailto:' + supportEmail} sx={{ ...styles, textDecoration: 'underline' }}>contact us</Link>
+                <Link href={'mailto:' + supportEmail} sx={{ textDecoration: 'underline' }}>contact us</Link>
                 {unicodeSpaceChar}
                 if the issue persists.
             </Typography>
@@ -35,7 +30,7 @@ export const Error = (): JSX.Element => {
                 <Button
                     size='large'
                     color='inherit'
-                    sx={{ ...styles, fontSize: '14px' }}
+                    sx={{ fontSize: '14px' }}
                     href={logoutPath}>
                     Log out
                 </Button>

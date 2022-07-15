@@ -29,7 +29,7 @@ export const SelectTenant = (): JSX.Element => {
             <Box mt={12.5} mb={5}>
                 {supportEmail &&
                     <Typography variant='subtitle2'>Don't have access to a tenant?{unicodeSpaceChar}
-                        <Link href={'mailto:' + supportEmail}>Contact us</Link>
+                        <Link href={'mailto:' + supportEmail} sx={{ textDecoration: 'underline' }}>Contact us</Link>
                         {unicodeSpaceChar}to get started.
                     </Typography>}
             </Box>

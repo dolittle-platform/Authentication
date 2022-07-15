@@ -8,14 +8,6 @@ import { Theme } from '../styles/Theme';
 import { configuration } from '../Configuration';
 import { LoginWrapper } from '../layouts/LoginWrapper';
 
-const styles = {
-    letterSpacing: '0.06em',
-    transition: 'all .3s',
-    '&:hover': {
-        color: Theme.palette.primary.light
-    }
-}
-
 export const LoggedOut = (): JSX.Element => {
     return (
         <LoginWrapper>
@@ -25,7 +17,7 @@ export const LoggedOut = (): JSX.Element => {
                     size='large'
                     color='inherit'
                     startIcon={<ArrowBack />}
-                    sx={styles}
+                    sx={{ letterSpacing: '0.06em' }}
                     href={configuration.startPath}>
                     Return to login page
                 </Button>
