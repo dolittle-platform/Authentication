@@ -1,3 +1,13 @@
+# [2.3.0] - 2022-7-15 [PR: #25](https://github.com/dolittle-platform/Authentication/pull/25)
+## Summary
+
+Added favicon in ico format.
+
+### Added
+
+- favicon.ico file
+
+
 # [2.2.0] - 2022-6-16 [PR: #24](https://github.com/dolittle-platform/Authentication/pull/24)
 ## Summary
 
