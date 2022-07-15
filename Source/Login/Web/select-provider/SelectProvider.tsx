@@ -29,7 +29,7 @@ export const SelectProvider = (): JSX.Element => {
 
             <Typography variant='subtitle2' sx={{ marginBlockStart: '40px' }}>
                 Don't have an account?{unicodeSpaceChar}
-                <Link href={'mailto:' + configuration.supportEmail}>Contact us</Link>
+                <Link href={'mailto:' + configuration.supportEmail} sx={{ textDecoration: 'underline' }}>Contact us</Link>
                 {unicodeSpaceChar}to get started.
             </Typography>
         </LoginWrapper>
