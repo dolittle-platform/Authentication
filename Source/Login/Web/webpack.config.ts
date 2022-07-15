@@ -55,7 +55,7 @@ export default (_env: any, args: WebpackArguments): Configuration => {
             ],
         },
         resolve: {
-            extensions: [ '.tsx', '.ts', '.js' ],
+            extensions: ['.tsx', '.ts', '.js'],
         },
         module: {
             rules: [
@@ -95,6 +95,7 @@ export default (_env: any, args: WebpackArguments): Configuration => {
                 templateParameters: {
                     configuration: globalFrontendConfiguration(args),
                 },
+                favicon: './favicon.ico'
             }),
             new CleanWebpackPlugin(),
         ],
