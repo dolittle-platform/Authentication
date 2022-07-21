@@ -9,13 +9,11 @@ import { SelectProviderForm } from './SelectProviderForm';
 import { LoginWrapper } from '../layouts/LoginWrapper'
 import { configuration } from '../Configuration';
 
-const unicodeSpaceChar = '\u0020';
-
 export const SelectProvider = (): JSX.Element => {
     return (
         <LoginWrapper>
             <Box mb={12.25} ml='auto' mr='auto' sx={{ maxInlineSize: '369px' }}>
-                <Typography variant='h1' sx={{ marginBlockEnd: '32px' }}>
+                <Typography variant='h1' sx={{ marginBlockEnd: '2rem' }}>
                     Welcome to Dolittle Studio
                 </Typography>
                 <Typography variant='h5'>
@@ -27,10 +25,10 @@ export const SelectProvider = (): JSX.Element => {
                 <SelectProviderForm />
             </Suspense>
 
-            <Typography variant='subtitle2' sx={{ marginBlockStart: '40px' }}>
-                Don't have an account?{unicodeSpaceChar}
+            <Typography variant='subtitle2' sx={{ marginBlockStart: '2.5rem' }}>
+                {'Don\'t have an account? '}
                 <Link href={'mailto:' + configuration.supportEmail} sx={{ textDecoration: 'underline' }}>Contact us</Link>
-                {unicodeSpaceChar}to get started.
+                {' to get started.'}
             </Typography>
         </LoginWrapper>
     );

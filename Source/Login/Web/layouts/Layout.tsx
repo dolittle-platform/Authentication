@@ -11,28 +11,26 @@ import { LoggedOut } from '../logged-out/LoggedOut'
 
 export const Layout = (): JSX.Element => {
     return (
-        <>
-            <Routes>
-                <Route path="/.auth/select-provider" element={
-                    <ErrorBoundary>
-                        <SelectProvider />
-                    </ErrorBoundary>
-                } />
-                <Route path="/.auth/select-tenant" element={
-                    <ErrorBoundary>
-                        <SelectTenant />
-                    </ErrorBoundary>
-                } />
-                <Route path="/.auth/logged-out" element={
-                    <ErrorBoundary>
-                        <LoggedOut />
-                    </ErrorBoundary>
-                } />
-                <Route path="/.auth/error" element={
-                    <Error />
-                } />
-            </Routes>
-        </>
+        <Routes>
+            <Route path="/.auth/select-provider" element={
+                <ErrorBoundary>
+                    <SelectProvider />
+                </ErrorBoundary>
+            } />
+            <Route path="/.auth/select-tenant" element={
+                <ErrorBoundary>
+                    <SelectTenant />
+                </ErrorBoundary>
+            } />
+            <Route path="/.auth/logged-out" element={
+                <ErrorBoundary>
+                    <LoggedOut />
+                </ErrorBoundary>
+            } />
+            <Route path="/.auth/error" element={
+                <Error />
+            } />
+        </Routes>
     );
 };
 
