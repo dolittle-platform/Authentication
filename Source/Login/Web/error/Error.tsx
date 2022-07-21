@@ -6,30 +6,26 @@ import { Box, Button, Link, Typography } from '@mui/material';
 import { configuration } from '../Configuration';
 import { LoginWrapper } from '../layouts/LoginWrapper';
 
-const unicodeSpaceChar = '\u0020';
-
 export const Error = (): JSX.Element => {
     const { logoutPath, supportEmail } = configuration;
 
     return (
         <LoginWrapper>
-            <Typography variant="h2" sx={{ marginBottom: '30px', letterSpacing: '-0.5px' }}>
+            <Typography variant="h2" sx={{ marginBottom: '1.875rem', letterSpacing: '-0.5px' }}>
                 Oops, something went wrong.
             </Typography>
 
             <Typography variant='subtitle2'>
-                Please log out and try again, or
-                {unicodeSpaceChar}
+                {'Please log out and try again, or '}
                 <Link href={'mailto:' + supportEmail} sx={{ textDecoration: 'underline' }}>contact us</Link>
-                {unicodeSpaceChar}
-                if the issue persists.
+                {' if the issue persists.'}
             </Typography>
 
             <Box mt={8}>
                 <Button
                     size='large'
                     color='inherit'
-                    sx={{ fontSize: '14px' }}
+                    sx={{ fontSize: '0.875rem' }}
                     href={logoutPath}>
                     Log out
                 </Button>

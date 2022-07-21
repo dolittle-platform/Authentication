@@ -6,10 +6,6 @@ import React from 'react';
 import { Box } from '@mui/material';
 import { BgLogo, MainLogo } from '../styles/logos';
 
-interface Props {
-    children: React.ReactNode;
-}
-
 const styles = {
     backgroundLogoContainer: {
         maxInlineSize: '793px',
@@ -27,9 +23,11 @@ const styles = {
     }
 };
 
-export const LoginWrapper: React.FunctionComponent<Props> = (props: Props) => {
-    const children = props!.children;
+export type LoginWrapperProps = {
+    children: React.ReactNode;
+}
 
+export const LoginWrapper = ({ children }: LoginWrapperProps): JSX.Element => {
     return (
         <>
             <Box sx={styles.backgroundLogoContainer}>

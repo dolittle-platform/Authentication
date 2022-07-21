@@ -3,7 +3,6 @@
 
 import { Box, Button, Typography } from '@mui/material';
 import { ArrowBack } from '@mui/icons-material';
-import { Theme } from '../styles/Theme';
 
 import { configuration } from '../Configuration';
 import { LoginWrapper } from '../layouts/LoginWrapper';

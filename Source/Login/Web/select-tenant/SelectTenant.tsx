@@ -9,8 +9,6 @@ import { configuration } from '../Configuration';
 import { SelectTenantForm } from './SelectTenantForm';
 import { LoginWrapper } from '../layouts/LoginWrapper';
 
-const unicodeSpaceChar = '\u0020';
-
 export const SelectTenant = (): JSX.Element => {
     const { logoutPath, supportEmail } = configuration;
 
@@ -18,7 +16,7 @@ export const SelectTenant = (): JSX.Element => {
         <LoginWrapper>
             <Typography
                 variant='h2'
-                sx={{ marginBlockEnd: '32px' }}>
+                sx={{ marginBlockEnd: '2rem' }}>
                 Select your customer
             </Typography>
 
@@ -28,9 +26,10 @@ export const SelectTenant = (): JSX.Element => {
 
             <Box mt={12.5} mb={5}>
                 {supportEmail &&
-                    <Typography variant='subtitle2'>Don't have access to a tenant?{unicodeSpaceChar}
+                    <Typography variant='subtitle2'>
+                        {'Don\'t have access to a tenant? '}
                         <Link href={'mailto:' + supportEmail} sx={{ textDecoration: 'underline' }}>Contact us</Link>
-                        {unicodeSpaceChar}to get started.
+                        {' to get started.'}
                     </Typography>}
             </Box>
 

@@ -9,21 +9,22 @@ export type IdentityProviderListItemProps = {
     provider: IdentityProvider;
 };
 
-export const IdentityProviderListItem = (props: IdentityProviderListItemProps): JSX.Element => {
+export const IdentityProviderListItem = ({ provider }: IdentityProviderListItemProps): JSX.Element => {
+    const { id, imageURL, display } = provider;
     return (
         <Button
             variant='outlined'
             name='provider'
-            value={props.provider.id}
+            value={id}
             type='submit'
             startIcon={
                 <img
-                    src={props.provider.imageURL}
+                    src={imageURL}
                     css={{ maxInlineSize: '20px', maxBlockSize: '20px' }}
                 />
             }
         >
-            Sign in with {props.provider.display}
+            Sign in with {display}
         </Button>
     );
 }
