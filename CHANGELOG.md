@@ -1,3 +1,13 @@
+# [2.4.0] - 2022-7-27 [PR: #26](https://github.com/dolittle-platform/Authentication/pull/26)
+## Summary
+
+Improved login flow with added design and changed content.
+
+### Changed
+
+- Theme updated
+
+
 # [2.3.0] - 2022-7-15 [PR: #25](https://github.com/dolittle-platform/Authentication/pull/25)
 ## Summary
 
