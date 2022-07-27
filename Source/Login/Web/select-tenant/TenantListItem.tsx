@@ -16,7 +16,7 @@ export const TenantListItem = ({ tenant }: TenantListItemProps): JSX.Element => 
             name="tenant"
             value={tenant.id}
             type="submit"
-            sx={{ minInlineSize: '150px' }}
+            sx={{ minInlineSize: '9.375rem' }}
         >{tenant.display}</Button>
     );
 };
