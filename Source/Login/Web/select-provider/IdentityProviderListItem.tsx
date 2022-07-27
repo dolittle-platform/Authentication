@@ -20,7 +20,7 @@ export const IdentityProviderListItem = ({ provider }: IdentityProviderListItemP
             startIcon={
                 <img
                     src={imageURL}
-                    css={{ maxInlineSize: '20px', maxBlockSize: '20px' }}
+                    style={{ maxInlineSize: '20px', maxBlockSize: '20px' }}
                 />
             }
         >
