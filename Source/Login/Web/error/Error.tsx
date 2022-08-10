@@ -10,17 +10,15 @@ export const Error = (): JSX.Element => {
 
     return (
         <>
-            <Typography variant="h2" sx={{ marginBottom: '1.875rem', letterSpacing: '-0.5px' }}>
+            <Typography variant="h2" sx={{ mb: '1.875rem', letterSpacing: '-0.03125px' }}>
                 Oops, something went wrong.
             </Typography>
 
             <Typography variant='subtitle2'>
-                {'Please log out and try again, or '}
-                <Link href={'mailto:' + supportEmail} sx={{ textDecoration: 'underline' }}>contact us</Link>
-                {' if the issue persists.'}
+                Please log out and try again, or <Link href={'mailto:' + supportEmail} sx={{ textDecoration: 'underline' }}>contact us</Link> if the issue persists.
             </Typography>
 
-            <Box mt={8}>
+            <Box sx={{ mt: 8 }}>
                 <Button
                     size='large'
                     color='inherit'

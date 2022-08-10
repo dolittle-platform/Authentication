@@ -8,14 +8,12 @@ export type IdentityProviderListProps = {
     providers: IdentityProvider[];
 };
 
-export const IdentityProviderList = ({ providers }: IdentityProviderListProps): JSX.Element => {
-    return (
-        <>
-            {
-                providers.map(provider => (
-                    <IdentityProviderListItem key={provider.id} provider={provider} />
-                ))
-            }
-        </>
-    );
-};
+export const IdentityProviderList = ({ providers }: IdentityProviderListProps): JSX.Element => (
+    <>
+        {
+            providers.map(provider => (
+                <IdentityProviderListItem key={provider.id} provider={provider} />
+            ))
+        }
+    </>
+);
