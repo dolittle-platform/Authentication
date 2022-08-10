@@ -1,17 +1,11 @@
 // Copyright (c) Dolittle. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import { Routes, Route } from 'react-router-dom';
-
 import { Box } from '@mui/material';
 
 import { BgLogo } from '../styles/logos';
 import Logo from '../styles/images/logo.svg';
-import { ErrorBoundary } from '../error/ErrorBoundary';
-import { Error } from '../error/Error'
-import { SelectProvider } from '../select-provider/SelectProvider'
-import { SelectTenant } from '../select-tenant/SelectTenant'
-import { LoggedOut } from '../logged-out/LoggedOut'
+import { Routes } from './Routes';
 
 const styles = {
     backgroundLogoContainer: {
@@ -36,26 +30,7 @@ export const Layout = (): JSX.Element => (
             <BgLogo />
         </Box>
         <Box sx={styles.mainContainer}>
-            <Routes>
-                <Route path="/.auth/select-provider" element={
-                    <ErrorBoundary>
-                        <SelectProvider />
-                    </ErrorBoundary>
-                } />
-                <Route path="/.auth/select-tenant" element={
-                    <ErrorBoundary>
-                        <SelectTenant />
-                    </ErrorBoundary>
-                } />
-                <Route path="/.auth/logged-out" element={
-                    <ErrorBoundary>
-                        <LoggedOut />
-                    </ErrorBoundary>
-                } />
-                <Route path="/.auth/error" element={
-                    <Error />
-                } />
-            </Routes>
+            <Routes />
             <Logo sx={{ width: 166, height: 39, mt: 18.5, mb: 18.5 }}/>
         </Box>
     </>
