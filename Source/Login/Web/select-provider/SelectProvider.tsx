@@ -24,7 +24,7 @@ export const SelectProvider = (): JSX.Element => (
         </Suspense>
 
         <Typography variant='subtitle2' sx={{ mt: '2.5rem' }}>
-            Don't have an account? <Link href={'mailto:' + configuration.supportEmail} sx={{ textDecoration: 'underline' }}>Contact us</Link> to get started.
+            Don't have an account? <Link href={'mailto:' + configuration.supportEmail}>Contact us</Link> to get started.
         </Typography>
     </>
 );

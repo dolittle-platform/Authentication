@@ -15,7 +15,7 @@ export const Error = (): JSX.Element => {
             </Typography>
 
             <Typography variant='subtitle2'>
-                Please log out and try again, or <Link href={'mailto:' + supportEmail} sx={{ textDecoration: 'underline' }}>contact us</Link> if the issue persists.
+                Please log out and try again, or <Link href={'mailto:' + supportEmail}>contact us</Link> if the issue persists.
             </Typography>
 
             <Box sx={{ mt: 8 }}>
