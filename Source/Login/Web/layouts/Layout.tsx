@@ -1,11 +1,12 @@
 // Copyright (c) Dolittle. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import { Box, SxProps } from '@mui/material';
+import Box from '@mui/material/Box';
+import { SxProps } from '@mui/system';
 
+import { configuration } from '../Configuration';
 import Symbol from '../styles/images/symbol.svg?url';
 import Logo from '../styles/images/logo.svg';
-import { configuration } from '../Configuration';
 import { Routes } from './Routes';
 
 const dolittleBackgroundStyle: SxProps = configuration.showDolittleHeadline

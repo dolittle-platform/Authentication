@@ -5,9 +5,9 @@ import { Routes as RouterRoutes, Route } from 'react-router-dom';
 
 import { ErrorBoundary } from '../error/ErrorBoundary';
 import { Error } from '../error/Error'
+import { LoggedOut } from '../logged-out/LoggedOut'
 import { SelectProvider } from '../select-provider/SelectProvider'
 import { SelectTenant } from '../select-tenant/SelectTenant'
-import { LoggedOut } from '../logged-out/LoggedOut'
 
 export const Routes = (): JSX.Element => (
     <RouterRoutes>
