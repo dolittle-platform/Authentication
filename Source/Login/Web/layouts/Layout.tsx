@@ -3,37 +3,33 @@
 
 import { Box } from '@mui/material';
 
-import { BgLogo } from '../styles/logos';
+import Symbol from '../styles/images/symbol.svg?url';
 import Logo from '../styles/images/logo.svg';
 import { Routes } from './Routes';
 
-const styles = {
-    backgroundLogoContainer: {
-        maxInlineSize: '793px',
-        minBlockSize: '100vh'
-    },
-    mainContainer: {
-        inlineSize: '100%',
-        maxInlineSize: '541px',
-        position: 'absolute',
-        top: '20%',
-        right: '20%',
-        transform: 'translate(20%, 0%)',
-        textAlign: 'center',
-        padding: '20px'
-    }
-};
-
 export const Layout = (): JSX.Element => (
-    <>
-        <Box sx={styles.backgroundLogoContainer}>
-            <BgLogo />
-        </Box>
-        <Box sx={styles.mainContainer}>
+    <Box sx={{
+        textAlign: 'right',
+        minHeight: '100vh',
+        backgroundImage: `url(${Symbol})`,
+        backgroundRepeat: 'no-repeat',
+        backgroundSize: 'auto 142vh',
+        backgroundPosition: '-60vh -25vh',
+    }}>
+        <Box sx={{
+            textAlign: 'center',
+            width: '100vw',
+            maxWidth: '33.8125rem',
+            marginLeft: 'auto',
+            '@media (min-width: 33.8125rem)': {
+                marginRight: 'calc((100vw - 33.8125rem)*0.233)',
+            },
+            padding: '1.25rem',
+        }}>
             <Routes />
             <Logo sx={{ width: 166, height: 39, mt: 18.5, mb: 18.5 }}/>
         </Box>
-    </>
+    </Box>
 );
 
 export default Layout;
