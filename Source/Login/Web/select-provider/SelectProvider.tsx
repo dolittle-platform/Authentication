@@ -14,7 +14,7 @@ export const SelectProvider = (): JSX.Element => {
     const { applicationName, showDolittleHeadline } = configuration;
 
     return (
-        <>
+        <Box>
             <Box sx={{ maxWidth: '23.0625rem', mb: 12.25, ml: 'auto', mr: 'auto' }}>
                 <Typography variant='h1' sx={{ mb: '2rem' }}>
                     { 
@@ -35,6 +35,6 @@ export const SelectProvider = (): JSX.Element => {
             <Suspense fallback={<CircularProgress />}>
                 <SelectProviderForm />
             </Suspense>
-        </>
+        </Box>
     );
 };

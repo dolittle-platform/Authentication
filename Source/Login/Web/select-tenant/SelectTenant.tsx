@@ -16,7 +16,7 @@ export const SelectTenant = (): JSX.Element => {
     const { logoutPath, supportEmail } = configuration;
 
     return (
-        <>
+        <Box>
             <Typography
                 variant='h2'
                 sx={{ mb: '2rem' }}>
@@ -44,6 +44,6 @@ export const SelectTenant = (): JSX.Element => {
                     Log out
                 </Button>
             </Box>
-        </>
+        </Box>
     );
 };
