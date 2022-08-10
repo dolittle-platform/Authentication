@@ -4,7 +4,9 @@
 import React from 'react';
 
 import { Box } from '@mui/material';
-import { BgLogo, MainLogo } from '../styles/logos';
+
+import { BgLogo } from '../styles/logos';
+import Logo from '../styles/images/logo.svg';
 
 const styles = {
     backgroundLogoContainer: {
@@ -35,7 +37,7 @@ export const LoginWrapper = ({ children }: LoginWrapperProps): JSX.Element => {
             </Box>
             <Box sx={styles.mainContainer}>
                 {children}
-                <MainLogo mt={18.5} mb={18.5} />
+                <Logo sx={{ width: 166, height: 39, mt: 18.5, mb: 18.5 }}/>
             </Box>
         </>
     );
