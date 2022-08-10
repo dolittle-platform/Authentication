@@ -15,6 +15,6 @@ export const TenantListItem = ({ tenant: { id, display} }: TenantListItemProps):
         name='tenant'
         value={id}
         type='submit'
-        sx={{ maxWidth: '9.375rem' }}
+        sx={{ minWidth: '9.375rem' }}
     >{display}</Button>
 );

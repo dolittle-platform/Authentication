@@ -8,6 +8,10 @@ import { configuration } from '../Configuration';
 export const Error = (): JSX.Element => {
     const { logoutPath, supportEmail } = configuration;
 
+    const tryAgainText = supportEmail
+        ? <>Please log out and try again, or <Link href={'mailto:' + supportEmail}>contact us</Link> if the issue persists.</>
+        : <>Please log out and try again.</>
+
     return (
         <>
             <Typography variant="h2" sx={{ mb: '1.875rem', letterSpacing: '-0.03125px' }}>
@@ -15,7 +19,7 @@ export const Error = (): JSX.Element => {
             </Typography>
 
             <Typography variant='subtitle2'>
-                Please log out and try again, or <Link href={'mailto:' + supportEmail}>contact us</Link> if the issue persists.
+                { tryAgainText }
             </Typography>
 
             <Box sx={{ mt: 8 }}>

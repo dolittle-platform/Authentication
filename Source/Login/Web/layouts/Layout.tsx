@@ -1,20 +1,27 @@
 // Copyright (c) Dolittle. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import { Box } from '@mui/material';
+import { Box, SxProps } from '@mui/material';
 
 import Symbol from '../styles/images/symbol.svg?url';
 import Logo from '../styles/images/logo.svg';
+import { configuration } from '../Configuration';
 import { Routes } from './Routes';
+
+const dolittleBackgroundStyle: SxProps = configuration.showDolittleHeadline
+    ? {
+        backgroundImage: `url(${Symbol})`,
+        backgroundRepeat: 'no-repeat',
+        backgroundSize: 'auto 142vh',
+        backgroundPosition: '-60vh -25vh',
+    }
+    : {};
 
 export const Layout = (): JSX.Element => (
     <Box sx={{
         textAlign: 'right',
         minHeight: '100vh',
-        backgroundImage: `url(${Symbol})`,
-        backgroundRepeat: 'no-repeat',
-        backgroundSize: 'auto 142vh',
-        backgroundPosition: '-60vh -25vh',
+        ...dolittleBackgroundStyle
     }}>
         <Box sx={{
             textAlign: 'center',
@@ -27,7 +34,11 @@ export const Layout = (): JSX.Element => (
             padding: '1.25rem',
         }}>
             <Routes />
-            <Logo sx={{ width: 166, height: 39, mt: 18.5, mb: 18.5 }}/>
+            {
+                // TODO: Why is there so much margin on the bottom?
+                configuration.showDolittleHeadline &&
+                    <Logo sx={{ width: 166, height: 39, mt: 18.5, mb: 18.5 }}/>
+            }
         </Box>
     </Box>
 );

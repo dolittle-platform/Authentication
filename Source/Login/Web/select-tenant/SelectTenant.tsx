@@ -15,7 +15,7 @@ export const SelectTenant = (): JSX.Element => {
         <>
             <Typography
                 variant='h2'
-                sx={{ marginBlockEnd: '2rem' }}>
+                sx={{ mb: '2rem' }}>
                 Select your customer
             </Typography>
 
@@ -23,13 +23,13 @@ export const SelectTenant = (): JSX.Element => {
                 <SelectTenantForm />
             </Suspense>
 
-            <Box mt={12.5} mb={5}>
-                {supportEmail &&
-                    <Typography variant='subtitle2'>
-                        {'Don\'t have access to a tenant? '}
-                        <Link href={'mailto:' + supportEmail}>Contact us</Link>
-                        {' to get started.'}
-                    </Typography>}
+            <Box sx={{ mt: 12.5, mb: 5 }}>
+                {
+                    supportEmail &&
+                        <Typography variant='subtitle2'>
+                            Don't have access to a customer? <Link href={'mailto:' + supportEmail}>Contact us</Link> to get started.
+                        </Typography>
+                }
             </Box>
 
             <Box>
