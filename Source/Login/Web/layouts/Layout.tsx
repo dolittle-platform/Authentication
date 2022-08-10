@@ -28,11 +28,12 @@ export const Layout = (): JSX.Element => (
             textAlign: 'center',
             width: '100vw',
             maxWidth: '33.8125rem',
-            marginLeft: 'auto',
+            ml: 'auto',
             '@media (min-width: 33.8125rem)': {
-                marginRight: 'calc((100vw - 33.8125rem)*0.233)',
+                mr: 'calc((100vw - 33.8125rem)*0.233)',
             },
-            padding: '1.25rem',
+            p: '1.25rem',
+            pt: '12.5rem',
         }}>
             <Routes />
             {
