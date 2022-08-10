@@ -95,7 +95,6 @@ export default (_env: any, args: WebpackArguments): Configuration => {
                 templateParameters: {
                     configuration: globalFrontendConfiguration(args),
                 },
-                favicon: './favicon.ico'
             }),
             new CleanWebpackPlugin(),
         ],
