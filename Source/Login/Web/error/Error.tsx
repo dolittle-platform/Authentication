@@ -17,7 +17,7 @@ export const Error = (): JSX.Element => {
 
     return (
         <>
-            <Typography variant="h2" sx={{ mb: '1.875rem', letterSpacing: '-0.03125px' }}>
+            <Typography variant="h2" sx={{ mb: '1.875rem', letterSpacing: '-0.03125em' }}>
                 Oops, something went wrong.
             </Typography>
 
