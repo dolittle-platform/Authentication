@@ -7,13 +7,12 @@ import { Box, Button, CircularProgress, Link, Typography } from '@mui/material';
 
 import { configuration } from '../Configuration';
 import { SelectTenantForm } from './SelectTenantForm';
-import { LoginWrapper } from '../layouts/LoginWrapper';
 
 export const SelectTenant = (): JSX.Element => {
     const { logoutPath, supportEmail } = configuration;
 
     return (
-        <LoginWrapper>
+        <>
             <Typography
                 variant='h2'
                 sx={{ marginBlockEnd: '2rem' }}>
@@ -41,6 +40,6 @@ export const SelectTenant = (): JSX.Element => {
                     Log out
                 </Button>
             </Box>
-        </LoginWrapper>
+        </>
     );
 };

@@ -6,12 +6,11 @@ import { Suspense } from 'react';
 import { Box, CircularProgress, Link, Typography } from '@mui/material';
 
 import { SelectProviderForm } from './SelectProviderForm';
-import { LoginWrapper } from '../layouts/LoginWrapper'
 import { configuration } from '../Configuration';
 
 export const SelectProvider = (): JSX.Element => {
     return (
-        <LoginWrapper>
+        <>
             <Box mb={12.25} ml='auto' mr='auto' sx={{ maxInlineSize: '369px' }}>
                 <Typography variant='h1' sx={{ marginBlockEnd: '2rem' }}>
                     Welcome to Dolittle Studio
@@ -30,6 +29,6 @@ export const SelectProvider = (): JSX.Element => {
                 <Link href={'mailto:' + configuration.supportEmail} sx={{ textDecoration: 'underline' }}>Contact us</Link>
                 {' to get started.'}
             </Typography>
-        </LoginWrapper>
+        </>
     );
 };

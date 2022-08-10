@@ -5,11 +5,10 @@ import { Box, Button, Typography } from '@mui/material';
 import { ArrowBack } from '@mui/icons-material';
 
 import { configuration } from '../Configuration';
-import { LoginWrapper } from '../layouts/LoginWrapper';
 
 export const LoggedOut = (): JSX.Element => {
     return (
-        <LoginWrapper>
+        <>
             <Typography variant='h2' sx={{ letterSpacing: '-0.5px' }}>You have been logged out.</Typography>
             <Box mt={13.5}>
                 <Button
@@ -21,6 +20,6 @@ export const LoggedOut = (): JSX.Element => {
                     Return to login page
                 </Button>
             </Box>
-        </LoginWrapper>
+        </>
     );
 }

@@ -4,13 +4,12 @@
 import { Box, Button, Link, Typography } from '@mui/material';
 
 import { configuration } from '../Configuration';
-import { LoginWrapper } from '../layouts/LoginWrapper';
 
 export const Error = (): JSX.Element => {
     const { logoutPath, supportEmail } = configuration;
 
     return (
-        <LoginWrapper>
+        <>
             <Typography variant="h2" sx={{ marginBottom: '1.875rem', letterSpacing: '-0.5px' }}>
                 Oops, something went wrong.
             </Typography>
@@ -30,6 +29,6 @@ export const Error = (): JSX.Element => {
                     Log out
                 </Button>
             </Box>
-        </LoginWrapper>
+        </>
     );
 };
