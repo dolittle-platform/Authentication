@@ -3,10 +3,9 @@
 
 import { Suspense } from 'react';
 
-import { Box, CircularProgress, Link, Typography } from '@mui/material';
+import { Box, CircularProgress, Typography } from '@mui/material';
 
 import { SelectProviderForm } from './SelectProviderForm';
-import { configuration } from '../Configuration';
 
 export const SelectProvider = (): JSX.Element => (
     <>
@@ -22,9 +21,5 @@ export const SelectProvider = (): JSX.Element => (
         <Suspense fallback={<CircularProgress />}>
             <SelectProviderForm />
         </Suspense>
-
-        <Typography variant='subtitle2' sx={{ mt: '2.5rem' }}>
-            Don't have an account? <Link href={'mailto:' + configuration.supportEmail}>Contact us</Link> to get started.
-        </Typography>
     </>
 );
