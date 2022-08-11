@@ -1,3 +1,9 @@
+# [2.4.1] - 2022-8-11 [PR: #27](https://github.com/dolittle-platform/Authentication/pull/27)
+## Summary
+
+Some refactoring of the code to keep it consistent but still up to date with the latest changes, and bringing back the ability to configure all "Dolittle Studio" specific things out so it can be used by others.
+
+
 # [2.4.0] - 2022-7-27 [PR: #26](https://github.com/dolittle-platform/Authentication/pull/26)
 ## Summary
 
