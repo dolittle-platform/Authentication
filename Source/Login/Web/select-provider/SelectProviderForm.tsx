@@ -24,11 +24,16 @@ export const SelectProviderForm = (): JSX.Element => {
 
     if (flow === null || flow === undefined) throw new FlowNotFound(flowID);
 
-    // TODO: This flex looks strange when in mobile view.
-
     return (
         <Form form={flow.form}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Box sx={{ 
+                display: 'flex', 
+                flexDirection: {
+                    xs: 'column',
+                    md: 'row',
+                },
+                justifyContent: 'space-between'
+            }}>
                 <IdentityProviderList providers={flow.providers} />
             </Box>
         </Form>

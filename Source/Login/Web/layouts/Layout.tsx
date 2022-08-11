@@ -37,9 +37,8 @@ export const Layout = (): JSX.Element => (
         }}>
             <Routes />
             {
-                // TODO: Why is there so much margin on the bottom?
                 configuration.showDolittleHeadline &&
-                    <Logo sx={{ width: 166, height: 39, mt: 18.5, mb: 18.5 }}/>
+                    <Logo sx={{ width: 166, height: 39, mt: 18.5 }}/>
             }
         </Box>
     </Box>
