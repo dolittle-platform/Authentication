@@ -3,11 +3,7 @@
 
 import { Suspense } from 'react';
 
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import CircularProgress from '@mui/material/CircularProgress';
-import Link from '@mui/material/Link';
-import Typography from '@mui/material/Typography';
+import { Box, Button, CircularProgress, Link, Typography } from '@mui/material';
 
 import { configuration } from '../Configuration';
 import { SelectTenantForm } from './SelectTenantForm';

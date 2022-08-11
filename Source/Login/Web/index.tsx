@@ -6,8 +6,8 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter as Router } from 'react-router-dom';
 
 import { CacheProvider } from 'rest-hooks';
+import { CssBaseline } from '@mui/material'
 import { ThemeProvider } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline'
 
 import { Theme } from './styles/Theme';
 const Layout = lazy(() => import('./layouts/Layout'));

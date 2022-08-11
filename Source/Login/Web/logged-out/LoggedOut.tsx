@@ -1,10 +1,8 @@
 // Copyright (c) Dolittle. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import ArrowBack from '@mui/icons-material/ArrowBack';
+import { Box, Button, Typography } from '@mui/material';
+import { ArrowBack } from '@mui/icons-material';
 
 import { configuration } from '../Configuration';
 
