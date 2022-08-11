@@ -5,22 +5,19 @@ import { Box, Button, Typography } from '@mui/material';
 import { ArrowBack } from '@mui/icons-material';
 
 import { configuration } from '../Configuration';
-import { LoginWrapper } from '../layouts/LoginWrapper';
 
-export const LoggedOut = (): JSX.Element => {
-    return (
-        <LoginWrapper>
-            <Typography variant='h2' sx={{ letterSpacing: '-0.5px' }}>You have been logged out.</Typography>
-            <Box mt={13.5}>
-                <Button
-                    size='large'
-                    color='inherit'
-                    startIcon={<ArrowBack />}
-                    sx={{ letterSpacing: '0.06em' }}
-                    href={configuration.startPath}>
-                    Return to login page
-                </Button>
-            </Box>
-        </LoginWrapper>
-    );
-}
+export const LoggedOut = (): JSX.Element => (
+    <>
+        <Typography variant='h2' sx={{ letterSpacing: '-0.03125rem' }}>You have been logged out.</Typography>
+        <Box sx={{ mt: 13.5 }}>
+            <Button
+                size='large'
+                color='inherit'
+                startIcon={<ArrowBack />}
+                sx={{ letterSpacing: '0.06em' }}
+                href={configuration.startPath}>
+                Return to login page
+            </Button>
+        </Box>
+    </>
+);

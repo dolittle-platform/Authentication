@@ -3,33 +3,36 @@
 
 import { Suspense } from 'react';
 
-import { Box, CircularProgress, Link, Typography } from '@mui/material';
+import { Box, CircularProgress, Typography } from '@mui/material';
 
-import { SelectProviderForm } from './SelectProviderForm';
-import { LoginWrapper } from '../layouts/LoginWrapper'
 import { configuration } from '../Configuration';
+import { SelectProviderForm } from './SelectProviderForm';
 
 export const SelectProvider = (): JSX.Element => {
+    const { applicationName, showDolittleHeadline } = configuration;
+
     return (
-        <LoginWrapper>
-            <Box mb={12.25} ml='auto' mr='auto' sx={{ maxInlineSize: '369px' }}>
-                <Typography variant='h1' sx={{ marginBlockEnd: '2rem' }}>
-                    Welcome to Dolittle Studio
+        <Box>
+            <Box sx={{ maxWidth: '23.0625rem', mb: 12.25, ml: 'auto', mr: 'auto' }}>
+                <Typography variant='h1' sx={{ mb: '2rem' }}>
+                    { 
+                        applicationName
+                            ? `Welcome to ${applicationName}`
+                            : 'Welcome'
+                    }
                 </Typography>
                 <Typography variant='h5'>
-                    Transform your business by leveraging real time events.
+                    {
+                        showDolittleHeadline
+                            ? 'Transform your business by leveraging real time events.'
+                            : 'Sign in to continue.'
+                    }
                 </Typography>
             </Box>
 
             <Suspense fallback={<CircularProgress />}>
                 <SelectProviderForm />
             </Suspense>
-
-            <Typography variant='subtitle2' sx={{ marginBlockStart: '2.5rem' }}>
-                {'Don\'t have an account? '}
-                <Link href={'mailto:' + configuration.supportEmail} sx={{ textDecoration: 'underline' }}>Contact us</Link>
-                {' to get started.'}
-            </Typography>
-        </LoginWrapper>
+        </Box>
     );
 };

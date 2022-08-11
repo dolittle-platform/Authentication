@@ -52,7 +52,7 @@ export const Theme = createTheme({
     },
     button: {
       fontFamily: 'Rubik-Medium',
-      fontSize: '14px',
+      fontSize: '0.875rem', //14px
     }
   },
   palette: {

@@ -8,6 +8,8 @@ import TerserWebpackPlugin from 'terser-webpack-plugin';
 import { Configuration } from 'webpack';
 import 'webpack-dev-server';
 
+import { template as SvgrTemplate } from './styles/images/svgr/template';
+
 type WebpackArguments = {
     mode: 'none' | 'production' | 'development',
 }
@@ -80,6 +82,14 @@ export default (_env: any, args: WebpackArguments): Configuration => {
                     issuer: /\.tsx?$/,
                     resourceQuery: { not: /url/ },
                     loader: '@svgr/webpack',
+                    options: {
+                        jsx: {
+                            babelConfig: {
+                                plugins: ['./styles/images/svgr/convert-svg-to-box-plugin.js'],
+                            },
+                        },
+                        template: SvgrTemplate,
+                    },
                 },
                 {
                     test: /\.svg$/,
@@ -95,7 +105,6 @@ export default (_env: any, args: WebpackArguments): Configuration => {
                 templateParameters: {
                     configuration: globalFrontendConfiguration(args),
                 },
-                favicon: './favicon.ico'
             }),
             new CleanWebpackPlugin(),
         ],

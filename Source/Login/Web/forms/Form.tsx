@@ -8,18 +8,12 @@ export type FormProps = {
     children: React.ReactNode;
 };
 
-export const Form = ({ form, children }: FormProps): JSX.Element => {
-    const { submitAction, submitMethod, csrfToken } = form
-
-    return (
-        <form
-            method={submitMethod}
-            action={submitAction}>
-            {
-                csrfToken !== undefined && csrfToken !== '' &&
+export const Form = ({ form: { submitAction, submitMethod, csrfToken }, children }: FormProps): JSX.Element => (
+    <form method={submitMethod} action={submitAction}>
+        {
+            csrfToken !== undefined && csrfToken !== '' &&
                 <input type="hidden" name="csrf_token" value={csrfToken} />
-            }
-            {children}
-        </form>
-    );
-};
+        }
+        {children}
+    </form>
+);

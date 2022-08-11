@@ -4,24 +4,25 @@
 import { Box, Button, Link, Typography } from '@mui/material';
 
 import { configuration } from '../Configuration';
-import { LoginWrapper } from '../layouts/LoginWrapper';
 
 export const Error = (): JSX.Element => {
     const { logoutPath, supportEmail } = configuration;
 
+    const tryAgainText = supportEmail
+        ? <>Please log out and try again, or <Link href={'mailto:' + supportEmail}>contact us</Link> if the issue persists.</>
+        : <>Please log out and try again.</>
+
     return (
-        <LoginWrapper>
-            <Typography variant="h2" sx={{ marginBottom: '1.875rem', letterSpacing: '-0.5px' }}>
+        <>
+            <Typography variant="h2" sx={{ mb: '1.875rem', letterSpacing: '-0.03125em' }}>
                 Oops, something went wrong.
             </Typography>
 
             <Typography variant='subtitle2'>
-                {'Please log out and try again, or '}
-                <Link href={'mailto:' + supportEmail} sx={{ textDecoration: 'underline' }}>contact us</Link>
-                {' if the issue persists.'}
+                { tryAgainText }
             </Typography>
 
-            <Box mt={8}>
+            <Box sx={{ mt: 8 }}>
                 <Button
                     size='large'
                     color='inherit'
@@ -30,6 +31,6 @@ export const Error = (): JSX.Element => {
                     Log out
                 </Button>
             </Box>
-        </LoginWrapper>
+        </>
     );
 };
