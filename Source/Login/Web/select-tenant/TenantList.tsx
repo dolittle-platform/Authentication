@@ -14,7 +14,7 @@ export const TenantList = ({ tenants }: TenantListProps): JSX.Element => (
     <>
         {
             tenants.map(tenant => (
-                <Box key={tenant.id} sx={{ mb: 2 }}>
+                <Box key={tenant.id} sx={{ mb: 2, inlineSize: '100%' }}>
                     <TenantListItem tenant={tenant} />
                 </Box>
             ))
