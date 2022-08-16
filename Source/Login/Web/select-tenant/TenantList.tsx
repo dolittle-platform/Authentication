@@ -11,13 +11,11 @@ export type TenantListProps = {
 };
 
 export const TenantList = ({ tenants }: TenantListProps): JSX.Element => (
-    <>
+    <Box sx={{ display: 'inline-block' }}>
         {
             tenants.map(tenant => (
-                <Box key={tenant.id} sx={{ mb: 2, inlineSize: '100%' }}>
-                    <TenantListItem tenant={tenant} />
-                </Box>
+                <TenantListItem tenant={tenant} />
             ))
         }
-    </>
+    </Box>
 );

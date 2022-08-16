@@ -10,8 +10,6 @@ import { ChallengeNotFound } from './ChallengeNotFound';
 import { Challenges } from './Challenges';
 import { TenantList } from './TenantList';
 
-import { Box } from '@mui/system';
-
 const useLoginChallengeID = (): string | null => {
     const location = useLocation();
     const query = new URLSearchParams(location.search);
@@ -27,9 +25,7 @@ export const SelectTenantForm = (): JSX.Element => {
     return (
         <Form form={challenge.form}>
             <input type="hidden" name="login_challenge" value={challenge.id} />
-            <Box sx={{ display: 'inline-block' }}>
-                <TenantList tenants={challenge.user.tenants} />
-            </Box>
+            <TenantList tenants={challenge.user.tenants} />
         </Form>
     );
 };
