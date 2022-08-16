@@ -1,3 +1,15 @@
+# [2.4.2] - 2022-8-16 [PR: #28](https://github.com/dolittle-platform/Authentication/pull/28)
+## Summary
+
+Fixed 'Select your customer' buttons width to be as wide as the widest button is.
+
+<img width="633" alt="Screenshot 2022-08-12 at 18 37 49" src="https://user-images.githubusercontent.com/19160439/184390398-a78006c3-185b-45e6-a568-48e8a5a68dc8.png">
+
+### Fixed
+
+- Buttons width
+
+
 # [2.4.1] - 2022-8-11 [PR: #27](https://github.com/dolittle-platform/Authentication/pull/27)
 ## Summary
 
