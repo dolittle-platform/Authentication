@@ -10,7 +10,8 @@ frontend:
     logout: /.auth/cookies/logout
 
 urls:
-  error: http://localhost:8080/error
+  error: http://localhost:8080/.auth/error
+  logged_out: http://localhost:8080/.auth/logged-out
 
 providers: {}
 

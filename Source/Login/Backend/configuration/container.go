@@ -148,6 +148,7 @@ func NewContainer(configuration Configuration) (*Container, error) {
 		container.HydraClient)
 
 	container.LogoutFlowInitiator = logoutFlow.NewInitiator(
+		configuration.Flows().Logout(),
 		container.KratosClient)
 
 	frontendHandler, err := public.NewFrontendHandler(
