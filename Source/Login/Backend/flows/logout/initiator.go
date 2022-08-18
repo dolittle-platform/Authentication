@@ -11,18 +11,23 @@ type Initiator interface {
 	InitiateLogout(ctx context.Context, cookies []*http.Cookie) (*url.URL, error)
 }
 
-func NewInitiator(kratos kratos.Client) Initiator {
+func NewInitiator(configuration Configuration, kratos kratos.Client) Initiator {
 	return &initiator{
-		kratos: kratos,
+		configuration: configuration,
+		kratos:        kratos,
 	}
 }
 
 type initiator struct {
-	kratos kratos.Client
+	configuration Configuration
+	kratos        kratos.Client
 }
 
 func (i *initiator) InitiateLogout(ctx context.Context, cookies []*http.Cookie) (*url.URL, error) {
 	response, err := i.kratos.GetLogoutURL(ctx, cookies)
+	if err == kratos.ErrKratosUnauthorized {
+		return i.configuration.LoggedOutRedirect(), nil
+	}
 	if err != nil {
 		return nil, err
 	}

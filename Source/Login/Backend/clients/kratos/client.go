@@ -63,7 +63,10 @@ func (c *client) GetLogoutURL(ctx context.Context, cookies []*http.Cookie) (*ory
 		}
 	}
 	cookieHeaderValue := strings.Join(cookieStrings, ";")
-	url, _, err := c.api.CreateSelfServiceLogoutFlowUrlForBrowsers(ctx).Cookie(cookieHeaderValue).Execute()
+	url, response, err := c.api.CreateSelfServiceLogoutFlowUrlForBrowsers(ctx).Cookie(cookieHeaderValue).Execute()
+	if response.StatusCode == http.StatusUnauthorized {
+		return nil, ErrKratosUnauthorized
+	}
 	if err != nil {
 		return nil, err
 	}
