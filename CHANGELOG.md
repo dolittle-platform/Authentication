@@ -1,3 +1,17 @@
+# [2.5.0] - 2022-8-18 [PR: #29](https://github.com/dolittle-platform/Authentication/pull/29)
+## Summary
+
+Fixes a problem where it would not be possible to get out of some error states. The issue was that the error page asks you to log out and try again, but if the user is not logged in - the logout flow would fail and send you back to the error page. Thus creating an infinite loop.
+
+### Added
+
+- [Login/Backend] Configuration for redirect URL when logging out and there is no logged in user.
+
+### Fixed
+
+- [Login/Backend] If there is no session in Kratos (initiate logout flow returns 401), redirect to the configured logged-out URL.
+
+
 # [2.4.2] - 2022-8-16 [PR: #28](https://github.com/dolittle-platform/Authentication/pull/28)
 ## Summary
 
