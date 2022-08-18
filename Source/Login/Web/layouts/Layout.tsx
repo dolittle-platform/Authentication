@@ -13,8 +13,7 @@ const dolittleBackgroundStyle: SxProps = configuration.showDolittleHeadline
     ? {
         backgroundImage: `url(${Symbol})`,
         backgroundRepeat: 'no-repeat',
-        backgroundSize: 'auto 142vh',
-        backgroundPosition: '-60vh -25vh',
+        backgroundSize: 'auto 100vh'
     }
     : {};
 
@@ -38,7 +37,7 @@ export const Layout = (): JSX.Element => (
             <Routes />
             {
                 configuration.showDolittleHeadline &&
-                    <Logo sx={{ width: 166, height: 39, mt: 18.5 }}/>
+                <Logo sx={{ width: 166, height: 39, mt: 18.5 }} />
             }
         </Box>
     </Box>
