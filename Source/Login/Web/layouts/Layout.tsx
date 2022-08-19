@@ -13,7 +13,8 @@ const dolittleBackgroundStyle: SxProps = configuration.showDolittleHeadline
     ? {
         backgroundImage: `url(${Symbol})`,
         backgroundRepeat: 'no-repeat',
-        backgroundSize: 'auto 100vh'
+        backgroundSize: 'auto 142vh',
+        backgroundPosition: '-60vh -25vh'
     }
     : {};
 
