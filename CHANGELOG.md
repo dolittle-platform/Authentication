@@ -1,3 +1,15 @@
+# [2.5.1] - 2022-8-25 [PR: #30](https://github.com/dolittle-platform/Authentication/pull/30)
+## Summary
+
+Changed background Dolittle logo color for having more contrast.
+
+<img width="1285" alt="Screenshot 2022-08-18 at 11 48 22" src="https://user-images.githubusercontent.com/19160439/185352908-6a58bf4d-242f-4075-aacf-21e8a40b57b4.png">
+
+### Changed
+
+- Background logo color
+
+
 # [2.5.0] - 2022-8-18 [PR: #29](https://github.com/dolittle-platform/Authentication/pull/29)
 ## Summary
 
