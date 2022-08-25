@@ -1,3 +1,15 @@
+# [2.5.2] - 2022-8-25 [PR: #31](https://github.com/dolittle-platform/Authentication/pull/31)
+## Summary
+
+A few small UX performance improvements for the Login service - to make the page load faster and look better while loading for the end-user.
+
+### Added
+
+- [Login/Web] Background colour to the `<html>` tag to avoid flashing a white page while assets are loading
+- [Login/Web] Add `font-display: swap` to make text display while loading fonts
+- [Login/Backend] Add `Cache-Control` headers to served content to improve caching loading speed.
+
+
 # [2.5.1] - 2022-8-25 [PR: #30](https://github.com/dolittle-platform/Authentication/pull/30)
 ## Summary
 
