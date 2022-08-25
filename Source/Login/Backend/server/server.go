@@ -1,6 +1,7 @@
 package server
 
 import (
+	"dolittle.io/login/server/httputils"
 	"dolittle.io/login/server/public/logout"
 	"fmt"
 	"net/http"
@@ -75,7 +76,7 @@ func (s *server) Run() error {
 
 	server := http.Server{
 		Addr:    fmt.Sprintf(":%d", s.configuration.Port()),
-		Handler: router,
+		Handler: httputils.WithCacheControl("no-store", router),
 	}
 
 	s.logger.Info("Starting server", zap.Int("port", s.configuration.Port()))

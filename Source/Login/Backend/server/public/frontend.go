@@ -3,6 +3,7 @@ package public
 import (
 	"bytes"
 	"context"
+	"dolittle.io/login/server/httputils"
 	"html/template"
 	"net/http"
 	"net/http/httputil"
@@ -60,7 +61,7 @@ func createStaticFileHandler(configuration Configuration) (http.Handler, error) 
 		w.WriteHeader(http.StatusOK)
 		w.Write(index)
 	})
-	mux.Handle("/.auth/assets/", http.StripPrefix("/.auth/assets/", http.FileServer(http.Dir("wwwroot"))))
+	mux.Handle("/.auth/assets/", http.StripPrefix("/.auth/assets/", httputils.WithCacheControl("public, max-age=604800, immutable", http.FileServer(http.Dir("wwwroot")))))
 	return mux, nil
 }
 
