@@ -13,7 +13,7 @@ import (
 type AuthenticationRedirectURL string
 
 type AuthenticationInitiator interface {
-	GetAuthenticationRedirect(nonce nonces.Nonce) (AuthenticationRedirectURL, error)
+	GetAuthenticationRedirect(host string, nonce nonces.Nonce) (AuthenticationRedirectURL, error)
 	GetLogoutRedirect(token *issuer.Token, returnTo sessions.ReturnToURL) (AuthenticationRedirectURL, error)
 }
 
@@ -31,12 +31,12 @@ type initiator struct {
 	watcher config.Watcher
 }
 
-func (i *initiator) GetAuthenticationRedirect(nonce nonces.Nonce) (AuthenticationRedirectURL, error) {
+func (i *initiator) GetAuthenticationRedirect(host string, nonce nonces.Nonce) (AuthenticationRedirectURL, error) {
 	issuer, err := i.watcher.GetIssuer()
 	if err != nil {
 		return "", err
 	}
-	redirect, err := issuer.GetAuthenticationRedirectURL(nonce)
+	redirect, err := issuer.GetAuthenticationRedirectURL(host, nonce)
 	if err != nil {
 		return "", err
 	}

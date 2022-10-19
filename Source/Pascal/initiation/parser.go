@@ -23,12 +23,18 @@ type parser struct {
 }
 
 func (p *parser) ParseFrom(r *http.Request) (*Request, error) {
-	returnTo, err := redirects.GetReturnToURL(p.configuration, p.configuration.DefaultLoginReturnTo(), r, p.logger)
+	defaultReturnTo, err := redirects.GetAbsoluteUrlFor(r, p.configuration.DefaultLoginReturnTo())
+	if err != nil {
+		return nil, err
+	}
+
+	returnTo, err := redirects.GetReturnToURL(p.configuration, defaultReturnTo, r, p.logger)
 	if err != nil {
 		return nil, err
 	}
 
 	return &Request{
+		Host:     redirects.GetHostFor(r),
 		ReturnTo: returnTo,
 	}, nil
 }

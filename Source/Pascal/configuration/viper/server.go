@@ -1,13 +1,12 @@
 package viper
 
 import (
-	"net/url"
-
 	"github.com/spf13/viper"
 )
 
 const (
 	servePortKey          = "serve.port"
+	serveHostsKey         = "serve.hosts"
 	servePathsInitiateKey = "serve.paths.initiate"
 	servePathsCompleteKey = "serve.paths.complete"
 	servePathsLogoutKey   = "serve.paths.logout"
@@ -17,14 +16,11 @@ const (
 	defaultServeInitiatePath = "/initiate"
 	defaultServeCompletePath = "/callback"
 	defaultServeLogoutPath   = "/logout"
+	defaultErrorRedirect     = "/error"
 )
 
 var (
-	defaultErrorRedirect = &url.URL{
-		Scheme: "http",
-		Host:   "localhost:8080",
-		Path:   "error",
-	}
+	defaultHosts = []string{"localhost:8080"}
 )
 
 type serverConfiguration struct{}
@@ -35,6 +31,14 @@ func (c *serverConfiguration) Port() int {
 		return defaultServePort
 	}
 	return port
+}
+
+func (c *serverConfiguration) AllowedHosts() []string {
+	if hosts := viper.GetStringSlice(serveHostsKey); len(hosts) > 0 {
+		return hosts
+	}
+
+	return defaultHosts
 }
 
 func (c *serverConfiguration) InitiatePath() string {
@@ -58,14 +62,9 @@ func (c *serverConfiguration) LogoutPath() string {
 	return defaultServeLogoutPath
 }
 
-func (c *serverConfiguration) ErrorRedirect() *url.URL {
-	value := viper.GetString(urlsErrorKey)
-	if value == "" {
-		return defaultErrorRedirect
+func (c *serverConfiguration) ErrorRedirect() string {
+	if value := viper.GetString(urlsErrorKey); value != "" {
+		return value
 	}
-	url, err := url.Parse(value)
-	if err != nil {
-		return defaultErrorRedirect
-	}
-	return url
+	return defaultErrorRedirect
 }

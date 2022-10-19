@@ -50,7 +50,7 @@ type Container struct {
 }
 
 func NewContainer(config Configuration) (*Container, error) {
-	logger, _ := zap.NewDevelopment()
+	logger, _ := zap.NewDevelopment(zap.AddStacktrace(zap.ErrorLevel))
 	container := Container{}
 
 	container.Notifier = changes.NewConfigurationChangeNotifier(logger)

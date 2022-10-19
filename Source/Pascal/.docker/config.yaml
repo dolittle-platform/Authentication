@@ -1,20 +1,23 @@
 serve:
   port: 80
 
+  hosts:
+    - localhost:80
+
   paths:
     initiate: /initiate
     complete: /callback
     logout: /logout
 
 urls:
-  error: http://localhost:80/error
+  error: /error
   return:
     query_parameter: return_to
     default:
-      login: http://localhost:80/return
-      logout: http://localhost:80/return
+      login: /return
+      logout: /return
     allowed:
-      - http://localhost:80/return
+      - /
     mode: strict
 
 sessions:
@@ -37,7 +40,7 @@ openid:
   scopes:
     - openid
   token_type: access_token
-  redirect: http://localhost:80/callback
+  redirect: /callback
 
 cookies:
   name: .dolittle.pascal.login
