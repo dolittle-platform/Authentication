@@ -1,7 +1,5 @@
 package redirects
 
-import "net/url"
-
 type MatchMode int
 
 const (
@@ -11,8 +9,8 @@ const (
 
 type Configuration interface {
 	ReturnToParameter() string
-	DefaultLoginReturnTo() *url.URL
-	DefaultLogoutReturnTo() *url.URL
-	AllowedReturnTo() []*url.URL
+	DefaultLoginReturnTo() string
+	DefaultLogoutReturnTo() string
+	AllowedReturnTo() []string
 	ReturnToMatchMode() MatchMode
 }

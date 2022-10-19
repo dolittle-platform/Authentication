@@ -12,7 +12,7 @@ import (
 const idTokenKey = "id_token"
 
 type Issuer interface {
-	GetAuthenticationRedirectURL(nonce nonces.Nonce) (string, error)
+	GetAuthenticationRedirectURL(host string, nonce nonces.Nonce) (string, error)
 	ExchangeCodeForAccessToken(code string) (*Token, error)
 	ExchangeCodeForIDToken(code string) (*Token, error)
 	RevocationIsSupported() bool
@@ -67,8 +67,16 @@ func NewIssuer(issuerURL *url.URL, clientId, clientSecret string, scopes []strin
 	}, nil
 }
 
-func (i *issuer) GetAuthenticationRedirectURL(nonce nonces.Nonce) (string, error) {
-	return i.config.AuthCodeURL(string(nonce)), nil
+func (i *issuer) GetAuthenticationRedirectURL(host string, nonce nonces.Nonce) (string, error) {
+	redirectConfig := &oauth2.Config{
+		ClientID:     i.config.ClientID,
+		ClientSecret: i.config.ClientSecret,
+		Endpoint:     i.config.Endpoint,
+		Scopes:       i.config.Scopes,
+		RedirectURL:  host + i.config.RedirectURL,
+	}
+
+	return redirectConfig.AuthCodeURL(string(nonce)), nil
 }
 
 func (i *issuer) ExchangeCodeForAccessToken(code string) (*Token, error) {

@@ -36,7 +36,7 @@ func (i *initiator) Initiate(request *Request) (*sessions.Session, openid.Authen
 		return nil, "", err
 	}
 
-	redirect, err := i.initiator.GetAuthenticationRedirect(session.Nonce)
+	redirect, err := i.initiator.GetAuthenticationRedirect(request.Host, session.Nonce)
 	if err != nil {
 		return nil, "", err
 	}

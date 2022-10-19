@@ -31,7 +31,12 @@ func (p *parser) ParseFrom(r *http.Request) (*Request, error) {
 		p.logger.Info("no token found in logout request")
 	}
 
-	returnTo, err := redirects.GetReturnToURL(p.configuration, p.configuration.DefaultLogoutReturnTo(), r, p.logger)
+	defaultReturnTo, err := redirects.GetAbsoluteUrlFor(r, p.configuration.DefaultLogoutReturnTo())
+	if err != nil {
+		return nil, err
+	}
+
+	returnTo, err := redirects.GetReturnToURL(p.configuration, defaultReturnTo, r, p.logger)
 	if err != nil {
 		return nil, err
 	}

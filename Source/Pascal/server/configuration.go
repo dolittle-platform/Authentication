@@ -1,6 +1,8 @@
 package server
 
-import "dolittle.io/pascal/server/handling"
+import (
+	"dolittle.io/pascal/server/handling"
+)
 
 type Configuration interface {
 	Port() int

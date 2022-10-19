@@ -2,8 +2,6 @@ package viper
 
 import (
 	"dolittle.io/pascal/redirects"
-	"net/url"
-
 	"github.com/spf13/viper"
 )
 
@@ -15,20 +13,9 @@ const (
 	urlsReturnModeKey           = "urls.return.mode"
 
 	defaultReturnToParameter = "return_to"
+	defaultLoginReturnTo     = "return"
+	defaultLogoutReturnTo    = "return"
 	defaultReturnMode        = redirects.MatchModeStrict
-)
-
-var (
-	defaultLoginReturnTo = &url.URL{
-		Scheme: "http",
-		Host:   "localhost:8080",
-		Path:   "return",
-	}
-	defaultLogoutReturnTo = &url.URL{
-		Scheme: "http",
-		Host:   "localhost:8080",
-		Path:   "return",
-	}
 )
 
 type redirectsConfiguration struct{}
@@ -40,40 +27,28 @@ func (c *redirectsConfiguration) ReturnToParameter() string {
 	return defaultReturnToParameter
 }
 
-func (c *redirectsConfiguration) DefaultLoginReturnTo() *url.URL {
-	value := viper.GetString(urlsLoginReturnDefaultKey)
-	if value == "" {
-		return defaultLoginReturnTo
+func (c *redirectsConfiguration) DefaultLoginReturnTo() string {
+	if value := viper.GetString(urlsLoginReturnDefaultKey); value != "" {
+		return value
 	}
-	url, err := url.Parse(value)
-	if err != nil {
-		return defaultLoginReturnTo
-	}
-	return url
+	return defaultLoginReturnTo
 }
 
-func (c *redirectsConfiguration) DefaultLogoutReturnTo() *url.URL {
-	value := viper.GetString(urlsLogoutReturnDefaultKey)
-	if value == "" {
-		return defaultLogoutReturnTo
+func (c *redirectsConfiguration) DefaultLogoutReturnTo() string {
+	if value := viper.GetString(urlsLogoutReturnDefaultKey); value != "" {
+		return value
 	}
-	url, err := url.Parse(value)
-	if err != nil {
-		return defaultLogoutReturnTo
-	}
-	return url
+	return defaultLogoutReturnTo
 }
 
-func (c *redirectsConfiguration) AllowedReturnTo() []*url.URL {
-	allowed := []*url.URL{
+func (c *redirectsConfiguration) AllowedReturnTo() []string {
+	allowed := []string{
 		c.DefaultLoginReturnTo(),
 		c.DefaultLogoutReturnTo(),
 	}
 
 	for _, value := range viper.GetStringSlice(urlsReturnAllowedKey) {
-		if url, err := url.Parse(value); err != nil {
-			allowed = append(allowed, url)
-		}
+		allowed = append(allowed, value)
 	}
 
 	return allowed

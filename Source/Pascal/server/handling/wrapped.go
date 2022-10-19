@@ -2,6 +2,7 @@ package handling
 
 import (
 	"context"
+	"dolittle.io/pascal/redirects"
 	"fmt"
 	"net/http"
 
@@ -10,7 +11,7 @@ import (
 )
 
 type wrappedHandler struct {
-	configuration Configuration
+	errorRedirect string
 	logger        *zap.Logger
 	handler       Handler
 }
@@ -41,7 +42,9 @@ func (h *wrappedHandler) recoverPanic(w http.ResponseWriter, r *http.Request, co
 }
 
 func (h *wrappedHandler) redirectError(w http.ResponseWriter, r *http.Request, correlation string) {
-	base := h.configuration.ErrorRedirect().String()
-	redirect := fmt.Sprintf("%s?correlation=%s", base, correlation)
-	http.Redirect(w, r, redirect, http.StatusFound)
+	redirect, err := redirects.GetAbsoluteUrlFor(r, fmt.Sprintf("%s?correlation=%s", h.errorRedirect, correlation))
+	if err != nil {
+		http.Error(w, "Error while handling request", 500)
+	}
+	http.Redirect(w, r, redirect.String(), http.StatusFound)
 }
