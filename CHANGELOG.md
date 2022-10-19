@@ -1,3 +1,76 @@
+# [3.0.0] - 2022-10-19 [PR: #32](https://github.com/dolittle-platform/Authentication/pull/32)
+## Summary
+
+Adds support for running a single instance of Pascal to serve multiple hosts. The configuration now expects a list of allowed hostnames (`host[:port]`) that should be served (any other host is rejected with 404), and every other URL is constructed on the fly based on the host of the handled request. Every other URL in the configuration is now expected to be absolute relative to the current host.
+
+Example config:
+```
+serve:
+  port: 80
+
+  hosts:
+    - localhost:80
+
+  paths:
+    initiate: /initiate
+    complete: /callback
+    logout: /logout
+
+urls:
+  error: /error
+  return:
+    query_parameter: return_to
+    default:
+      login: /return
+      logout: /return
+    allowed:
+      - /
+    mode: strict
+
+sessions:
+  nonce_length: 80
+  lifetime: 5m
+  cookies:
+    name: .dolittle.pascal.session
+    secure: true
+    samesite: lax
+    path: /
+  keys:
+    - hash: KEY-USED-TO-SIGN-SESSION-COOKIES-SHOULD-BE-64-BYTES-LONG--------
+      block: ENCRYPTION-KEY-SHOULD-BE-32-BYTS
+
+openid:
+  issuer: http://localhost:80
+  client:
+    id: client-id
+    secret: client-secret
+  scopes:
+    - openid
+  token_type: access_token
+  redirect: /callback
+
+cookies:
+  name: .dolittle.pascal.login
+  secure: true
+  samesite: lax
+  path: /
+```
+
+
+### Added
+
+- [Pascal]: can handle requests for multiple hosts/domains.
+
+### Changed
+
+- [Pascal]: requires config of allowed hosts to serve, and redirect URLs now need to be just absolute paths without a host.
+- [Pascal]: skip logging stack trace at warning log messages.
+
+### Fixed
+
+- [Login/Web]: upgrade `rest-hooks` packages so that the build un-breaks.
+
+
 # [2.5.2] - 2022-8-25 [PR: #31](https://github.com/dolittle-platform/Authentication/pull/31)
 ## Summary
 
