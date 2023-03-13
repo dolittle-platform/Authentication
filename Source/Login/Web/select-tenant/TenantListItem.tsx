@@ -9,12 +9,13 @@ export type TenantListItemProps = {
     tenant: Tenant;
 };
 
-export const TenantListItem = ({ tenant: { id, display } }: TenantListItemProps): JSX.Element => (
+export const TenantListItem = ({ tenant: { id, display } }: TenantListItemProps) =>
     <Button
         variant='contained'
         name='tenant'
         value={id}
         type='submit'
-        sx={{ minWidth: '9.375rem', width: '100%', display: 'block', mb: 2 }}
-    >{display}</Button>
-);
+        sx={{ minWidth: 150, width: 1, display: 'block', mb: 2 }}
+    >
+        {display}
+    </Button>;

@@ -8,14 +8,14 @@ import { Box, CircularProgress, Typography } from '@mui/material';
 import { configuration } from '../Configuration';
 import { SelectProviderForm } from './SelectProviderForm';
 
-export const SelectProvider = (): JSX.Element => {
+export const SelectProvider = () => {
     const { applicationName, showDolittleHeadline } = configuration;
 
     return (
-        <Box>
-            <Box sx={{ maxWidth: '23.0625rem', mb: 12.25, ml: 'auto', mr: 'auto' }}>
-                <Typography variant='h1' sx={{ mb: '2rem' }}>
-                    { 
+        <>
+            <Box sx={{ maxWidth: 370, mb: 12.25, mx: 'auto' }}>
+                <Typography variant='h1' sx={{ mb: 4 }}>
+                    {
                         applicationName
                             ? `Welcome to ${applicationName}`
                             : 'Welcome'
@@ -33,6 +33,6 @@ export const SelectProvider = (): JSX.Element => {
             <Suspense fallback={<CircularProgress />}>
                 <SelectProviderForm />
             </Suspense>
-        </Box>
+        </>
     );
 };
