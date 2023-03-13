@@ -3,7 +3,7 @@
 
 import { Suspense } from 'react';
 
-import { Box, Button, CircularProgress, Link, Typography } from '@mui/material';
+import { Button, CircularProgress, Link, Typography } from '@mui/material';
 
 import { configuration } from '../Configuration';
 import { SelectTenantForm } from './SelectTenantForm';
@@ -12,10 +12,8 @@ export const SelectTenant = (): JSX.Element => {
     const { logoutPath, supportEmail } = configuration;
 
     return (
-        <Box>
-            <Typography
-                variant='h2'
-                sx={{ mb: '2rem' }}>
+        <>
+            <Typography variant='h2' sx={{ mb: 4 }}>
                 Select your customer
             </Typography>
 
@@ -23,23 +21,17 @@ export const SelectTenant = (): JSX.Element => {
                 <SelectTenantForm />
             </Suspense>
 
-            <Box sx={{ mt: 12.5, mb: 5 }}>
-                {
-                    supportEmail &&
-                        <Typography variant='subtitle2'>
-                            Don't have access to a customer? <Link href={'mailto:' + supportEmail}>Contact us</Link> to get started.
-                        </Typography>
-                }
-            </Box>
+            {supportEmail &&
+                <Typography variant='subtitle2' sx={{ mt: 12.5, mb: 5 }}>
+                    Don't have access to a customer? <Link href={'mailto:' + supportEmail}>Contact us</Link> to get started.
+                </Typography>
+            }
 
-            <Box>
-                <Button
-                    size='large'
-                    color='inherit'
-                    href={logoutPath}>
+            <div role='button'>
+                <Button color='inherit' href={logoutPath}>
                     Log out
                 </Button>
-            </Box>
-        </Box>
+            </div>
+        </>
     );
 };
