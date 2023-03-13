@@ -10,7 +10,7 @@ export type TenantListProps = {
     tenants: Tenant[];
 };
 
-export const TenantList = ({ tenants }: TenantListProps): JSX.Element =>
+export const TenantList = ({ tenants }: TenantListProps) =>
     <Box sx={{ display: 'inline-block' }}>
         {tenants.map(tenant => (
             <TenantListItem key={tenant.id} tenant={tenant} />

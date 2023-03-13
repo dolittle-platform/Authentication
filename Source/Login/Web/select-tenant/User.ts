@@ -10,13 +10,12 @@ export type User = {
 
 export const isUser = (obj: any): obj is User => {
     if (typeof obj.subject !== 'string') return false;
-    
+
     if (!Array.isArray(obj.tenants)) return false;
+
     for (const tenant of obj.tenants) {
-        if (!isTenant(tenant)) {
-            return false;
-        }
-    }
+        if (!isTenant(tenant)) return false;
+    };
 
     return true;
 };
