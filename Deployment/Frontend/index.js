@@ -78,7 +78,11 @@ app.get('/.auth/self-service/login/flows', (req, res) => {
 
 app.post('/.auth/self-service/methods/oidc/auth/authentication-id', (req, res) => {
     console.log('Authenticating with external authority', req.body.provider)
-    res.redirect('/.auth/select-tenant?login_challenge=1234');
+    if(req.body.provider == 'sample-2') {
+        res.redirect('/.auth/no-tenant');
+    } else {
+        res.redirect('/.auth/select-tenant?login_challenge=1234');
+    }
 });
 
 app.get('/.auth/self-service/tenant/flows', (req, res) => {
