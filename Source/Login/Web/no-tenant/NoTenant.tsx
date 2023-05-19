@@ -3,18 +3,14 @@ import React, { Suspense } from 'react';
 import { Box, Button, CircularProgress, Link, Typography } from '@mui/material';
 
 import { configuration } from '../Configuration';
+import { WelcomeHeader } from '../components/WelcomeHeader';
 
 export const NoTenant = (): JSX.Element => {
     const { logoutPath, supportEmail } = configuration;
 
     return (
         <Box>
-            <Typography
-                variant='h2'
-                sx={{ mb: '2rem' }}>
-                No Access
-            </Typography>
-
+            <WelcomeHeader />
 
             <Box sx={{ mt: 12.5, mb: 5 }}>
                 {
@@ -27,7 +23,7 @@ export const NoTenant = (): JSX.Element => {
 
             <Box>
                 <Button
-                        size='large'
+                    size='large'
                     color='inherit'
                     href={logoutPath}>
                     Log out

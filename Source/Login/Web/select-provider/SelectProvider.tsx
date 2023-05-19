@@ -7,20 +7,15 @@ import { Box, CircularProgress, Typography } from '@mui/material';
 
 import { configuration } from '../Configuration';
 import { SelectProviderForm } from './SelectProviderForm';
+import { WelcomeHeader } from '../components/WelcomeHeader';
 
 export const SelectProvider = (): JSX.Element => {
-    const { applicationName, showDolittleHeadline } = configuration;
+    const { showDolittleHeadline } = configuration;
 
     return (
         <Box>
             <Box sx={{ maxWidth: '23.0625rem', mb: 12.25, ml: 'auto', mr: 'auto' }}>
-                <Typography variant='h1' sx={{ mb: '2rem' }}>
-                    { 
-                        applicationName
-                            ? `Welcome to ${applicationName}`
-                            : 'Welcome'
-                    }
-                </Typography>
+                <WelcomeHeader />
                 <Typography variant='h5'>
                     {
                         showDolittleHeadline
