@@ -29,7 +29,7 @@ export const SelectProvider = (): JSX.Element => {
             <Suspense fallback={<CircularProgress />}>
                 <SelectProviderForm />
             </Suspense>
-            <Divider variant='middle' sx={{ my: 4, backgroundColor: 'grey' }} />
+            <Divider variant='middle' sx={{ my: 4, backgroundColor: '#3B3D48' }} />
             <Typography variant='body2' color='gray'>
                 Don't have an account? <MuiLink component={Link} to='/.auth/no-tenant'>Get access</MuiLink>
             </Typography>
