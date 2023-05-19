@@ -33,6 +33,7 @@ export const SelectProviderForm = (): JSX.Element => {
                     md: `${flow.providers.length > 2 ? 'column' : 'row'}`,
                 },
                 justifyContent: 'space-between',
+                gap: '1.25rem',
             }}>
                 <IdentityProviderList providers={flow.providers} />
             </Box>
