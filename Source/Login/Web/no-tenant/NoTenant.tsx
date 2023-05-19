@@ -34,7 +34,7 @@ export const NoTenant = (): JSX.Element => {
                 <Box display='flex' flexDirection='column' gap={3} alignItems='flex-start' justifyItems='center'>
                     <ImageLink href='https://dolittle.io' text='Dolittle SDK Documentation' image={<AigonixCube />} />
                     <ImageLink href='https://youtube.com/@Aigonix' image={<YoutubeLogo />} text='Aigonix YouTube Channel' />
-                    <ImageLink href='' image={<DiscordLogo />} text='Join our Discord!' />
+                    <ImageLink href='https://discord.gg/tqJQvtw6bY' image={<DiscordLogo />} text='Join our Discord!' />
                 </Box>
             </Box>
 
