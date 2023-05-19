@@ -30,8 +30,8 @@ export const NoTenant = (): JSX.Element => {
                 In the meantime, please explore how to develop with Aigonix across our Developer Channels.
             </Typography>
 
-            <Box display='flex' justifyContent='center'>
-                <Box display='flex' flexDirection='column' gap={3} mt={4} alignItems='flex-start' justifyItems='center'>
+            <Box display='flex' justifyContent='center' mt={5}>
+                <Box display='flex' flexDirection='column' gap={3} alignItems='flex-start' justifyItems='center'>
                     <ImageLink href='https://dolittle.io' text='Dolittle SDK Documentation' image={<AigonixCube />} />
                     <ImageLink href='https://youtube.com/@Aigonix' image={<YoutubeLogo />} text='Aigonix YouTube Channel' />
                     <ImageLink href='' image={<DiscordLogo />} text='Join our Discord!' />
