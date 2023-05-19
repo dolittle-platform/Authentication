@@ -21,7 +21,7 @@ export const ImageLink = ({ href, image, text, target = '_blank', linkProps }: I
         sx={
             {
                 '& > *': {
-                    verticalAlign: 'middle'
+                    verticalAlign: 'text-bottom'
                 },
                 '& > span': {
                     ml: 2
