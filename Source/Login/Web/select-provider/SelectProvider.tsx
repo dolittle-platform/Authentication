@@ -3,11 +3,12 @@
 
 import { Suspense } from 'react';
 
-import { Box, CircularProgress, Typography } from '@mui/material';
+import { Box, CircularProgress, Divider, Link as MuiLink, Typography } from '@mui/material';
 
 import { configuration } from '../Configuration';
 import { SelectProviderForm } from './SelectProviderForm';
 import { WelcomeHeader } from '../components/WelcomeHeader';
+import { Link } from 'react-router-dom';
 
 export const SelectProvider = (): JSX.Element => {
     const { showDolittleHeadline } = configuration;
@@ -28,6 +29,11 @@ export const SelectProvider = (): JSX.Element => {
             <Suspense fallback={<CircularProgress />}>
                 <SelectProviderForm />
             </Suspense>
+            <Divider variant='middle' sx={{ my: 4, backgroundColor: 'grey' }} />
+            <Typography variant='body2' color='gray'>
+                Don't have an account? <MuiLink component={Link} to='/.auth/no-tenant'>Get access</MuiLink>
+            </Typography>
+
         </Box>
     );
 };
