@@ -1,33 +1,50 @@
-import React, { Suspense } from 'react';
+// Copyright (c) Dolittle. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import { Box, Button, CircularProgress, Link, Typography } from '@mui/material';
+
+import DiscordLogo from '../styles/images/discord.svg';
+import YoutubeLogo from '../styles/images/youtube.svg';
+import AigonixCube from '../styles/images/aigonix_cube_dark.svg';
+
+
+import { Box, Link, Typography } from '@mui/material';
 
 import { configuration } from '../Configuration';
 import { WelcomeHeader } from '../components/WelcomeHeader';
+import { ImageLink } from '../components/ImageLink';
 
 export const NoTenant = (): JSX.Element => {
-    const { logoutPath, supportEmail } = configuration;
+    const { applicationName, logoutPath, supportEmail } = configuration;
 
     return (
         <Box>
             <WelcomeHeader />
 
+            <Typography variant='subtitle2'>
+                Thanks for your interest in {applicationName}!
+            </Typography>
+            <Typography variant='subtitle2' sx={{ mt: 3 }}>
+                Our Studio will go live soon.
+            </Typography>
+            <Typography variant='subtitle2' sx={{ mt: 3 }}>
+                In the meantime, please explore how to develop with Aigonix across our Developer Channels.
+            </Typography>
+
+            <Box display='flex' justifyContent='center'>
+                <Box display='flex' flexDirection='column' gap={3} mt={4} alignItems='flex-start' justifyItems='center'>
+                    <ImageLink href='https://dolittle.io' text='Dolittle SDK Documentation' image={<AigonixCube />} />
+                    <ImageLink href='https://youtube.com/@Aigonix' image={<YoutubeLogo />} text='Aigonix YouTube Channel' />
+                    <ImageLink href='' image={<DiscordLogo />} text='Join our Discord!' />
+                </Box>
+            </Box>
+
             <Box sx={{ mt: 12.5, mb: 5 }}>
                 {
                     supportEmail &&
                     <Typography variant='subtitle2'>
-                        Don't have access to a customer? <Link href={'mailto:' + supportEmail}>Contact us</Link> or <Link href={'mailto:' + supportEmail}>Register</Link> to be notified when we open for external sign-ups.
+                        An existing customer? <Link href={'mailto:' + supportEmail}>Contact us</Link> to get started.
                     </Typography>
                 }
-            </Box>
-
-            <Box>
-                <Button
-                    size='large'
-                    color='inherit'
-                    href={logoutPath}>
-                    Log out
-                </Button>
             </Box>
         </Box>
     );
