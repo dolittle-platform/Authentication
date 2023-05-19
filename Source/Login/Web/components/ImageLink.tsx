@@ -3,7 +3,7 @@
 
 import { ReactNode } from 'react';
 
-import { Link, LinkProps } from '@mui/material';
+import { Box, Link, LinkProps } from '@mui/material';
 
 export type ImageLinkProps = {
     href: string;
@@ -18,18 +18,13 @@ export const ImageLink = ({ href, image, text, target = '_blank', linkProps }: I
         href={href}
         target={target}
         {...linkProps}
-        sx={
-            {
-                '& > *': {
-                    verticalAlign: 'text-bottom'
-                },
-                '& > span': {
-                    ml: image ? 2 : 0
-                }
-            }
-        }
+        sx={{
+            display: 'flex',
+            gap: 2,
+            justifyContent: 'center',
+        }}
     >
-        {image}
-        <span>{text}</span>
+        <Box sx={{ width: 34, verticalAlign:'center' }} display='flex' justifyContent='center'>{image}</Box>
+        <Box component='span' display='flex' justifyContent='center'>{text}</Box>
     </Link>
 );
