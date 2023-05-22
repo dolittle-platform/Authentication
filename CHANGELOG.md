@@ -1,3 +1,20 @@
+# [3.1.0] - 2023-5-22 [PR: #34](https://github.com/dolittle-platform/Authentication/pull/34)
+## Summary
+
+Introduce changes to Authentication that give new users a slightly better experience with Studio by presenting them with a "no-tenant" landing page with links to other Dolittle resources. The main intent is for them not to "be left hanging". This is a first step in the direction of self-serviced sign-ups.
+
+
+### Added
+
+- [Login/Backend]: Add a rule in the authentication backend to redirect a user with no tenants to a new "no-tenant" page.
+- [Login/Web]: Add a link on the select customer page to "Get access" that takes the user to the "no-tenant" page
+- [Login/Web]: Add a new "no-tenant" page that serves as a landing page for new users of Studio and has links to further learning 
+
+### Changed
+
+- [Login/Web]: Rebranded from Dolittle to Aigonix
+
+
 # [3.0.1] - 2023-3-13 [PR: #33](https://github.com/dolittle-platform/Authentication/pull/33)
 ## Summary
 
