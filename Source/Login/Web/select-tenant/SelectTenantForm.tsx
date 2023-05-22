@@ -16,7 +16,7 @@ const useLoginChallengeID = (): string | null => {
     return query.get('login_challenge');
 };
 
-export const SelectTenantForm = (): JSX.Element => {
+export const SelectTenantForm = () => {
     const challengeID = useLoginChallengeID();
     const challenge = useResource(Challenges, challengeID);
 
@@ -24,7 +24,7 @@ export const SelectTenantForm = (): JSX.Element => {
 
     return (
         <Form form={challenge.form}>
-            <input type="hidden" name="login_challenge" value={challenge.id} />
+            <input type='hidden' name='login_challenge' value={challenge.id} />
             <TenantList tenants={challenge.user.tenants} />
         </Form>
     );

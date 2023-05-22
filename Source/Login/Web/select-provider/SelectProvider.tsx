@@ -14,8 +14,8 @@ export const SelectProvider = (): JSX.Element => {
     const { showDolittleHeadline } = configuration;
 
     return (
-        <Box>
-            <Box sx={{ maxWidth: '23.0625rem', mb: 12.25, ml: 'auto', mr: 'auto' }}>
+        <>
+            <Box sx={{ maxWidth: 370, mb: 12.25, mx: 'auto' }}>
                 <WelcomeHeader />
                 <Typography variant='h5'>
                     {
@@ -33,7 +33,6 @@ export const SelectProvider = (): JSX.Element => {
             <Typography variant='body2' color='gray'>
                 Don't have an account? <MuiLink component={Link} to='/.auth/no-tenant'>Get access</MuiLink>
             </Typography>
-
-        </Box>
+        </>
     );
 };

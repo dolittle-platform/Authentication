@@ -7,7 +7,7 @@ import { configuration } from '../Configuration';
 export const WelcomeHeader = () => {
     const { applicationName } = configuration;
 
-    return <Typography variant='h1' sx={{ mb: '2rem' }}>
+    return <Typography variant='h1' sx={{ mb: '4' }}>
         {
             applicationName
                 ? `Welcome to ${applicationName}`

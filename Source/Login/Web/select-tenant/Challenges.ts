@@ -12,9 +12,7 @@ const fetchChallenge = async (challengeID: string | null): Promise<Challenge | n
     const response = await fetch(`/.auth/self-service/tenant/flows?login_challenge=${challengeID}`);
     const data = await response.json();
 
-    if (!isChallenge(data)) {
-        throw new InvalidChallenge(data);
-    }
+    if (!isChallenge(data)) throw new InvalidChallenge(data);
 
     return data;
 };

@@ -1,3 +1,9 @@
+# [3.0.1] - 2023-3-13 [PR: #33](https://github.com/dolittle-platform/Authentication/pull/33)
+## Summary
+
+Investigated how to redirect a user when only one Tenant is available. By doing this, I cleaned up the code a bit.
+
+
 # [3.0.0] - 2022-10-19 [PR: #32](https://github.com/dolittle-platform/Authentication/pull/32)
 ## Summary
 

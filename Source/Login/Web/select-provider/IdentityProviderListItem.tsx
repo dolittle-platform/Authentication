@@ -9,19 +9,15 @@ export type IdentityProviderListItemProps = {
     provider: IdentityProvider;
 };
 
-export const IdentityProviderListItem = ({ provider: { id, imageURL, display } }: IdentityProviderListItemProps): JSX.Element => (
+export const IdentityProviderListItem = ({ provider: { id, imageURL, display } }: IdentityProviderListItemProps) =>
     <Button
         variant='outlined'
         name='provider'
         value={id}
         type='submit'
         startIcon={
-            <img
-                src={imageURL}
-                style={{ maxWidth: '1.25rem', maxHeight: '1.25rem' }}
-            />
+            <img src={imageURL} style={{ maxWidth: '1.25rem', maxHeight: '1.25rem' }} />
         }
     >
         Sign in with {display}
-    </Button>
-);
+    </Button>;
