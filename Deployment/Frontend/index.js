@@ -9,6 +9,11 @@ const identityProviders = [
         display: 'sample 2',
         imageURL: 'https://via.placeholder.com/60'
     },
+    {
+        id: 'sample-3',
+        display: 'sample no tenant',
+        imageURL: 'https://via.placeholder.com/60'
+    },
 ];
 
 const availableTenants = [
@@ -78,7 +83,11 @@ app.get('/.auth/self-service/login/flows', (req, res) => {
 
 app.post('/.auth/self-service/methods/oidc/auth/authentication-id', (req, res) => {
     console.log('Authenticating with external authority', req.body.provider)
-    res.redirect('/.auth/select-tenant?login_challenge=1234');
+    if(req.body.provider == 'sample-3') {
+        res.redirect('/.auth/no-tenant');
+    } else {
+        res.redirect('/.auth/select-tenant?login_challenge=1234');
+    }
 });
 
 app.get('/.auth/self-service/tenant/flows', (req, res) => {

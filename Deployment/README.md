@@ -29,7 +29,7 @@ To test out with different sets of providers or tenants, you can modify the `ide
 #### Starting up
 To build and start up the current code, run:
 ```shell
-docker-compose up -d
+docker compose up -d
 ```
 
 > It takes a litle while to boot up, so give it a few seconds.
@@ -59,14 +59,14 @@ You should then be presented with a JSON output of the request sent to the under
 #### Tearing down
 Shut down the containers and the ingress, and run:
 ```shell
-docker-compose down -v
+docker compose down -v
 ```
 This will clean up everything created and clear out databases, so you'll need to add tenants to users again the next time.
 
 #### Rebuilding images from source
 When you've changed the code and want to test the new code in Docker compose, you can run:
 ```shell
-docker-compose build
+docker compose build
 ```
 Take the deployment down and restart it to run with the fresh images.
 

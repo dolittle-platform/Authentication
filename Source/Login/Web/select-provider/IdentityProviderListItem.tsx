@@ -15,7 +15,6 @@ export const IdentityProviderListItem = ({ provider: { id, imageURL, display } }
         name='provider'
         value={id}
         type='submit'
-        sx={{ mb: { xs: 2.5, md: 0 } }}
         startIcon={
             <img src={imageURL} style={{ maxWidth: '1.25rem', maxHeight: '1.25rem' }} />
         }

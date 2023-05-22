@@ -6,7 +6,7 @@ serve:
 
 frontend:
   showDolittleHeadline: true
-  applicationName: Dolittle Studio
+  applicationName: Aigonix Studio
   supportEmail: support@dolittle.com
   paths:
     start: /

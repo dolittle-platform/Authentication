@@ -43,6 +43,11 @@ func (h *initiateHandler) Handle(w http.ResponseWriter, r *http.Request, ctx con
 		return err
 	}
 
+	if len(flow.User.Tenants) == 0 {
+		http.Redirect(w, r, "/.auth/no-tenant", http.StatusFound)
+		return nil
+	}
+
 	if len(flow.User.Tenants) == 1 {
 		redirect, err := h.selecter.SelectTenant(ctx, flow, flow.User.Tenants[0].ID)
 		if err != nil {

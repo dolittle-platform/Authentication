@@ -21,7 +21,7 @@ declare global {
 
 const defaults: Configuration = {
     showDolittleHeadline: true,
-    applicationName: 'Dolittle Studio',
+    applicationName: 'Aigonix Studio',
     supportEmail: 'support@dolittle.com',
     startPath: '/',
     logoutPath: '/.auth/cookies/logout'

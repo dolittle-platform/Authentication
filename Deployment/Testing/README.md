@@ -9,7 +9,7 @@ Append to your `/etc/hosts` file:
 
 Build local Docker images with (in the `../Development` directory)
 ```shell
-docker-compose build
+docker compose build
 ```
 
 Then run:
