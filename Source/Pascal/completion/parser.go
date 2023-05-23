@@ -1,6 +1,7 @@
 package completion
 
 import (
+	"dolittle.io/pascal/redirects"
 	"net/http"
 
 	"dolittle.io/pascal/openid"
@@ -37,6 +38,7 @@ func (p *parser) ParseFrom(r *http.Request) (*Response, error) {
 	state := r.URL.Query().Get(stateParameter)
 
 	return &Response{
+		Host:  redirects.GetHostFor(r),
 		Code:  openid.AuthenticationCode(code),
 		State: nonces.Nonce(state),
 	}, nil

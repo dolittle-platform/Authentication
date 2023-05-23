@@ -6,6 +6,7 @@ import (
 )
 
 type Response struct {
+	Host  string
 	Code  openid.AuthenticationCode
 	State nonces.Nonce
 }

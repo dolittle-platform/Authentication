@@ -31,7 +31,7 @@ func (c *completer) Complete(response *Response, session *sessions.Session) (*is
 		return nil, ErrSessionDoesNotMatchProviderCallback
 	}
 
-	token, err := c.exchanger.Exchange(response.Code)
+	token, err := c.exchanger.Exchange(response.Host, response.Code)
 	if err != nil {
 		c.logger.Error("could not exhchange code for token", zap.Error(err))
 		return nil, err
