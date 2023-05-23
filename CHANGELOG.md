@@ -1,3 +1,9 @@
+# [3.2.0] - 2023-5-23 [PR: #35](https://github.com/dolittle-platform/Authentication/pull/35)
+## Summary
+
+Fixing missing host in the callback redirect url bug introduced in multi-host setup change.
+
+
 # [3.1.0] - 2023-5-22 [PR: #34](https://github.com/dolittle-platform/Authentication/pull/34)
 ## Summary
 
