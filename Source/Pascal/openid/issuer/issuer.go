@@ -13,7 +13,7 @@ const idTokenKey = "id_token"
 
 type Issuer interface {
 	GetAuthenticationRedirectURL(host string, nonce nonces.Nonce) (string, error)
-	ExchangeCodeForAccessToken(code string) (*Token, error)
+	ExchangeCodeForAccessToken(host string, code string) (*Token, error)
 	ExchangeCodeForIDToken(code string) (*Token, error)
 	RevocationIsSupported() bool
 	RevokeToken(*Token) error
@@ -79,8 +79,15 @@ func (i *issuer) GetAuthenticationRedirectURL(host string, nonce nonces.Nonce) (
 	return redirectConfig.AuthCodeURL(string(nonce)), nil
 }
 
-func (i *issuer) ExchangeCodeForAccessToken(code string) (*Token, error) {
-	token, err := i.config.Exchange(context.Background(), code)
+func (i *issuer) ExchangeCodeForAccessToken(host string, code string) (*Token, error) {
+	redirectConfig := &oauth2.Config{
+		ClientID:     i.config.ClientID,
+		ClientSecret: i.config.ClientSecret,
+		Endpoint:     i.config.Endpoint,
+		Scopes:       i.config.Scopes,
+		RedirectURL:  host + i.config.RedirectURL,
+	}
+	token, err := redirectConfig.Exchange(context.Background(), code)
 	if err != nil {
 		return nil, err
 	}
