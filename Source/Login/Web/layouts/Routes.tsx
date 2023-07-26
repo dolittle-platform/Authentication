@@ -22,11 +22,7 @@ export const Routes = () =>
                 <SelectTenant />
             </ErrorBoundary>
         } />
-        <Route path="/.auth/no-tenant" element={
-            <ErrorBoundary>
-                <NoTenant />
-            </ErrorBoundary>
-        } />
+
         <Route path="/.auth/logged-out" element={
             <ErrorBoundary>
                 <LoggedOut />
