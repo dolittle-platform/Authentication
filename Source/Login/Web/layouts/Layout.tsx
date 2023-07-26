@@ -29,8 +29,8 @@ const styles = {
             backgroundPosition: '-60vh -25vh',
         } : {},
     logo: {
-        width: 1,
-        height: 39,
+        width: 166,
+        height: 28,
         mt: 18.5,
     },
 };
