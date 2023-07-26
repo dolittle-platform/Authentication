@@ -16,16 +16,16 @@ export default function App(this: any) {
     return (
         <CacheProvider>
             <ThemeProvider theme={Theme}>
-                <CssBaseline/>
+                <CssBaseline />
                 <Router>
                     <Suspense fallback={<></>}>
-                        <Layout/>
+                        <Layout />
                     </Suspense>
                 </Router>
             </ThemeProvider>
         </CacheProvider>
     );
-}
+};
 
 ReactDOM
     .createRoot(document.getElementById('root')!)

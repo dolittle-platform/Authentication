@@ -2,11 +2,11 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 export type Configuration = {
-    showDolittleHeadline: boolean,
-    applicationName: string | undefined,
-    supportEmail: string | undefined,
-    startPath: string,
-    logoutPath: string,
+    showDolittleHeadline: boolean;
+    applicationName: string | undefined;
+    supportEmail: string | undefined;
+    startPath: string;
+    logoutPath: string;
 };
 
 type PartialConfiguration = {
@@ -15,16 +15,16 @@ type PartialConfiguration = {
 
 declare global {
     interface Window {
-        configuration: PartialConfiguration | undefined
+        configuration: PartialConfiguration | undefined;
     }
-}
+};
 
 const defaults: Configuration = {
     showDolittleHeadline: true,
     applicationName: 'Aigonix Studio',
     supportEmail: 'support@dolittle.com',
     startPath: '/',
-    logoutPath: '/.auth/cookies/logout'
+    logoutPath: '/.auth/cookies/logout',
 };
 
 export const configuration = Object.fromEntries([
