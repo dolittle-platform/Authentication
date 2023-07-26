@@ -25,8 +25,7 @@ const styles = {
         configuration.showDolittleHeadline ? {
             backgroundImage: `url(${Symbol})`,
             backgroundRepeat: 'no-repeat',
-            backgroundSize: 'auto 142vh',
-            backgroundPosition: '-60vh -25vh',
+            backgroundSize: 'auto 100vh',
         } : {},
     logo: {
         width: 166,
