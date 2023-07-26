@@ -2,12 +2,12 @@ const identityProviders = [
     {
         id: 'sample',
         display: 'sample',
-        imageURL: 'https://via.placeholder.com/60'
+        imageURL: 'https://via.placeholder.com/60',
     },
     {
         id: 'sample-2',
         display: 'sample 2',
-        imageURL: 'https://via.placeholder.com/60'
+        imageURL: 'https://via.placeholder.com/60',
     },
     // {
     //     id: 'sample-3',
@@ -19,16 +19,16 @@ const identityProviders = [
 const availableTenants = [
     {
         id: 'dolittle',
-        display: 'dolittle'
+        display: 'dolittle',
     },
     {
         id: 'tenant-a',
-        display: 'tenant-a'
+        display: 'tenant-a',
     },
     {
         id: 'tenant-b',
         display: 'tenant-b'
-    }
+    },
 ];
 
 const responseDelay = 1000;
