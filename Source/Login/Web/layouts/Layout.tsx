@@ -30,7 +30,6 @@ const styles = {
     logo: {
         width: 166,
         height: 28,
-        mt: 18.5,
     },
 };
 
@@ -38,7 +37,11 @@ export const Layout = () =>
     <Box sx={{ minHeight: '100vh', ...styles.showDolittlelogo }}>
         <Box sx={styles.rightContainer}>
             <Routes />
-            {configuration.showDolittleHeadline && <Logo sx={styles.logo} />}
+            {configuration.showDolittleHeadline &&
+                <Box sx={{ width: 1, mt: 18 }}>
+                    <Logo sx={styles.logo} />
+                </Box>
+            }
         </Box>
     </Box>;
 
