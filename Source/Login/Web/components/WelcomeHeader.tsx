@@ -5,12 +5,7 @@ import { Typography } from '@mui/material';
 
 import { configuration } from '../Configuration';
 
-export const WelcomeHeader = () => {
-    const { applicationName } = configuration;
-
-    return (
-        <Typography variant='h1' sx={{ mb: '4' }}>
-            {applicationName ? `Welcome to ${applicationName}` : 'Welcome'}
-        </Typography>
-    );
-};
+export const WelcomeHeader = () =>
+    <Typography variant='h1' sx={{ mb: '4' }}>
+        {configuration.applicationName ? `Welcome to ${configuration.applicationName}` : 'Welcome'}
+    </Typography>;
