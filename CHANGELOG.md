@@ -1,3 +1,9 @@
+# [3.4.0] - 2023-7-26 [PR: #37](https://github.com/dolittle-platform/Authentication/pull/37)
+## Summary
+
+Updated page meta title from 'Welcome - please log in' to 'Welcome to Aigonix'.
+
+
 # [3.3.0] - 2023-7-26 [PR: #36](https://github.com/dolittle-platform/Authentication/pull/36)
 ## Summary
 
