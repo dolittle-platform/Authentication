@@ -5,7 +5,7 @@ import { Box, Button, Link, Typography } from '@mui/material';
 
 import { configuration } from '../Configuration';
 
-export const Error = () => {
+export const Error = (): JSX.Element => {
     const { logoutPath, supportEmail } = configuration;
 
     const tryAgainText = supportEmail

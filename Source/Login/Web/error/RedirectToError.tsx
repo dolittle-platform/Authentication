@@ -3,4 +3,6 @@
 
 import { Navigate } from 'react-router-dom';
 
-export const RedirectToError = () => <Navigate to="/.auth/error" />
+export const RedirectToError = (): JSX.Element => (
+    <Navigate to="/.auth/error" />
+);
