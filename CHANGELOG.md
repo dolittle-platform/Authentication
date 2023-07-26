@@ -1,3 +1,9 @@
+# [3.3.0] - 2023-7-26 [PR: #36](https://github.com/dolittle-platform/Authentication/pull/36)
+## Summary
+
+Small code refactoring.
+
+
 # [3.2.0] - 2023-5-23 [PR: #35](https://github.com/dolittle-platform/Authentication/pull/35)
 ## Summary
 
