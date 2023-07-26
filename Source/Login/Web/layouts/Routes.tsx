@@ -1,22 +1,22 @@
 // Copyright (c) Dolittle. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import { Routes as RouterRoutes, Route } from 'react-router-dom';
+import { Route, Routes as RouterRoutes } from 'react-router-dom';
 
 import { ErrorBoundary } from '../error/ErrorBoundary';
-import { Error } from '../error/Error'
-import { LoggedOut } from '../logged-out/LoggedOut'
-import { SelectProvider } from '../select-provider/SelectProvider'
-import { SelectTenant } from '../select-tenant/SelectTenant'
-import { NoTenant } from '../no-tenant/NoTenant';
+import { Error } from '../error/Error';
+import { LoggedOut } from '../logged-out/LoggedOut';
+import { SelectProvider } from '../select-provider/SelectProvider';
+import { SelectTenant } from '../select-tenant/SelectTenant';
 
-export const Routes = (): JSX.Element => (
+export const Routes = () =>
     <RouterRoutes>
         <Route path="/.auth/select-provider" element={
             <ErrorBoundary>
                 <SelectProvider />
             </ErrorBoundary>
         } />
+
         <Route path="/.auth/select-tenant" element={
             <ErrorBoundary>
                 <SelectTenant />
@@ -32,10 +32,10 @@ export const Routes = (): JSX.Element => (
                 <LoggedOut />
             </ErrorBoundary>
         } />
+
         <Route path="/.auth/error" element={
             <Error />
         } />
-    </RouterRoutes>
-);
+    </RouterRoutes>;
 
 export default Routes;
