@@ -14,7 +14,7 @@ type ErrorBoundaryState = {
 } | {
     hasError: true;
     error: Error;
-}
+};
 
 export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
     constructor(props: ErrorBoundaryProps) {
@@ -38,4 +38,4 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
 
         return this.props.children;
     }
-}
+};

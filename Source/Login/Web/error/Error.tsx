@@ -5,7 +5,7 @@ import { Box, Button, Link, Typography } from '@mui/material';
 
 import { configuration } from '../Configuration';
 
-export const Error = (): JSX.Element => {
+export const Error = () => {
     const { logoutPath, supportEmail } = configuration;
 
     const tryAgainText = supportEmail
@@ -14,20 +14,16 @@ export const Error = (): JSX.Element => {
 
     return (
         <>
-            <Typography variant="h2" sx={{ mb: '1.875rem', letterSpacing: '-0.03125em' }}>
+            <Typography variant='h2' sx={{ mb: 4 }}>
                 Oops, something went wrong.
             </Typography>
 
             <Typography variant='subtitle2'>
-                { tryAgainText }
+                {tryAgainText}
             </Typography>
 
             <Box sx={{ mt: 8 }}>
-                <Button
-                    size='large'
-                    color='inherit'
-                    sx={{ fontSize: '0.875rem' }}
-                    href={logoutPath}>
+                <Button color='inherit' sx={{ fontSize: 13 }} href={logoutPath}>
                     Log out
                 </Button>
             </Box>
