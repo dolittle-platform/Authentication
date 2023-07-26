@@ -11,8 +11,8 @@ import 'webpack-dev-server';
 import { template as SvgrTemplate } from './styles/images/svgr/template';
 
 type WebpackArguments = {
-    mode: 'none' | 'production' | 'development',
-}
+    mode: 'none' | 'production' | 'development';
+};
 
 const globalFrontendConfiguration = (args: WebpackArguments): string => {
     if (args.mode === 'production') {
@@ -36,10 +36,9 @@ const globalFrontendConfiguration = (args: WebpackArguments): string => {
             };
         `.trim();
     }
-}
+};
 
 export default (_env: any, args: WebpackArguments): Configuration => {
-
     return {
         entry: './index.tsx',
         output: {
