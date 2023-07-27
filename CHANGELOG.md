@@ -1,3 +1,9 @@
+# [3.4.1] - 2023-7-27 [PR: #38](https://github.com/dolittle-platform/Authentication/pull/38)
+## Summary
+
+Update page meta title.
+
+
 # [3.4.0] - 2023-7-26 [PR: #37](https://github.com/dolittle-platform/Authentication/pull/37)
 ## Summary
 
