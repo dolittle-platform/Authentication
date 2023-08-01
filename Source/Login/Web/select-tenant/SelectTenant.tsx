@@ -8,30 +8,23 @@ import { Button, CircularProgress, Link, Typography } from '@mui/material';
 import { configuration } from '../Configuration';
 import { SelectTenantForm } from './SelectTenantForm';
 
-export const SelectTenant = (): JSX.Element => {
-    const { logoutPath, supportEmail } = configuration;
+export const SelectTenant = () =>
+    <>
+        <Typography variant='h2' sx={{ mb: 4 }}>
+            Select your customer
+        </Typography>
 
-    return (
-        <>
-            <Typography variant='h2' sx={{ mb: 4 }}>
-                Select your customer
+        <Suspense fallback={<CircularProgress />}>
+            <SelectTenantForm />
+        </Suspense>
+
+        {configuration.supportEmail &&
+            <Typography variant='subtitle2' sx={{ mt: 8 }}>
+                Don't have access to a customer? <Link href={'mailto:' + configuration.supportEmail}>Contact us</Link> to get started.
             </Typography>
+        }
 
-            <Suspense fallback={<CircularProgress />}>
-                <SelectTenantForm />
-            </Suspense>
-
-            {supportEmail &&
-                <Typography variant='subtitle2' sx={{ mt: 12.5, mb: 5 }}>
-                    Don't have access to a customer? <Link href={'mailto:' + supportEmail}>Contact us</Link> to get started.
-                </Typography>
-            }
-
-            <div role='button'>
-                <Button color='inherit' href={logoutPath}>
-                    Log out
-                </Button>
-            </div>
-        </>
-    );
-};
+        <Button color='inherit' href={configuration.logoutPath} sx={{ mt: 4 }}>
+            Log out
+        </Button>
+    </>;
