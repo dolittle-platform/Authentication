@@ -3,7 +3,7 @@
 
 import { Routes } from './Routes';
 
-import { Box } from '@mui/material';
+import { Box, Link } from '@mui/material';
 
 import Symbol from '../styles/images/symbol.svg?url';
 import Logo from '../styles/images/logo.svg';
@@ -38,9 +38,9 @@ export const Layout = () =>
         <Box sx={styles.rightContainer}>
             <Routes />
             {configuration.showDolittleHeadline &&
-                <Box sx={{ width: 1, mt: 18 }}>
+                <Link href={configuration.startPath} sx={{ width: 1, mt: 18, display: 'block' }}>
                     <Logo sx={styles.logo} />
-                </Box>
+                </Link>
             }
         </Box>
     </Box>;
