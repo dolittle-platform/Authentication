@@ -25,7 +25,6 @@ export const Routes = () => (
         } />
 
         <Route path="/.auth/no-tenant" element={
-
             <ErrorBoundary>
                 <NoTenant />
             </ErrorBoundary>
