@@ -8,8 +8,9 @@ import { Error } from '../error/Error';
 import { LoggedOut } from '../logged-out/LoggedOut';
 import { SelectProvider } from '../select-provider/SelectProvider';
 import { SelectTenant } from '../select-tenant/SelectTenant';
+import { NoTenant } from '../no-tenant/NoTenant';
 
-export const Routes = (): JSX.Element => (
+export const Routes = () => (
     <RouterRoutes>
         <Route path="/.auth/select-provider" element={
             <ErrorBoundary>
@@ -20,6 +21,13 @@ export const Routes = (): JSX.Element => (
         <Route path="/.auth/select-tenant" element={
             <ErrorBoundary>
                 <SelectTenant />
+            </ErrorBoundary>
+        } />
+
+        <Route path="/.auth/no-tenant" element={
+
+            <ErrorBoundary>
+                <NoTenant />
             </ErrorBoundary>
         } />
 
