@@ -25,7 +25,7 @@ export const NoTenant = () =>
         <Stack sx={{ mt: 2, gap: 1, justifyItems: 'center', alignSelf: 'center', alignItems: 'flex-start' }}>
             <Button href='https://dolittle.io' target='_blank' startIcon={<AigonixIcon />}>Dolittle SDK Documentation</Button>
             <Button href='https://youtube.com/@Aigonix' target='_blank' startIcon={<YoutubeIcon />}>Aigonix YouTube Channel</Button>
-            <Button href='https://discord.gg/tqJQvtw6bY' target='_blank' startIcon={<DiscordIcon />}>Join our Discord!</Button>
+            <Button href='https://discord.gg/tqJQvtw6bY' target='_blank' startIcon={<DiscordIcon />}>Join our Discord</Button>
         </Stack>
 
         <Box sx={{ mt: 8 }}>
