@@ -1,3 +1,17 @@
+# [3.4.2] - 2023-8-1 [PR: #39](https://github.com/dolittle-platform/Authentication/pull/39)
+## Summary
+
+Added 'no tenant' page for new customers.
+
+<img width="631" alt="Screenshot 2023-08-01 at 19 02 19" src="https://github.com/dolittle-platform/Authentication/assets/19160439/09ad13c5-49b8-4616-8b5f-d006fb883035">
+
+### Added
+
+- Custom icons
+- Home url to logo for easier navigation
+- NoTenant component
+
+
 # [3.4.1] - 2023-7-27 [PR: #38](https://github.com/dolittle-platform/Authentication/pull/38)
 ## Summary
 
