@@ -9,11 +9,11 @@ const identityProviders = [
         display: 'sample 2',
         imageURL: 'https://via.placeholder.com/60',
     },
-    // {
-    //     id: 'sample-3',
-    //     display: 'sample no tenant',
-    //     imageURL: 'https://via.placeholder.com/60'
-    // },
+    {
+        id: 'sample-3',
+        display: 'sample no tenant',
+        imageURL: 'https://via.placeholder.com/60'
+    },
 ];
 
 const availableTenants = [
