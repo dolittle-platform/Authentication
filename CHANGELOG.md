@@ -1,3 +1,9 @@
+# [3.4.3] - 2023-8-4 [PR: #40](https://github.com/dolittle-platform/Authentication/pull/40)
+## Summary
+
+Changed back to original Microsoft and Github icons.
+
+
 # [3.4.2] - 2023-8-1 [PR: #39](https://github.com/dolittle-platform/Authentication/pull/39)
 ## Summary
 
