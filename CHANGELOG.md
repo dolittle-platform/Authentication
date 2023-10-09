@@ -1,3 +1,25 @@
+# [3.4.5] - 2023-10-9 [PR: #42](https://github.com/dolittle-platform/Authentication/pull/42)
+## Summary
+
+Appearance improvements.
+
+### Added
+
+- 'Return to login page' button to NoTennant page
+
+### Changed
+
+- Wording from 'Customer' to 'Organization'
+
+### Fixed
+
+- Login option buttons were too wide on mobile
+
+### Removed
+
+- Text, that is no longer needed
+
+
 # [3.4.4] - 2023-10-9 [PR: #41](https://github.com/dolittle-platform/Authentication/pull/41)
 ## Summary
 
