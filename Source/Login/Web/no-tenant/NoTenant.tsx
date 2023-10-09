@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 import { Box, Button, Link, Stack, Typography } from '@mui/material';
+import { ArrowBack } from '@mui/icons-material';
 
 import AigonixIcon from '../styles/images/aigonix_light_cube.svg';
 import DiscordIcon from '../styles/images/discord.svg';
@@ -30,5 +31,11 @@ export const NoTenant = () =>
                     An existing organization? <Link href={'mailto:' + configuration.supportEmail}>Contact us</Link> to get started.
                 </Typography>
             }
+        </Box>
+
+        <Box sx={{ mt: 4 }}>
+            <Button color='inherit' startIcon={<ArrowBack />} href={configuration.startPath}>
+                Return to login page
+            </Button>
         </Box>
     </Stack>;
