@@ -11,7 +11,7 @@ import { SelectTenantForm } from './SelectTenantForm';
 export const SelectTenant = () =>
     <>
         <Typography variant='h2' sx={{ mb: 4 }}>
-            Select your customer
+            Select your organization
         </Typography>
 
         <Suspense fallback={<CircularProgress />}>
@@ -20,7 +20,7 @@ export const SelectTenant = () =>
 
         {configuration.supportEmail &&
             <Typography variant='subtitle2' sx={{ mt: 8 }}>
-                Don't have access to a customer? <Link href={'mailto:' + configuration.supportEmail}>Contact us</Link> to get started.
+                Don't have access to a organization? <Link href={'mailto:' + configuration.supportEmail}>Contact us</Link> to get started.
             </Typography>
         }
 

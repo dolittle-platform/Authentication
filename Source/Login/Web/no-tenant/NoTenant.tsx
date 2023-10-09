@@ -31,7 +31,7 @@ export const NoTenant = () =>
         <Box sx={{ mt: 8 }}>
             {configuration.supportEmail &&
                 <Typography variant='subtitle2'>
-                    An existing customer? <Link href={'mailto:' + configuration.supportEmail}>Contact us</Link> to get started.
+                    An existing organization? <Link href={'mailto:' + configuration.supportEmail}>Contact us</Link> to get started.
                 </Typography>
             }
         </Box>
