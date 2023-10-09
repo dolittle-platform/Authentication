@@ -1,3 +1,9 @@
+# [3.4.4] - 2023-10-9 [PR: #41](https://github.com/dolittle-platform/Authentication/pull/41)
+## Summary
+
+Changed files header copyright information from 'Dolittle' to 'Aigonix'.
+
+
 # [3.4.3] - 2023-8-4 [PR: #40](https://github.com/dolittle-platform/Authentication/pull/40)
 ## Summary
 
