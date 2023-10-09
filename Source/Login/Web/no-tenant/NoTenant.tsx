@@ -14,12 +14,8 @@ export const NoTenant = () =>
     <Stack>
         <WelcomeHeader />
 
-        <Typography variant='subtitle2' sx={{ mt: 4 }}>
-            Our Studio will go live soon!
-        </Typography>
-
         <Typography variant='subtitle2' sx={{ mt: 8 }}>
-            In the meantime, please explore how to develop with Aigonix across our Developer Channels.
+            Explore how to develop with Aigonix across our Developer Channels.
         </Typography>
 
         <Stack sx={{ mt: 2, gap: 1, justifyItems: 'center', alignSelf: 'center', alignItems: 'flex-start' }}>
