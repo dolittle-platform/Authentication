@@ -1,9 +1,9 @@
-// Copyright (c) Dolittle. All rights reserved.
+// Copyright (c) Aigonix. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 module.exports = ({ types: t }) => ({
     visitor: {
-        JSXOpeningElement({node}) {
+        JSXOpeningElement({ node }) {
             if (!t.isJSXIdentifier(node.name) || node.name.name !== 'svg') return;
 
             node.name.name = 'Box';
@@ -13,7 +13,7 @@ module.exports = ({ types: t }) => ({
                 t.jsxSpreadAttribute(t.identifier('props')),
             ];
         },
-        JSXClosingElement({node}) {
+        JSXClosingElement({ node }) {
             if (!t.isJSXIdentifier(node.name) || node.name.name !== 'svg') return;
 
             node.name.name = 'Box';
