@@ -18,6 +18,7 @@ export const IdentityProviderListItem = ({ provider: { id, imageURL, display } }
         startIcon={
             <img src={imageURL} style={{ maxWidth: '1.25rem', maxHeight: '1.25rem' }} />
         }
+        sx={{ display: 'flex', width: 1 }}
     >
         Sign in with {display}
     </Button>;

@@ -27,13 +27,17 @@ export const SelectProviderForm = (): JSX.Element => {
     return (
         <Form form={flow.form}>
             <Box sx={{
-                display: 'flex',
+                gap: 2,
+                display: {
+                    xs: 'inline-block',
+                    md: `${flow.providers.length > 2 ? 'inline-block' : 'flex'}`,
+                },
                 flexDirection: {
-                    xs: 'column',
                     md: `${flow.providers.length > 2 ? 'column' : 'row'}`,
                 },
-                justifyContent: 'space-between',
-                gap: '1.25rem',
+                '& button': {
+                    mb: `${flow.providers.length > 2 ? '1rem' : 0}`
+                }
             }}>
                 <IdentityProviderList providers={flow.providers} />
             </Box>
