@@ -1,3 +1,13 @@
+# [3.4.6] - 2023-10-23 [PR: #43](https://github.com/dolittle-platform/Authentication/pull/43)
+## Summary
+
+Fix for compile errors in class functions because of the dependency updates.
+
+### Added
+
+- Types for 'react' and 'React-dom' version 17
+
+
 # [3.4.5] - 2023-10-9 [PR: #42](https://github.com/dolittle-platform/Authentication/pull/42)
 ## Summary
 
